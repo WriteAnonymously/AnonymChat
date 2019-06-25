@@ -1,4 +1,4 @@
-package back.serverc;
+package Servlets;
 
 import db.DBtranslator;
 

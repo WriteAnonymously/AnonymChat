@@ -1,4 +1,4 @@
-package back;
+package Classes;
 
 /*
     მომხმარებლის კლასი.

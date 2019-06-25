@@ -12,24 +12,28 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 
-@WebServlet(name = "PublicChatServlet", urlPatterns = {"have no idea right now"})
-public class PublicChatServlet extends HttpServlet {
+@WebServlet(name = "PrivateChatServlet", urlPatterns = {"same"})
+class PrivateChatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters
         String name = request.getParameter("name");
         String description = request.getParameter("description");
-        String limit = request.getParameter("limit");
-        Date currentDate = new Date(System.currentTimeMillis());
+        int numMembers = Integer.parseInt(request.getParameter("members"));
         String id = "placeholder";
+        Date currentDate = new Date(System.currentTimeMillis());
+        for(int i = 0; i < numMembers; i++){
+            String member = request.getParameter(Integer.toString(i));
+            // jer ar vici eseni sad wavigo
+        }
         // insert into DB
         DBtranslator translator = (DBtranslator) getServletContext().getAttribute(DBtranslator.ATTRIBUTE_NAME);
         try {
-            translator.insertChatDB(id,name,description, DBtranslator.VISIBLE, 1, currentDate);
+            translator.insertChatDB(id,name,description, DBtranslator.INVISIBLE, numMembers, currentDate);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         // forward to another page
-        RequestDispatcher dispatch = request.getRequestDispatcher("publicChatPage.html");
+        RequestDispatcher dispatch = request.getRequestDispatcher("privateChatPage.html");
         dispatch.forward(request, response);
 
     }

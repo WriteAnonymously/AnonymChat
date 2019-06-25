@@ -1,21 +1,37 @@
-package db;
+package DB;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DBtranslator {
+    public static final String ATTRIBUTE_NAME = "translator";
+    public static final Integer VISIBLE = 1;
+    public static final Integer INVISIBLE = 0;
     private static final String MESSAGE_TABLE = "messages";
     private static final String CHAT_TABLE = "chats";
     private static final String USER_TABLE = "users";
     private static final String TAG_TABLE = "tags";
 
+    private static DBtranslator translator;
     protected Connection con = null;
+
+    public static Object getInstance() {
+        if(translator == null){
+            synchronized (DBtranslator.class){
+                if(translator == null){
+                    translator = new DBtranslator();
+                }
+            }
+        }
+        return translator;
+    }
+
 
     /**
      * Constructor, con is initialized
      */
-    public DBtranslator(){
+    private DBtranslator(){
         con = getConnect();
     }
 
@@ -25,8 +41,8 @@ public class DBtranslator {
     private static Connection getConnect(){
         Connection con = null;
         try{
-            Class.forName(DBconnector.DRIVER);
-            con = DriverManager.getConnection("jdbc:mysql://"+DBconnector.MYSQL_DATABASE_SERVER, DBconnector.MYSQL_USERNAME, DBconnector.MYSQL_PASSWORD);
+            Class.forName(db.DBconnector.DRIVER);
+            con = DriverManager.getConnection("jdbc:mysql://"+ db.DBconnector.MYSQL_DATABASE_SERVER, db.DBconnector.MYSQL_USERNAME, db.DBconnector.MYSQL_PASSWORD);
         } catch (Exception e){System.out.println(e);}
         return con;
     }

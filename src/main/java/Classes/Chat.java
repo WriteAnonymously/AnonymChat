@@ -1,5 +1,4 @@
-package back;
-
+package Classes;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -13,17 +12,12 @@ public class Chat {
     private HashSet<String> usedUsernames;
     private static final int DEFAULT_LIMIT = 1000;
 
-    Chat(int ID, String name, String description, String limit, int numMembers, Date creationDate) {
+    Chat(int ID, String name, String description, int limit, int numMembers, Date creationDate) {
         this.ID = ID;
         this.name = name;
         this.description = description;
         this.numMembers = numMembers;
         this.creationDate = creationDate;
-        if (limit.equals("")) {
-            this.limit = DEFAULT_LIMIT;
-        } else {
-            this.limit = Integer.parseInt(limit);
-        }
     }
 
 

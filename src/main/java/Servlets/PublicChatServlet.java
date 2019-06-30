@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
 
-@WebServlet(name = "PublicChatServlet")
+@WebServlet("/PublicChatServlet")
 public class PublicChatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = (String) request.getParameter("name");

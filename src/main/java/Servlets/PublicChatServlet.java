@@ -13,7 +13,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 
-@WebServlet(name = "PublicChatServlet", urlPatterns = {"have no idea right now"})
+@WebServlet("/PublicChatServlet")
 public class PublicChatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters

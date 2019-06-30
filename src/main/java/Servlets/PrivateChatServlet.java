@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 
-@WebServlet(name = "PrivateChatServlet", urlPatterns = {"same"})
+@WebServlet("/PrivateChatServlet")
 class PrivateChatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters

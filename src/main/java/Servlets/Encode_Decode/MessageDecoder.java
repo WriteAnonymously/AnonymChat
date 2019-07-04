@@ -1,18 +1,14 @@
 package Servlets.Encode_Decode;
 
-import Classes.Message;
-import com.google.gson.Gson;
-
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
-public class MessageDecoder implements Decoder.Text<Message> {
-   // private  static Gson gson = new Gson();
+public class MessageDecoder implements Decoder.Text<WebSocketMessage> {
 
-    public Message decode(String s) throws DecodeException {
-        return null;
-        //return gson.fromJson(s, Message.class);
+
+    public WebSocketMessage decode(String s) throws DecodeException {
+        return new WebSocketMessage(s);
     }
 
     public boolean willDecode(String s) {

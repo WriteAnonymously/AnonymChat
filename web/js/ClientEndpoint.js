@@ -2,17 +2,21 @@
 var socket = new WebSocket('ws://localhost:8080/Chat_Web/The_Chat');
 
 socket.onopen = function (ev) {
-    socket.send("Hi from client!");
+    var message = JSON.parse('{ "content": "message!"}');
+    socket.send(message);
     console.log("Connected");
 };
 
 socket.onmessage = function (ev) {
-    var message = JSON.parse(ev.data);
-    console.log('message from server is :', message.getContent);
+    console.log('message from server is :', ev.data.toString());
+    var para = document.createElement("P");                       // Create a <p> node
+    var t = document.createTextNode(ev.data.toString());      // Create a text node
+    para.appendChild(t);
+    document.getElementById("messages").appendChild(para);
 };
 
 function sendMessage(){
-    var msg = "new message from client!";
-    socket.send(msg);
+    var message = JSON.parse('{ "content": "message!"}');
+    socket.send(message);
 }
 

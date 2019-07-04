@@ -4,6 +4,7 @@ package Servlets;
 import Classes.Message;
 import Servlets.Encode_Decode.MessageDecoder;
 import Servlets.Encode_Decode.MessageEncoder;
+import Servlets.Encode_Decode.WebSocketMessage;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-@ServerEndpoint(value = "/The_Chat") //decoders = MessageDecoder.class, encoders = MessageEncoder.class)
+@ServerEndpoint(value = "/The_Chat", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
 public class ChatEndpoint {
 
     private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
@@ -21,33 +22,37 @@ public class ChatEndpoint {
     public void onOpen(Session session) throws IOException, EncodeException {
         this.session = session;
         endpoints.add(this);
-        sendMessageTemp(session,"Hello from server");
+        sendMessageTemp(session, new WebSocketMessage("Hello from server"));
         System.out.println("new connection");
     }
 
     @OnMessage
-    public void onMessage(Session session, String message) throws IOException, EncodeException {
-        sendMessageTemp(session, "The new message is "+message);
-        System.out.println("New message in Server");
+    public void onMessage(Session session, WebSocketMessage message) throws IOException, EncodeException {
+        sendMessageTemp(session, message);
+        System.out.println("New message in Server" + message.getContent());
     }
 
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
         endpoints.remove(this);
         System.out.println("Disconnected");
-        sendMessage("Discconected :(");
+       // sendMessage("Discconected :(");
     }
 
+    @OnError
+    public void onError(Session session, Throwable t) throws Throwable {
+        System.out.println("Error");
+        throw t;
+    }
+    
 
-    private void sendMessageTemp(Session session, String message) throws IOException, EncodeException {
-      //  Message message1 = new Message();
-      //  message1.setContent(message);
+
+    private void sendMessageTemp(Session session, WebSocketMessage message) throws IOException, EncodeException {
         session.getBasicRemote().sendObject(message);
     }
 
     private void sendMessage(String message) throws IOException, EncodeException {
-        Message message1 = new Message();
-        message1.setContent(message);
+        WebSocketMessage message1 = new WebSocketMessage(message);
         for (ChatEndpoint endpoint : endpoints) {
             endpoint.session.getBasicRemote().sendObject(message);
         }

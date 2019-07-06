@@ -5,8 +5,8 @@ import java.util.Date;
 public class PrivateChat extends Chat {
     private ArrayList<String> members;
 
-    PrivateChat(int ID, String name, String description, int numMembers, Date creationDate) {
-        super(ID, name, description, numMembers, numMembers, creationDate);
+    public PrivateChat(long ID, String name, String description, int numMembers, Date creationDate) {
+        super(ID, name, description, numMembers, creationDate);
     }
 
     /**

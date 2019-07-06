@@ -1,5 +1,5 @@
 
-var socket = new WebSocket('ws://localhost:8080/Chat_Web/The_Chat');
+var socket = new WebSocket('ws://localhost:8080/The_Chat');
 
 socket.onopen = function (ev) {
     var message = JSON.parse('{ "content": "message!"}');

@@ -41,8 +41,8 @@ public class DBtranslator {
     private static Connection getConnect(){
         Connection con = null;
         try{
-            Class.forName(db.DBconnector.DRIVER);
-            con = DriverManager.getConnection("jdbc:mysql://"+ db.DBconnector.MYSQL_DATABASE_SERVER, db.DBconnector.MYSQL_USERNAME, db.DBconnector.MYSQL_PASSWORD);
+            Class.forName(DB.DBconnector.DRIVER);
+            con = DriverManager.getConnection("jdbc:mysql://"+ DB.DBconnector.MYSQL_DATABASE_SERVER, DB.DBconnector.MYSQL_USERNAME, DB.DBconnector.MYSQL_PASSWORD);
         } catch (Exception e){System.out.println(e);}
         return con;
     }

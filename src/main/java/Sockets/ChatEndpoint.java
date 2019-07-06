@@ -1,7 +1,6 @@
-package Servlets;
+package Sockets;
 
 
-import Classes.Message;
 import Servlets.Encode_Decode.MessageDecoder;
 import Servlets.Encode_Decode.MessageEncoder;
 import Servlets.Encode_Decode.WebSocketMessage;

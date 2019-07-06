@@ -1,14 +1,10 @@
 drop schema if exists anonym_chat_schema;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS messages;
-DROP TABLE IF EXISTS chats;
-
-
 create schema anonym_chat_schema;
 use anonym_chat_schema;
 
-/*Credits for conceiving database plan goes to Nata nkhur17 */
-
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS chats;
 
 CREATE TABLE chats(
     id bigint primary key auto_increment,
@@ -21,16 +17,15 @@ CREATE TABLE chats(
 
 CREATE TABLE users(
     id bigint primary key auto_increment,
-    chatID bigint,
+    chatid bigint,
     username VARCHAR(100),
     FOREIGN KEY (chatID) REFERENCES chats(id)
 );
 
-
 CREATE TABLE messages(
     id bigint primary key AUTO_INCREMENT,
-    chatID bigint,
-    userID bigint,
+    chatid bigint,
+    userid bigint,
     content longtext,
     date DATE,
     FOREIGN KEY (chatID) REFERENCES chats(id),

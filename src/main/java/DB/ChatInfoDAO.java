@@ -62,7 +62,7 @@ public class ChatInfoDAO {
         List<Chat> topChatsSet = new ArrayList<Chat>();
         PreparedStatement statement = connection.prepareStatement("select * from " + DBInfo.CHAT_TABLE
                                 + " t where t.status = \"public\" order by -1 * (select count(*) from " + DBInfo.USERS_TABLE
-                                + " cus where cus.chat_id = t.id) limit ?");
+                                + " cus where cus.chat_id = t.id) limit ?;");
         statement.setInt(1, n);
         ResultSet set = statement.executeQuery();
         while (set.next()){
@@ -78,5 +78,22 @@ public class ChatInfoDAO {
         return topChatsSet;
     }
 
+    /**
+     * returns set of usernames used in chat
+     *
+     * @param chatID id of chat for which set should be found
+     * @return Set<String> set of the usernames in chat
+     * */
+    public Set<String> getUserNames(long chatID) throws SQLException {
+        Set<String> userNames = new HashSet<String>();
+        PreparedStatement statement = connection.prepareStatement("select name from " + DBInfo.USERS_TABLE
+                                + "where chatid = ?;");
+        statement.setLong(1, chatID);
+        ResultSet set = statement.executeQuery();
+        while (set.next()){
+            userNames.add(set.getString(1));
+        }
+        return userNames;
+    }
 
 }

@@ -1,6 +1,6 @@
 package Servlets;
 
-import DB.DBtranslator;
+import DB.PrepareDB;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,12 +28,12 @@ class PrivateChatServlet extends HttpServlet {
             // jer ar vici eseni sad wavigo
         }
         // insert into DB
-        DBtranslator translator = (DBtranslator) getServletContext().getAttribute(DBtranslator.ATTRIBUTE_NAME);
-        try {
-            translator.insertChatDB(id,name,description, DBtranslator.INVISIBLE, numMembers, currentDate);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        DBtranslator translator = (DBtranslator) getServletContext().getAttribute(DBtranslator.ATTRIBUTE_NAME);
+//        try {
+//            translator.insertChatDB(id,name,description, DBtranslator.INVISIBLE, numMembers, currentDate);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
         // forward to another page
         RequestDispatcher dispatch = request.getRequestDispatcher("privateChatPage.html");
         dispatch.forward(request, response);

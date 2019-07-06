@@ -39,7 +39,7 @@ public class PrepareDB {
     private static void prepareStructure() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("src/main/java/DB/db.sql"));
+            reader = new BufferedReader(new FileReader("/home/vakhokoto/IdeaProjects/AnonymChat/src/main/java/DB/db.sql"));
             String q = "";
             while (true){
                 String line = reader.readLine();

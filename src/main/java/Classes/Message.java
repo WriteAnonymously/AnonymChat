@@ -34,17 +34,11 @@ public class Message {
         return this.userId;
     }
 
-
-
     public String getContent(){
         return this.content;
     }
 
-
-
     public String getCreationDate(){
         return this.creationDate;
     }
-
-
 }

@@ -11,7 +11,7 @@ public class MessageDecoder implements Decoder.Text<WebSocketMessage> {
 
 
     public WebSocketMessage decode(String s) throws DecodeException {
-//        JsonObject jsonObject = new JsonParser().parse("{\"name\": \"John\"}").getAsJsonObject();
+        JsonObject jsonObject = new JsonParser().parse("{\"name\": \"John\"}").getAsJsonObject();
         return new WebSocketMessage(s);
     }
 

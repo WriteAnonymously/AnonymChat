@@ -1,4 +1,4 @@
-package back;
+package Classes;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.Date;
 public class PublicChat extends Chat {
     private ArrayList<String> tags;
 
-    PublicChat(int ID, String name, String description, String limit, int numMembers, Date creationDate) {
-        super(ID, name, description, limit, numMembers, creationDate);
+    public PublicChat(long ID, String name, String description, int limit, Date creationDate) {
+        super(ID, name, description, limit, creationDate);
     }
 
     public void addTag(String tag) {

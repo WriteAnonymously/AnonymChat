@@ -23,7 +23,7 @@ public class ChatInfoDAO {
      * @param maxUsersAllowed maximum number of user -1 should be here if no restrictions
      * */
     public String addChat(String chatID, String chatName, String status, int maxUsersAllowed) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("insert into " + DBconnector.CHAT_TABLE
+        PreparedStatement statement = connection.prepareStatement("insert into " + DBInfo.CHAT_TABLE
                 + " (id, name, status, max_users, creation_date) value "
                 + "(?, ?, ?, ?, sysdate());");
         statement.setString(1, chatID);
@@ -60,8 +60,8 @@ public class ChatInfoDAO {
      * */
     public Set<Chat> getTopNChats(int n) throws SQLException {
         Set <Chat> topChatsSet = new HashSet<Chat>();
-        PreparedStatement statement = connection.prepareStatement("select * from " + DBconnector.CHAT_TABLE
-                                + " t where t.status = \"public\" order by (select count(*) from " + DBconnector.USERS_TABLE
+        PreparedStatement statement = connection.prepareStatement("select * from " + DBInfo.CHAT_TABLE
+                                + " t where t.status = \"public\" order by (select count(*) from " + DBInfo.USERS_TABLE
                                 + " cus where cus.chat_id = t.id) limit ?");
         statement.setInt(1, n);
         ResultSet set = statement.executeQuery();

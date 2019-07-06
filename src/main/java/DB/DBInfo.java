@@ -2,7 +2,7 @@ package DB;
 
 // This Should be used after establishing database server
 // Now I use it for local connections, taken directly from OOP assignment
-public class DBconnector {
+public class DBInfo {
     public static final String USERS_TABLE = "users";
     public static final String CHAT_TABLE = "chats";
     public static final String MESSAGE_TABLE = "messages";

@@ -7,6 +7,9 @@
     <groupId>KMAra</groupId>
     <artifactId>AnonymChat</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <packaging>war</packaging>
+
     <dependencies>
 
 
@@ -74,6 +77,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -102,6 +113,20 @@
                         <path>/spring5-webmvc-demo</path>
                         <connectorHttpProtocol>org.apache.coyote.http11.Http11Nio2Protocol</connectorHttpProtocol>
                         <ajpProtocol>org.apache.coyote.ajp.AjpNio2Protocol</ajpProtocol>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.2.2</version>
+                    <configuration>
+                        <webResources>
+                            <resource>
+                                <directory>src/main/webapp</directory>
+                                <filtering>true</filtering>
+                            </resource>
+                        </webResources>
                     </configuration>
                 </plugin>
             </plugins>

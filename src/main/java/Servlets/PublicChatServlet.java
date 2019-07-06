@@ -1,6 +1,6 @@
 package Servlets;
 
-import DB.DBtranslator;
+import DB.PrepareDB;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,12 +23,12 @@ public class PublicChatServlet extends HttpServlet {
         Date currentDate = new Date(System.currentTimeMillis());
         String id = "placeholder";
         // insert into DB
-        DBtranslator translator = (DBtranslator) getServletContext().getAttribute(DBtranslator.ATTRIBUTE_NAME);
-        try {
-            translator.insertChatDB(id,name,description, DBtranslator.VISIBLE, 1, currentDate);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        DBtranslator translator = (DBtranslator) getServletContext().getAttribute(DBtranslator.ATTRIBUTE_NAME);
+//        try {
+//            translator.insertChatDB(id,name,description, DBtranslator.VISIBLE, 1, currentDate);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
         // forward to another page
         RequestDispatcher dispatch = request.getRequestDispatcher("publicChatPage.html");
         dispatch.forward(request, response);

@@ -3,11 +3,15 @@ package Servlets.Encode_Decode;
 public class WebSocketMessage {
     private String content;
 
-
+    public WebSocketMessage(){}
     public WebSocketMessage(String content){
         this.content = content;
     }
 
+
+    public void setContent(){
+        this.content = content;
+    }
 
     public String getContent(){
         return this.content;
@@ -15,7 +19,6 @@ public class WebSocketMessage {
 
     @Override
     public String toString() {
-        return "WebSocketMessage{"+
-                "content='" +this.content+'\'' +"}";
+        return "{content='" +this.content+'\'' +"}";
     }
 }

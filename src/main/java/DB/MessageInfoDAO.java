@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageInfoDAO {
-    Connection con;
+    private Connection con;
+
     public MessageInfoDAO(Connection con){
         this.con = con;
     }

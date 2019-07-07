@@ -36,4 +36,19 @@ public class UserInfoDAO {
         }
         return -1;
     }
+
+    /**
+     * generates a random username
+     *
+     * @param chatID id of chat where user to be added
+     * @throws SQLException throws exception if occur any error
+     * */
+    public String generateName(long chatID) throws SQLException{
+        /*
+            gvchirdeba username-ebis table.
+            randomad airchevs usernames am tabledan da mere amowmebs mocemul chatshi aris tu ara es username dakavebuli
+            tu ar aris, daabrunebs. tu arada axlidan cdis.
+         */
+        return "wvera";
+    }
 }

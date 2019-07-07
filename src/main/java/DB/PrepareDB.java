@@ -42,6 +42,7 @@ public class PrepareDB {
          Statement statement = connection.createStatement();
           statement.executeUpdate("use anonym_chat_schema;");
      //   prepareStructure();
+
         return connection;
     }
     /*

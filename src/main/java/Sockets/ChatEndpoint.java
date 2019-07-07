@@ -44,7 +44,7 @@ public class ChatEndpoint implements ServletContextListener {
     public void onMessage(Session session, WebSocketMessage message) throws IOException, EncodeException, SQLException {
         sendMessage(message);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
-        messageInfoDAO.addMessage(message.getUser(), 1, message.getContent());
+        messageInfoDAO.addMessage(1, 1, message.getContent());
     //    System.out.println("New message in Server" + message.getContent());
     }
 

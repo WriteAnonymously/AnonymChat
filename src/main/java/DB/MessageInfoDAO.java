@@ -8,6 +8,7 @@ import java.util.List;
 
 public class MessageInfoDAO {
     private Connection con;
+    public static final String ATTRIBUTE = "messageInfo";
 
     public MessageInfoDAO(Connection con){
         this.con = con;
@@ -55,7 +56,6 @@ public class MessageInfoDAO {
             Date date = Date.valueOf(rs.getString("creation_date"));
             Message curr = new Message(chatID, userID, content, date);
             msgs.add(curr);
-
         }
         return msgs;
     }

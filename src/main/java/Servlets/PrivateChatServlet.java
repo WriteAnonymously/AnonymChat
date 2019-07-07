@@ -1,5 +1,6 @@
 package Servlets;
 
+import DB.ChatInfoDAO;
 import DB.PrepareDB;
 
 import javax.servlet.RequestDispatcher;
@@ -14,28 +15,31 @@ import java.io.PrintWriter;
 import java.sql.Date;
 import java.sql.SQLException;
 
-@WebServlet("/PrivateChatServlet")
-class PrivateChatServlet extends HttpServlet {
+@WebServlet(name = "PrivateChatServlet", urlPatterns = {"/PrivateChatServlet"})
+public class PrivateChatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters
         String name = request.getParameter("name");
         String description = request.getParameter("description");
-        int numMembers = Integer.parseInt(request.getParameter("members"));
-        String id = "placeholder";
-        Date currentDate = new Date(System.currentTimeMillis());
-        for(int i = 0; i < numMembers; i++){
-            String member = request.getParameter(Integer.toString(i));
-            // jer ar vici eseni sad wavigo
+        String numMembers = request.getParameter("Members");
+        int members = 0;
+        try{
+            members = Integer.parseInt(numMembers);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
-        // insert into DB
-//        DBtranslator translator = (DBtranslator) getServletContext().getAttribute(DBtranslator.ATTRIBUTE_NAME);
-//        try {
-//            translator.insertChatDB(id,name,description, DBtranslator.INVISIBLE, numMembers, currentDate);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        for(int i = 0; i < members; i++){
+            String member = request.getParameter("Member" + i);
+        }
+        ChatInfoDAO dao = (ChatInfoDAO) getServletContext().getAttribute(ChatInfoDAO.ATTRIBUTE);
+        try {
+            long id = dao.addChat(name, ChatInfoDAO.PRIVATE, description, members);
+            request.setAttribute("id", id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         // forward to another page
-        RequestDispatcher dispatch = request.getRequestDispatcher("privateChatPage.html");
+        RequestDispatcher dispatch = request.getRequestDispatcher("/Models/Homepage.html");
         dispatch.forward(request, response);
 
     }

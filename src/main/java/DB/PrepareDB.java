@@ -24,8 +24,6 @@ public class PrepareDB {
             long userID = userInfoDAO.addUser(1, "wvera");
             List<Chat> lst = chatInfoDAO.getTopNChats(1);
             Chat ch = lst.get(0);
-            System.out.println("Chat ID: " + ch.getID());
-            System.out.println("User ID: " + userID);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

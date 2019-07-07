@@ -1,5 +1,6 @@
 package Servlets;
 
+import DB.ChatInfoDAO;
 import DB.PrepareDB;
 
 import javax.servlet.RequestDispatcher;
@@ -13,24 +14,29 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 
-@WebServlet("/PublicChatServlet")
+@WebServlet(name = "PublicChatServlet", urlPatterns = {"/PublicChatServlet"})
 public class PublicChatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String limit = request.getParameter("limit");
-        Date currentDate = new Date(System.currentTimeMillis());
-        String id = "placeholder";
+        int lim = 100;
+        try{
+            lim = Integer.parseInt(limit);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
         // insert into DB
-//        DBtranslator translator = (DBtranslator) getServletContext().getAttribute(DBtranslator.ATTRIBUTE_NAME);
-//        try {
-//            translator.insertChatDB(id,name,description, DBtranslator.VISIBLE, 1, currentDate);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        ChatInfoDAO dao = (ChatInfoDAO) getServletContext().getAttribute(ChatInfoDAO.ATTRIBUTE);
+        try {
+            long id = dao.addChat(name, ChatInfoDAO.PUBLIC, description, lim);
+            request.setAttribute("id", id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         // forward to another page
-        RequestDispatcher dispatch = request.getRequestDispatcher("publicChatPage.html");
+        RequestDispatcher dispatch = request.getRequestDispatcher("/Models/Homepage.html");
         dispatch.forward(request, response);
 
     }

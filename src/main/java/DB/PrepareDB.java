@@ -39,7 +39,9 @@ public class PrepareDB {
     private static Connection getConnect() throws ClassNotFoundException, SQLException {
         Class.forName(DB.DBInfo.DRIVER);
         connection = DriverManager.getConnection("jdbc:mysql://"+ DB.DBInfo.MYSQL_DATABASE_SERVER, DB.DBInfo.MYSQL_USERNAME, DB.DBInfo.MYSQL_PASSWORD);
-        prepareStructure();
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use anonym_chat_schema;");
+//        prepareStructure();
         return connection;
     }
 
@@ -49,7 +51,8 @@ public class PrepareDB {
     private static void prepareStructure() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("/home/sprintyaf/IdeaProjects/AnonymChat/src/main/java/DB/db.sql"));
+            System.out.println(System.getProperty("user.dir"));
+            reader = new BufferedReader(new FileReader("src/main/java/DB/db.sql"));
             String q = "";
             while (true){
                 String line = reader.readLine();

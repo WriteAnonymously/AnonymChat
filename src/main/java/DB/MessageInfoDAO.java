@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MessageInfoDAO {
     private Connection con;
-    public static String ATTRIBUTE = "messageInfo";
+    public static final String ATTRIBUTE = "messageInfo";
 
     public MessageInfoDAO(Connection con){
         this.con = con;

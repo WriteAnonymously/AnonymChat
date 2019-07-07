@@ -4,6 +4,7 @@ import java.sql.*;
 
 public class UserInfoDAO {
     private Connection con;
+    public static String ATTRIBUTE = "userInfo";
 
     public UserInfoDAO(Connection con){
         this.con = con;

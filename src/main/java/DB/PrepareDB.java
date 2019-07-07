@@ -39,12 +39,12 @@ public class PrepareDB {
     private static Connection getConnect() throws ClassNotFoundException, SQLException {
         Class.forName(DB.DBInfo.DRIVER);
         connection = DriverManager.getConnection("jdbc:mysql://"+ DB.DBInfo.MYSQL_DATABASE_SERVER, DB.DBInfo.MYSQL_USERNAME, DB.DBInfo.MYSQL_PASSWORD);
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("use anonym_chat_schema;");
-//        prepareStructure();
+         Statement statement = connection.createStatement();
+          statement.executeUpdate("use anonym_chat_schema;");
+     //   prepareStructure();
         return connection;
     }
-
+    /*
     /**
      * prepare database for use including drop old tables and create new ones
      * */
@@ -52,7 +52,7 @@ public class PrepareDB {
         BufferedReader reader;
         try {
             System.out.println(System.getProperty("user.dir"));
-            reader = new BufferedReader(new FileReader("src/main/java/DB/db.sql"));
+            reader = new BufferedReader(new FileReader(DBInfo.DB_PATH));
             String q = "";
             while (true){
                 String line = reader.readLine();

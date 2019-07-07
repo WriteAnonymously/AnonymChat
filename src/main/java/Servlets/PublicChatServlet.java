@@ -38,7 +38,6 @@ public class PublicChatServlet extends HttpServlet {
         // forward to another page
         RequestDispatcher dispatch = request.getRequestDispatcher("/Models/Homepage.html");
         dispatch.forward(request, response);
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

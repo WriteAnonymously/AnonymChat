@@ -14,7 +14,7 @@ public class MessageInfoDAO {
     }
 
     public void addMessage(int chatID, String content, int userID) throws SQLException{
-        PreparedStatement statement = con.prepareStatement("insert into " + DBconnector.CHAT_TABLE
+        PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.CHAT_TABLE
                 + " (chatID, userID, content ,date) value "
                 + "(?, ?, ? , sysdate());");
 
@@ -37,7 +37,6 @@ public class MessageInfoDAO {
         while (rs.next()) {
             Message curr = new Message(rs.getString(1), Long.toString(chatID), rs.getString(2), rs.getString(3), rs.getString(4));
             msgs.add(curr);
-
         }
         return msgs;
     }

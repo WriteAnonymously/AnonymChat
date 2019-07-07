@@ -14,7 +14,7 @@ public class MessageInfoDAO {
     }
 
     public void addMessage(int chatID, String content, int userID) throws SQLException{
-        PreparedStatement statement = con.prepareStatement("insert into " + DBconnector.CHAT_TABLE
+        PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.CHAT_TABLE
                 + " (chatID, userID, content ,date) value "
                 + "(?, ?, ? , sysdate());");
 

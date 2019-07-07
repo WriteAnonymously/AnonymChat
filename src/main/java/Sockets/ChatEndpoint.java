@@ -22,13 +22,13 @@ public class ChatEndpoint {
         this.session = session;
         endpoints.add(this);
         sendMessage(new WebSocketMessage("Hello from server", "server"));
-        System.out.println("new connection");
+      //  System.out.println("new connection");
     }
 
     @OnMessage
     public void onMessage(Session session, WebSocketMessage message) throws IOException, EncodeException {
         sendMessage(message);
-        System.out.println("New message in Server" + message.getContent());
+    //    System.out.println("New message in Server" + message.getContent());
     }
 
     @OnClose

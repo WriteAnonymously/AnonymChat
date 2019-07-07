@@ -9,8 +9,8 @@ public class DBInfo {
     public static final String MEMBER_TABLE = "messages";
 
     public static final String MYSQL_USERNAME = "root";
-    public static final String MYSQL_PASSWORD = "RootRoot123";
-    public static final String MYSQL_DATABASE_SERVER = "localhost:3306/";
-    public static final String MYSQL_DATABASE_NAME = "";
+    public static final String MYSQL_PASSWORD = "root";
+    public static final String MYSQL_DATABASE_SERVER = "localhost:3306/chemi";
+    public static final String MYSQL_DATABASE_NAME = "chemi";
     public static final String DRIVER = "com.mysql.jdbc.Driver";
 }

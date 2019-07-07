@@ -16,10 +16,10 @@ public class MessageDecoder implements Decoder.Text<WebSocketMessage> {
     public WebSocketMessage decode(String s) throws DecodeException {
         ObjectMapper mapper = new ObjectMapper();
         WebSocketMessage message = new WebSocketMessage("Not received", "aa");
-        
+
         try {
             message = mapper.readValue(s, WebSocketMessage.class);
-            System.out.println(message.getContent()+"----Decoded");
+          //  System.out.println(message.getContent()+"----Decoded");
         } catch (IOException e) {
             e.printStackTrace();
         }

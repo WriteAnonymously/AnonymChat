@@ -11,7 +11,7 @@ public class Message {
       private String creationDate;
 
 
-    public Message(String chatId, String userId, String content, String creationDate){
+    public Message(String string, String chatId, String userId, String content, String creationDate){
         this.chatId = chatId;
         this.userId = userId;
         this.content = content;

@@ -35,9 +35,9 @@ public class Listener implements ServletContextListener,
             ChatInfoDAO chat = new ChatInfoDAO(con);
             UserInfoDAO user = new UserInfoDAO(con);
             MessageInfoDAO message = new MessageInfoDAO(con);
-            sce.getServletContext().setAttribute("chatInfo", chat);
-            sce.getServletContext().setAttribute("userInfo", user);
-            sce.getServletContext().setAttribute("messageInfo", message);
+            sce.getServletContext().setAttribute(ChatInfoDAO.ATTRIBUTE, chat);
+            sce.getServletContext().setAttribute(UserInfoDAO.ATTRIBUTE, user);
+            sce.getServletContext().setAttribute(MessageInfoDAO.ATTRIBUTE, message);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

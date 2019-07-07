@@ -11,7 +11,9 @@ import java.util.Set;
 
 public class ChatInfoDAO {
     private Connection connection;
-
+    public static String ATTRIBUTE = "chatInfo";
+    public static String PUBLIC = "Public";
+    public static String PRIVATE = "Private";
     public ChatInfoDAO(Connection connection){
         this.connection = connection;
     }
@@ -31,7 +33,6 @@ public class ChatInfoDAO {
         statement.setString(2, status);
         statement.setString(3, description);
         statement.setInt(4, maxUsersAllowed);
-        System.out.println(statement.toString());
         synchronized (connection) {
             statement.executeUpdate();
             return getLastInsertedID();

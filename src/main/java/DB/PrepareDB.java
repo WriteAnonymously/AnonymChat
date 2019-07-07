@@ -24,8 +24,6 @@ public class PrepareDB {
             long userID = userInfoDAO.addUser(1, "wvera");
             List<Chat> lst = chatInfoDAO.getTopNChats(1);
             Chat ch = lst.get(0);
-            System.out.println("Chat ID: " + ch.getID());
-            System.out.println("User ID: " + userID);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -51,7 +49,7 @@ public class PrepareDB {
     private static void prepareStructure() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("/home/vakhokoto/IdeaProjects/AnonymChat/src/main/java/DB/db.sql"));
+            reader = new BufferedReader(new FileReader("/home/sprintyaf/IdeaProjects/AnonymChat/src/main/java/DB/db.sql"));
             String q = "";
             while (true){
                 String line = reader.readLine();

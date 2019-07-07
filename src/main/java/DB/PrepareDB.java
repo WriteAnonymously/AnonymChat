@@ -1,9 +1,12 @@
 package DB;
 
+import Classes.Chat;
+
 import java.io.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class PrepareDB {
     private static Connection connection = null;
@@ -14,6 +17,15 @@ public class PrepareDB {
     public static void main(String[] args){
         try {
             Connection con = PrepareDB.getInstance();
+            MessageInfoDAO messageInfoDAO = new MessageInfoDAO(con);
+            UserInfoDAO userInfoDAO = new UserInfoDAO(con);
+            ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
+            long charID = chatInfoDAO.addChat("chat", "public", "kai chat",  1);
+            long userID = userInfoDAO.addUser(1, "wvera");
+            List<Chat> lst = chatInfoDAO.getTopNChats(1);
+            Chat ch = lst.get(0);
+            System.out.println("Chat ID: " + ch.getID());
+            System.out.println("User ID: " + userID);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

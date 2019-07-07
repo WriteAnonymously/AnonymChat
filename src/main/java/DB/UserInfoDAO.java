@@ -12,16 +12,17 @@ public class UserInfoDAO {
     /**
      * adds new user in database with name and id provided
      *
-     * @param userID id of user to add
+     * @param chatID id of chat where user to be added
      * @param name name of user to add
      * @throws SQLException throws exception if occur any error
      * */
-    public long addUser(String userID, String name) throws SQLException {
+    public long addUser(long chatID, String name) throws SQLException {
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.USERS_TABLE
-                        + " (id, name, creation_date) value "
+                        + " (chatid, username, creation_date) value "
                         + "(?, ?, sysdate());");
-        statement.setString(1, userID);
+        statement.setLong(1, chatID);
         statement.setString(2, name);
+        System.out.println(statement.toString());
         statement.executeUpdate();
         try {
             Statement st = con.createStatement();

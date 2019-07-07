@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class ChatInfoDAO {
     private Connection connection;
-    public static String ATTRIBUTE = "chatInfo";
+    public static final String ATTRIBUTE = "chatInfo";
     public static String PUBLIC = "Public";
     public static String PRIVATE = "Private";
     public ChatInfoDAO(Connection connection){

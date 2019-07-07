@@ -22,7 +22,7 @@ public class MessageInfoDAO {
      * @param content content of message
      * */
     public void addMessage(long userID, long chatID, String content) throws SQLException{
-        PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.CHAT_TABLE
+        PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.MESSAGE_TABLE
                 + " (chatid, userid, content, creation_date) value "
                 + "(?, ?, ? , sysdate());");
 
@@ -32,6 +32,7 @@ public class MessageInfoDAO {
 
             statement.setString(3, content);
 
+            System.out.println(statement);
             statement.executeUpdate();
 
 
@@ -48,8 +49,10 @@ public class MessageInfoDAO {
     public List<Message> getLastNMessages(int n, long chatID) throws SQLException {
         List<Message> msgs = new ArrayList<Message>();
         Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery("SELECT TOP " + n + " userid, content, creation_date FROM "
-                                + DBInfo.CHAT_TABLE + " WHERE id = " + chatID + " ORDER BY creation_date DESC");
+        String s = "SELECT TOP " + n + " userid, content, creation_date FROM "
+                + DBInfo.MESSAGE_TABLE + " WHERE id = " + chatID + " ORDER BY creation_date DESC";
+        System.out.println(s);
+        ResultSet rs = st.executeQuery(s);
         while (rs.next()) {
             long userID = Long.parseLong(rs.getString("userid"));
             String content = rs.getString("content");

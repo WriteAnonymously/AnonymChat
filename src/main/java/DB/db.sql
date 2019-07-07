@@ -10,15 +10,16 @@ CREATE TABLE chats(
     id bigint primary key auto_increment,
     name VARCHAR(100),
     description VARCHAR(1000) DEFAULT NULL,
-    visibility varchar(20) NOT NULL,
+    status varchar(20) NOT NULL,
     max_users_number int,
-    creationDate DATE
+    creation_date DATE
 );
 
 CREATE TABLE users(
     id bigint primary key auto_increment,
     chatid bigint,
     username VARCHAR(100),
+    creation_date date,
     FOREIGN KEY (chatID) REFERENCES chats(id)
 );
 
@@ -27,7 +28,7 @@ CREATE TABLE messages(
     chatid bigint,
     userid bigint,
     content longtext,
-    date DATE,
+    creation_date DATE,
     FOREIGN KEY (chatID) REFERENCES chats(id),
     FOREIGN KEY (userID) REFERENCES users(id)
 );

@@ -1,9 +1,12 @@
 package DB;
 
+import Classes.Chat;
+
 import java.io.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class PrepareDB {
     private static Connection connection = null;
@@ -14,6 +17,13 @@ public class PrepareDB {
     public static void main(String[] args){
         try {
             Connection con = PrepareDB.getInstance();
+            MessageInfoDAO messageInfoDAO = new MessageInfoDAO(con);
+            UserInfoDAO userInfoDAO = new UserInfoDAO(con);
+            ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
+            long charID = chatInfoDAO.addChat("chat", "public", "kai chat",  1);
+            long userID = userInfoDAO.addUser(1, "wvera");
+            List<Chat> lst = chatInfoDAO.getTopNChats(1);
+            Chat ch = lst.get(0);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -29,7 +39,9 @@ public class PrepareDB {
     private static Connection getConnect() throws ClassNotFoundException, SQLException {
         Class.forName(DB.DBInfo.DRIVER);
         connection = DriverManager.getConnection("jdbc:mysql://"+ DB.DBInfo.MYSQL_DATABASE_SERVER, DB.DBInfo.MYSQL_USERNAME, DB.DBInfo.MYSQL_PASSWORD);
-        prepareStructure();
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("use anonym_chat_schema;");
+//        prepareStructure();
         return connection;
     }
 
@@ -39,7 +51,8 @@ public class PrepareDB {
     private static void prepareStructure() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("/home/vakhokoto/IdeaProjects/AnonymChat/src/main/java/DB/db.sql"));
+            System.out.println(System.getProperty("user.dir"));
+            reader = new BufferedReader(new FileReader("src/main/java/DB/db.sql"));
             String q = "";
             while (true){
                 String line = reader.readLine();

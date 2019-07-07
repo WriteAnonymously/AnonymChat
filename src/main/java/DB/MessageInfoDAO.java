@@ -2,25 +2,34 @@ package DB;
 
 import Classes.Message;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessageInfoDAO {
-    Connection con;
+    private Connection con;
+    public static final String ATTRIBUTE = "messageInfo";
+
     public MessageInfoDAO(Connection con){
         this.con = con;
     }
 
-    public void addMessage(int chatID, String content, int userID) throws SQLException{
+    /**
+     * adds new message in database with info provided
+     *
+     * @param userID id of user message is of
+     * @param chatID chat id the message is written in
+     * @param content content of message
+     * */
+    public void addMessage(long userID, long chatID, String content) throws SQLException{
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.CHAT_TABLE
-                + " (chatID, userID, content ,date) value "
+                + " (chatid, userid, content, creation_date) value "
+
                 + "(?, ?, ? , sysdate());");
 
-            statement.setInt(1, chatID);
+            statement.setLong(1, chatID);
 
-            statement.setInt(2, userID);
+            statement.setLong(2, userID);
 
             statement.setString(3, content);
 
@@ -30,12 +39,23 @@ public class MessageInfoDAO {
 
     }
 
+    /**
+     * returns the list of last n inserted messages
+     *
+     * @param n the number of messages is wanted
+     * @param chatID id of chat where messages is to be searched in
+     * @return List<Message> list of the messages
+     * */
     public List<Message> getLastNMessages(int n, long chatID) throws SQLException {
         List<Message> msgs = new ArrayList<Message>();
         Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery("SELECT TOP " + n + " ID,USER_ID,CONTENT,DT FROM CHATS WHERE ID = " + chatID + " ORDER BY DT DESC");
+        ResultSet rs = st.executeQuery("SELECT TOP " + n + " userid, content, creation_date FROM "
+                                + DBInfo.CHAT_TABLE + " WHERE id = " + chatID + " ORDER BY creation_date DESC");
         while (rs.next()) {
-            Message curr = new Message(rs.getString(1), Long.toString(chatID), rs.getString(2), rs.getString(3), rs.getString(4));
+            long userID = Long.parseLong(rs.getString("userid"));
+            String content = rs.getString("content");
+            Date date = Date.valueOf(rs.getString("creation_date"));
+            Message curr = new Message(chatID, userID, content, date);
             msgs.add(curr);
         }
         return msgs;

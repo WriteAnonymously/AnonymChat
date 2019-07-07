@@ -29,10 +29,10 @@
 </head>
 <body>
     <h1 style="padding-bottom: 50px"> Create New Private Chat </h1>
-    <form action="newPrivateServlet" method="post">
+    <form action=/PrivateChatServlet method="post">
         Chat Name* <input type="text" name="name" style="display:block; margin-left:60px"><br>
         Chat Description <input type="text" name="description" style="display:block; margin-left:60px"><br>
-        Number of Chat Members* <input type="text" id="numMembers" style="display:block; margin-left:60px"><br>
+        Number of Chat Members* <input type="text" name="Members" id="numMembers" style="display:block; margin-left:60px"><br>
         <a href="#" onclick="addMembers()">Add Members</a>
         <div id="memberList"/>
         <input type="submit" name="enterButton" value="Create" style="margin-left:60px">

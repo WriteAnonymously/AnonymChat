@@ -11,7 +11,9 @@ import java.util.Set;
 
 public class ChatInfoDAO {
     private Connection connection;
-
+    public static String ATTRIBUTE = "chatInfo";
+    public static String PUBLIC = "Public";
+    public static String PRIVATE = "Private";
     public ChatInfoDAO(Connection connection){
         this.connection = connection;
     }
@@ -23,13 +25,14 @@ public class ChatInfoDAO {
      * @param status status of chat public/private
      * @param maxUsersAllowed maximum number of user -1 should be here if no restrictions
      * */
-    public long addChat(String chatName, String status, int maxUsersAllowed) throws SQLException {
+    public long addChat(String chatName, String status, String description, int maxUsersAllowed) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("insert into " + DBInfo.CHAT_TABLE
-                + " (name, status, max_users, creation_date) value "
-                + "(?, ?, ?, sysdate());");
+                + " (name, status, description, max_users_number, creation_date) value "
+                + "(?, ?, ?, ?, sysdate());");
         statement.setString(1, chatName);
         statement.setString(2, status);
-        statement.setInt(3, maxUsersAllowed);
+        statement.setString(3, description);
+        statement.setInt(4, maxUsersAllowed);
         synchronized (connection) {
             statement.executeUpdate();
             return getLastInsertedID();
@@ -62,8 +65,9 @@ public class ChatInfoDAO {
         List<Chat> topChatsSet = new ArrayList<Chat>();
         PreparedStatement statement = connection.prepareStatement("select * from " + DBInfo.CHAT_TABLE
                                 + " t where t.status = \"public\" order by -1 * (select count(*) from " + DBInfo.USERS_TABLE
-                                + " cus where cus.chat_id = t.id) limit ?;");
+                                + " cus where cus.chatid = t.id) limit ?;");
         statement.setInt(1, n);
+        System.out.println(statement.toString());
         ResultSet set = statement.executeQuery();
         while (set.next()){
             String name = set.getString("name");

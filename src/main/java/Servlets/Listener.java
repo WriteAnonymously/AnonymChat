@@ -1,12 +1,16 @@
 package Servlets;
 
+import DB.ChatInfoDAO;
+import DB.MessageInfoDAO;
 import DB.PrepareDB;
+import DB.UserInfoDAO;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebListener()
@@ -26,7 +30,13 @@ public class Listener implements ServletContextListener,
          You can initialize servlet context related data here.
       */
         try {
-            sce.getServletContext().setAttribute("translator", PrepareDB.getInstance());
+            Connection con = PrepareDB.getInstance();
+            ChatInfoDAO chat = new ChatInfoDAO(con);
+            UserInfoDAO user = new UserInfoDAO(con);
+            MessageInfoDAO message = new MessageInfoDAO(con);
+            sce.getServletContext().setAttribute(ChatInfoDAO.ATTRIBUTE, chat);
+            sce.getServletContext().setAttribute(UserInfoDAO.ATTRIBUTE, user);
+            sce.getServletContext().setAttribute(MessageInfoDAO.ATTRIBUTE, message);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

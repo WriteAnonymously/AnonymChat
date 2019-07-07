@@ -10,7 +10,7 @@ CREATE TABLE chats(
     id bigint primary key auto_increment,
     name VARCHAR(100),
     description VARCHAR(1000) DEFAULT NULL,
-    visibility varchar(20) NOT NULL,
+    status varchar(20) NOT NULL,
     max_users_number int,
     creation_date DATE
 );

@@ -12,6 +12,13 @@ public class MessageInfoDAO {
         this.con = con;
     }
 
+    /**
+     * adds new message in database with info provided
+     *
+     * @param userID id of user message is of
+     * @param chatID chat id the message is written in
+     * @param content content of message
+     * */
     public void addMessage(long userID, long chatID, String content) throws SQLException{
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.CHAT_TABLE
                 + " (chatid, userid, content, creation_date) value "
@@ -29,6 +36,13 @@ public class MessageInfoDAO {
 
     }
 
+    /**
+     * returns the list of last n inserted messages
+     *
+     * @param n the number of messages is wanted
+     * @param chatID id of chat where messages is to be searched in
+     * @return List<Message> list of the messages
+     * */
     public List<Message> getLastNMessages(int n, long chatID) throws SQLException {
         List<Message> msgs = new ArrayList<Message>();
         Statement st = con.createStatement();

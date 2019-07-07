@@ -15,7 +15,7 @@ public class MessageDecoder implements Decoder.Text<WebSocketMessage> {
 
     public WebSocketMessage decode(String s) throws DecodeException {
         ObjectMapper mapper = new ObjectMapper();
-        WebSocketMessage message = new WebSocketMessage("Not received", "aa");
+        WebSocketMessage message = new WebSocketMessage("Not received", 1);
 
         try {
             message = mapper.readValue(s, WebSocketMessage.class);

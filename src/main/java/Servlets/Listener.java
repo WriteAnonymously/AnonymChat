@@ -29,7 +29,7 @@ public class Listener implements ServletContextListener,
          initialized(when the Web application is deployed).
          You can initialize servlet context related data here.
       */
-
+      //  System.out.println("Starting initializing connection;");
         try {
             Connection con = PrepareDB.getInstance();
             ChatInfoDAO chat = new ChatInfoDAO(con);
@@ -43,6 +43,7 @@ public class Listener implements ServletContextListener,
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+     //   System.out.println("done initializing connection;");
     }
 
     public void contextDestroyed(ServletContextEvent sce) {

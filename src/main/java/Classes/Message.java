@@ -7,12 +7,11 @@ import java.util.Date;
     ინახავს მესიჯის აიდის, ჩათის აიდის, ავტორის აიდის, ტექსტსა და შექმნის დროს.
  */
 public class Message {
-      private String id, chatId, userId, content;
+      private String chatId, userId, content;
       private String creationDate;
 
 
-    public Message(String id, String chatId, String userId, String content, String creationDate){
-        this.id = id;
+    public Message(String chatId, String userId, String content, String creationDate){
         this.chatId = chatId;
         this.userId = userId;
         this.content = content;
@@ -20,10 +19,6 @@ public class Message {
     }
     public void setContent(String content){
         this.content = content;
-    }
-
-    public String getId(){
-        return this.id;
     }
 
     public String getChatId(){

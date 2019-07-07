@@ -21,7 +21,7 @@ public class ChatEndpoint {
     public void onOpen(Session session) throws IOException, EncodeException {
         this.session = session;
         endpoints.add(this);
-        sendMessage(new WebSocketMessage("Hello from server"));
+        sendMessage(new WebSocketMessage("Hello from server", "server"));
         System.out.println("new connection");
     }
 

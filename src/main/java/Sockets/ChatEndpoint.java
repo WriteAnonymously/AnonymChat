@@ -1,7 +1,6 @@
-package Servlets;
+package Sockets;
 
 
-import Classes.Message;
 import Servlets.Encode_Decode.MessageDecoder;
 import Servlets.Encode_Decode.MessageEncoder;
 import Servlets.Encode_Decode.WebSocketMessage;
@@ -22,13 +21,13 @@ public class ChatEndpoint {
     public void onOpen(Session session) throws IOException, EncodeException {
         this.session = session;
         endpoints.add(this);
-        sendMessageTemp(session, new WebSocketMessage("Hello from server"));
+        sendMessage(new WebSocketMessage("Hello from server", "server"));
         System.out.println("new connection");
     }
 
     @OnMessage
     public void onMessage(Session session, WebSocketMessage message) throws IOException, EncodeException {
-        sendMessageTemp(session, message);
+        sendMessage(message);
         System.out.println("New message in Server" + message.getContent());
     }
 
@@ -40,19 +39,12 @@ public class ChatEndpoint {
     }
 
     @OnError
-    public void onError(Session session, Throwable t) throws Throwable {
-        System.out.println("Error");
-        throw t;
-    }
-    
-
-
-    private void sendMessageTemp(Session session, WebSocketMessage message) throws IOException, EncodeException {
-        session.getBasicRemote().sendObject(message);
+    public void onError(Session session, Throwable t) {
+        t.printStackTrace();
     }
 
-    private void sendMessage(String message) throws IOException, EncodeException {
-        WebSocketMessage message1 = new WebSocketMessage(message);
+
+    private void sendMessage(WebSocketMessage message) throws IOException, EncodeException {
         for (ChatEndpoint endpoint : endpoints) {
             endpoint.session.getBasicRemote().sendObject(message);
         }

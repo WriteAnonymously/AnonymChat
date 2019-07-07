@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Public Chat</title>
+    <link rel="stylesheet" href="../Style/FieldPageStyle.css">
+
+</head>
+<body>
+    <h1> Create New Public Chat </h1>
+        <form action="newPublicServlet" method="post">
+            <h6> Chat Name* <input type="text" name="name" class="fieldArea"> </h6>
+            <h6> Chat Description <input type="text" name="description" class="fieldArea"> </h6>
+            <h6> Maximum Number of Members <input type="text" name="limit" class="fieldArea"> </h6>
+            <h6> Hashtags <input type="text" name="tags" class="fieldArea" value="#"> </h6>
+            <input type="submit" name="enterButton" value="Create" class="button">
+        </form>
+</body>
+</html>

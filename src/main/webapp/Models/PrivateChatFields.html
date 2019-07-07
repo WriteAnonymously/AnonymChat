@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Private Chat</title>
+    <link rel="stylesheet" href="../Style/FieldPageStyle.css">
+    <script type="text/javascript">
+        function addMembers(){
+            var numMembers = document.getElementById("numMembers").value;
+            var list = document.getElementById("memberList");
+            while(list.hasChildNodes()) {
+                list.removeChild(list.lastChild);
+            }
+            for (k=0; k<numMembers; k++) {
+                var h6 = document.createElement("h6");
+                h6.append(document.createTextNode("Member " + (k+1)));
+                var newMember = document.createElement("input");
+                newMember.type = "text";
+                newMember.class = "fieldArea";
+                newMember.name ="Member" + k;
+                newMember.classList.add("fieldArea");
+                h6.append(newMember);
+                list.appendChild(h6);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1> Create New Private Chat </h1>
+    <form action="newPrivateServlet" method="post">
+        <h6>Chat Name* <input type="text" name="name" class="fieldArea"></h6>
+        <h6>Chat Description <input type="text" name="description" class="fieldArea"></h6>
+        <h6>Number of Chat Members* <input type="text" name="numMembers" id="numMembers" class="fieldArea"></h6>
+        <a href="#" onclick="addMembers()">  Add Members </a>
+        <div id="memberList"> </div>
+        <input type="submit" name="enterButton" value="Create" class="button">
+    </form>
+</body>
+</html>

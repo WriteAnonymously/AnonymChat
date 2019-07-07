@@ -5,6 +5,7 @@ import Servlets.Encode_Decode.MessageDecoder;
 import Servlets.Encode_Decode.MessageEncoder;
 import Servlets.Encode_Decode.WebSocketMessage;
 
+import javax.servlet.ServletContext;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class ChatEndpoint {
     public void onError(Session session, Throwable t) {
         t.printStackTrace();
     }
+
 
 
     private void sendMessage(WebSocketMessage message) throws IOException, EncodeException {

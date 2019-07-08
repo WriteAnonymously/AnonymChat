@@ -5,7 +5,6 @@ import Classes.Message;
 import DB.MessageInfoDAO;
 import Servlets.Encode_Decode.MessageDecoder;
 import Servlets.Encode_Decode.MessageEncoder;
-import Servlets.Encode_Decode.WebSocketMessage;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -50,7 +49,7 @@ public class ChatEndpoint implements ServletContextListener {
     }
 
     @OnMessage
-    public void onMessage(Session session, WebSocketMessage message) throws IOException, EncodeException, SQLException {
+    public void onMessage(Session session, Message message) throws IOException, EncodeException, SQLException {
         sendMessage(message);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
         messageInfoDAO.addMessage(1, 3, message.getContent());
@@ -71,7 +70,7 @@ public class ChatEndpoint implements ServletContextListener {
 
 
 
-    private void sendMessage(WebSocketMessage message) throws IOException, EncodeException {
+    private void sendMessage(Message message) throws IOException, EncodeException {
         for (ChatEndpoint endpoint : endpoints) {
             endpoint.session.getBasicRemote().sendObject(message);
         }

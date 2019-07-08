@@ -57,7 +57,7 @@ public class MessageInfoDAO {
         while (rs.next()) {
             long userID = Long.parseLong(rs.getString("userid"));
             String content = rs.getString("content");
-            Date date = Date.valueOf(rs.getString("creation_date"));
+            String date = (rs.getString("creation_date"));
             Message curr = new Message(chatID, userID, content, date);
             msgs.add(curr);
         }

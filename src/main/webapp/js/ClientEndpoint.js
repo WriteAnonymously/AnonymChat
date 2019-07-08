@@ -16,8 +16,10 @@ function makeid(length) {
 
 socket.onopen = function (ev) {
     var message = JSON.stringify({
-        "content": "Hi server!",
-        "user" : userId
+        "chatId" : 1,
+        "userId" : userID,
+        "content": "Hii!",
+        "creationDate": "now"
     });
     socket.send(message);
     console.log("Connected");
@@ -28,7 +30,7 @@ socket.onmessage = function (ev) {
     console.log('message from server is :', ev.data.toString());
     var para = document.createElement("P");
     var message = JSON.parse(ev.data);
-    var t = document.createTextNode(userName +":"+ message.content + "("+message.user+")");
+    var t = document.createTextNode(userName +":"+ message.content + "("+message.creationDate+")");
     para.appendChild(t);
     document.getElementById("messages").appendChild(para);
 };
@@ -37,8 +39,10 @@ function sendMessage(){
    // var newMessage = document.getElementById("inp").value;
     //console.log(newMessage);
     var message = JSON.stringify({
-        "content": "new Message",
-        "user" : userID
+        "chatId" : 1,
+        "userId" : userID,
+        "content": "message to server!",
+        "creationDate": "now"
     });
     socket.send(message);
 }

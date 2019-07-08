@@ -8,10 +8,11 @@ import java.util.Date;
  */
 public class Message {
       private long chatId, userId;
-      private String content;
-      private Date creationDate;
+      private String content, creationDate;
 
-    public Message(long chatId, long userId, String content, Date creationDate){
+    public Message(){}
+
+    public Message(long chatId, long userId, String content, String creationDate){
         this.chatId = chatId;
         this.userId = userId;
         this.content = content;
@@ -19,6 +20,18 @@ public class Message {
     }
     public void setContent(String content){
         this.content = content;
+    }
+
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public long getChatId(){
@@ -33,7 +46,7 @@ public class Message {
         return content;
     }
 
-    public Date getCreationDate(){
+    public String getCreationDate(){
         return creationDate;
     }
 }

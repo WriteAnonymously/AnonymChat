@@ -1,5 +1,6 @@
 package Servlets.Encode_Decode;
 
+import Classes.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -10,20 +11,18 @@ import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 import java.io.IOException;
 
-public class MessageDecoder implements Decoder.Text<WebSocketMessage> {
-    private static Gson gson = new Gson();
+public class MessageDecoder implements Decoder.Text<Message> {
 
-    public WebSocketMessage decode(String s) throws DecodeException {
+    public Message decode(String s) throws DecodeException {
         ObjectMapper mapper = new ObjectMapper();
-        WebSocketMessage message = new WebSocketMessage("Not received", 1);
+        Message message = new Message(1, 1, "Not received", "now");
 
         try {
-            message = mapper.readValue(s, WebSocketMessage.class);
-          //  System.out.println(message.getContent()+"----Decoded");
+            message = mapper.readValue(s, Message.class);
+             System.out.println(message.getContent()+"----Decoded");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return message;
     }
 

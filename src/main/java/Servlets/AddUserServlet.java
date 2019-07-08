@@ -27,13 +27,13 @@ public class AddUserServlet extends HttpServlet {
             e.printStackTrace();
         }
         // generating username
-        if(username == null){
-            try {
-                username = dao.generateName(chatID);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+//        if(username == null){
+//            try {
+//                username = dao.generateName(chatID);
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
         // insert into DB
         try {
             long id = dao.addUser(chatID, username);

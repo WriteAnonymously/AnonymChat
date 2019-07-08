@@ -29,22 +29,31 @@ public class ChatEndpoint implements ServletContextListener {
      //   System.out.println("Socket part");
     }
 
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+
+    }
+
     private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
     private Session session;
 
     @OnOpen
-    public void onOpen(Session session) throws IOException, EncodeException {
+    public void onOpen(Session session) throws IOException, EncodeException, SQLException {
         this.session = session;
         endpoints.add(this);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
-      //  List<Message> list = messageInfoDAO.getLastNMessages();
+       System.out.println("Hellooo");
+        List<Message> list = messageInfoDAO.getLastNMessages(10, 3);
+        System.out.println("listsize:"+list.size());
+        for (int i = 0; i < list.size(); i++){
+            System.out.println(list.get(i).getContent());
+        }
     }
 
     @OnMessage
     public void onMessage(Session session, WebSocketMessage message) throws IOException, EncodeException, SQLException {
         sendMessage(message);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
-        messageInfoDAO.addMessage(1, 1, message.getContent());
+        messageInfoDAO.addMessage(1, 3, message.getContent());
     //    System.out.println("New message in Server" + message.getContent());
     }
 

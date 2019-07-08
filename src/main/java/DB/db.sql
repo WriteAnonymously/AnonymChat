@@ -32,3 +32,8 @@ CREATE TABLE messages(
     FOREIGN KEY (chatID) REFERENCES chats(id),
     FOREIGN KEY (userID) REFERENCES users(id)
 );
+
+CREATE TABLE usernames(
+    id bigint primary key auto_increment,
+    username VARCHAR(100)
+);

@@ -51,8 +51,8 @@ public class MessageInfoDAO {
     public List<Message> getLastNMessages(int n, long chatID) throws SQLException {
         List<Message> msgs = new ArrayList<Message>();
         Statement st = con.createStatement();
-        String s = "SELECT TOP " + n + " userid, content, creation_date FROM "
-                + DBInfo.MESSAGE_TABLE + " WHERE id = " + chatID + " ORDER BY creation_date DESC";
+        String s = "SELECT userid, content, creation_date FROM "
+                + DBInfo.MESSAGE_TABLE + " WHERE chatid = " + chatID + " ORDER BY creation_date DESC LIMIT " + n + ";";
         System.out.println(s);
         ResultSet rs = st.executeQuery(s);
         while (rs.next()) {

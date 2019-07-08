@@ -86,4 +86,5 @@ public class UserInfoDAO {
         Pair pair = new Pair(currNumber,maxNumber);
         return pair;
     }
+
 }

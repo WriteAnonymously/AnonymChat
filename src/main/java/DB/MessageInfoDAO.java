@@ -25,6 +25,7 @@ public class MessageInfoDAO {
     public void addMessage(long userID, long chatID, String content) throws SQLException{
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.MESSAGE_TABLE
                 + " (chatid, userid, content, creation_date) value "
+
                 + "(?, ?, ? , sysdate());");
 
             statement.setLong(1, chatID);

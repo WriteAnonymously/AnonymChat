@@ -33,11 +33,14 @@ public class ChatEndpoint implements ServletContextListener {
     private Session session;
 
     @OnOpen
-    public void onOpen(Session session) throws IOException, EncodeException {
+    public void onOpen(Session session) throws IOException, EncodeException, SQLException {
         this.session = session;
         endpoints.add(this);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
-      //  List<Message> list = messageInfoDAO.getLastNMessages();
+        List<Message> list = messageInfoDAO.getLastNMessages(10, 0);
+        for (int i = 0; i < list.size(); i++){
+            System.out.println(list.get(i).getContent());
+        }
     }
 
     @OnMessage

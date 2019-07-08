@@ -7,7 +7,9 @@
 
 *.iml
 .idea/*
-DBInfo.java
+
+
+src/main/java/DB/DBInfo.java
 
 # User-specific stuff
 .idea/**/workspace.xml

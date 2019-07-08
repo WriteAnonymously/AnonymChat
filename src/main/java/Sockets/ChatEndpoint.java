@@ -41,12 +41,8 @@ public class ChatEndpoint implements ServletContextListener {
         this.session = session;
         endpoints.add(this);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
-       System.out.println("Hellooo");
+        System.out.println("New Connection:");
         List<Message> list = messageInfoDAO.getLastNMessages(100, 3);
-        System.out.println("listsize:"+list.size());
-        for (int i = 0; i < list.size(); i++){
-            System.out.println(list.get(i).getContent());
-        }
         sendMessage(list);
     }
 

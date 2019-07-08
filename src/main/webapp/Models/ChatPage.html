@@ -57,10 +57,13 @@
 <body>
   <div class="chat-name">Chat Name</div>
   <div class="description">Description</div>
-  <div class="messages"></div>
+  <div class="messages" id = "messages">
+
+  </div>
   <form class="message-form" onsubmit="return false;">
-    <input class="message-form__input" placeholder="Type a message.." type="text"/>
-    <input class="message-form__button" value="Send" type="submit"/>
+    <input class="message-form__input"  id = "textInput" placeholder="Type a message.." type="text"/>
+    <input class ="message-form__button" id = "sendButton" value="Send" type="submit"/>
   </form>
 </body>
+  <script src ="/js/ClientEndpoint.js"></script>
 </html>

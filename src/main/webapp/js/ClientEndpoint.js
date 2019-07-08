@@ -25,21 +25,32 @@ socket.onopen = function (ev) {
     console.log("Connected");
 };
 
+document.getElementById("sendButton").addEventListener("click", function (ev) {
+    var input = document.getElementById("textInput").value;
+    sendMessage(input);
+});
+
 
 /*
-    var t = document.createTextNode(userName +":"+ message.content + "("+message.creationDate+")");
-    para.appendChild(t);
-*
+
+function getRandomColor() {
+ return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+}
 * */
 
 function displayMessage(message){
-
+    var para = document.createElement("P");
+    var messagesDiv = document.getElementById("messages");
+    messagesDiv.appendChild(para);
+    var t = document.createTextNode(userName +":"+ message.content + "("+message.creationDate+")");
+    para.appendChild(t);
 }
 
 function displayOldMessages(oldMessages){
     var parsedJSON = JSON.parse(oldMessages);
     for (var i=0;i<parsedJSON.length;i++) {
-        console.log(parsedJSON[i].content);
+       displayMessage(parsedJSON[i]);
+    //   console.log(parsedJSON[i].content);
     }
 }
 
@@ -49,25 +60,22 @@ socket.onmessage = function (ev) {
     console.log('message from server is :', messageReceived);
     if (type === 'm'){
         console.log('received message');
-        displayMessage(messageReceived);
+        var message = JSON.parse(messageReceived);
+        displayMessage(message);
     } else if (type === 'l'){
         console.log('recieved list');
         displayOldMessages(messageReceived);
     }
-    var para = document.createElement("P");
-  //  var message = JSON.parse(ev.data);
- //   document.getElementById("messages").appendChild(para);
 };
 
-function sendMessage(){
-   // var newMessage = document.getElementById("inp").value;
-    //console.log(newMessage);
+function sendMessage(input){
     var message = JSON.stringify({
         "chatId" : 1,
         "userId" : userID,
-        "content": "message to server!",
+        "content": input,
         "creationDate": "now"
     });
     socket.send(message);
+
 }
 

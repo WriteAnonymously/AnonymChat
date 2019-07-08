@@ -41,7 +41,9 @@ public class ChatEndpoint implements ServletContextListener {
         this.session = session;
         endpoints.add(this);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
-        List<Message> list = messageInfoDAO.getLastNMessages(10, 0);
+       System.out.println("Hellooo");
+        List<Message> list = messageInfoDAO.getLastNMessages(10, 3);
+        System.out.println("listsize:"+list.size());
         for (int i = 0; i < list.size(); i++){
             System.out.println(list.get(i).getContent());
         }
@@ -51,7 +53,7 @@ public class ChatEndpoint implements ServletContextListener {
     public void onMessage(Session session, WebSocketMessage message) throws IOException, EncodeException, SQLException {
         sendMessage(message);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
-        messageInfoDAO.addMessage(1, 1, message.getContent());
+        messageInfoDAO.addMessage(1, 3, message.getContent());
     //    System.out.println("New message in Server" + message.getContent());
     }
 

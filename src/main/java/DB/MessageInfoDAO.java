@@ -51,7 +51,7 @@ public class MessageInfoDAO {
         List<Message> msgs = new ArrayList<Message>();
         Statement st = con.createStatement();
         String s = "SELECT userid, content, creation_date FROM "
-                + DBInfo.MESSAGE_TABLE + " WHERE id = " + chatID + " ORDER BY creation_date DESC LIMIT " + n + ";";
+                + DBInfo.MESSAGE_TABLE + " WHERE chatid = " + chatID + " ORDER BY creation_date DESC LIMIT " + n + ";";
         System.out.println(s);
         ResultSet rs = st.executeQuery(s);
         while (rs.next()) {

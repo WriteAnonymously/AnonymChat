@@ -7,10 +7,10 @@ public class DBInfo {
     public static final String CHAT_TABLE = "chats";
     public static final String MESSAGE_TABLE = "messages";
     public static final String MEMBER_TABLE = "messages";
-    public static final String DB_PATH = "/home/enqidu/CS/Chat/src/main/java/DB/db.sql";
+    public static final String DB_PATH = "src/main/java/DB/db.sql";
 
     public static final String MYSQL_USERNAME = "root";
-    public static final String MYSQL_PASSWORD = "root";
+    public static final String MYSQL_PASSWORD = "RootRoot123";
     public static final String MYSQL_DATABASE_SERVER = "localhost:3306/";
     public static final String DRIVER = "com.mysql.jdbc.Driver";
 }

@@ -7,6 +7,7 @@
 
 *.iml
 .idea/*
+DBInfo.java
 
 # User-specific stuff
 .idea/**/workspace.xml

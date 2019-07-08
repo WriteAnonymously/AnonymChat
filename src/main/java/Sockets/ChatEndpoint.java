@@ -29,6 +29,10 @@ public class ChatEndpoint implements ServletContextListener {
      //   System.out.println("Socket part");
     }
 
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+
+    }
+
     private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
     private Session session;
 

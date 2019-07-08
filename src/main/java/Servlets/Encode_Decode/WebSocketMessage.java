@@ -1,19 +1,20 @@
 package Servlets.Encode_Decode;
 
 public class WebSocketMessage {
-    private String content, user;
+    private String content;
+    private int user;
 
     public WebSocketMessage(){}
-    public WebSocketMessage(String content, String user){
+    public WebSocketMessage(String content, int user){
         this.content = content;
         this.user = user;
     }
 
-    public String getUser() {
+    public int getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(int user) {
         this.user = user;
     }
 

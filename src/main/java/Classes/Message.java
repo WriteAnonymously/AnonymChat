@@ -11,7 +11,6 @@ public class Message {
       private String content;
       private Date creationDate;
 
-
     public Message(long chatId, long userId, String content, Date creationDate){
         this.chatId = chatId;
         this.userId = userId;

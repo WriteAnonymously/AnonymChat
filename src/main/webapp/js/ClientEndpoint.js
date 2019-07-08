@@ -1,7 +1,8 @@
 
 var socket = new WebSocket('ws://localhost:8080/The_Chat');
 
-var userId = makeid(10);
+var userName = makeid(10);
+var userID = Math.floor(Math.random() * Math.floor(100));
 
 function makeid(length) {
         var result           = '';
@@ -27,7 +28,7 @@ socket.onmessage = function (ev) {
     console.log('message from server is :', ev.data.toString());
     var para = document.createElement("P");
     var message = JSON.parse(ev.data);
-    var t = document.createTextNode(message.user +":"+ message.content);
+    var t = document.createTextNode(userName +":"+ message.content + "("+message.user+")");
     para.appendChild(t);
     document.getElementById("messages").appendChild(para);
 };
@@ -37,7 +38,7 @@ function sendMessage(){
     //console.log(newMessage);
     var message = JSON.stringify({
         "content": "new Message",
-        "user" : userId
+        "user" : userID
     });
     socket.send(message);
 }

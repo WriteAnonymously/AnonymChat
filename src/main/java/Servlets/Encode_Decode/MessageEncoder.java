@@ -14,7 +14,7 @@ public class MessageEncoder implements Encoder.Text<WebSocketMessage> {
 
     public String encode(WebSocketMessage message) throws EncodeException {
         String json = gson.toJson(message);
-        System.out.println(json+"--- Encoded");
+   //     System.out.println(json+"--- Encoded");
         return json;
     }
 

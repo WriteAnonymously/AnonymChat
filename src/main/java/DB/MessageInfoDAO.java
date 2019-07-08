@@ -14,6 +14,14 @@ public class MessageInfoDAO {
         this.con = con;
     }
 
+    /**
+     * adds new message in database with message Object
+     *
+     * @param message object
+     * */
+    public void addMessage(Message message) throws SQLException {
+        addMessage(message.getUserId(), message.getChatId(), message.getContent());
+    }
 
     /**
      * adds new message in database with info provided

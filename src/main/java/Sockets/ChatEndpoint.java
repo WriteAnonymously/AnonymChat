@@ -5,6 +5,7 @@ import Classes.Message;
 import DB.MessageInfoDAO;
 import Servlets.Encode_Decode.MessageDecoder;
 import Servlets.Encode_Decode.MessageEncoder;
+import Servlets.Encode_Decode.OldMessageEncoder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -19,7 +20,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @WebListener
-@ServerEndpoint(value = "/The_Chat", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
+@ServerEndpoint(value = "/The_Chat", decoders = MessageDecoder.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
 public class ChatEndpoint implements ServletContextListener {
     private static ServletContext servletContext;
 
@@ -41,18 +42,21 @@ public class ChatEndpoint implements ServletContextListener {
         endpoints.add(this);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
        System.out.println("Hellooo");
-        List<Message> list = messageInfoDAO.getLastNMessages(10, 3);
+        List<Message> list = messageInfoDAO.getLastNMessages(100, 3);
         System.out.println("listsize:"+list.size());
         for (int i = 0; i < list.size(); i++){
             System.out.println(list.get(i).getContent());
         }
+        sendMessage(list);
     }
 
     @OnMessage
     public void onMessage(Session session, Message message) throws IOException, EncodeException, SQLException {
         sendMessage(message);
         MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
-        messageInfoDAO.addMessage(1, 3, message.getContent());
+        message.setChatId(3);
+        message.setUserId(1);
+        messageInfoDAO.addMessage(message);
     //    System.out.println("New message in Server" + message.getContent());
     }
 
@@ -70,7 +74,7 @@ public class ChatEndpoint implements ServletContextListener {
 
 
 
-    private void sendMessage(Message message) throws IOException, EncodeException {
+    private void sendMessage(Object message) throws IOException, EncodeException {
         for (ChatEndpoint endpoint : endpoints) {
             endpoint.session.getBasicRemote().sendObject(message);
         }

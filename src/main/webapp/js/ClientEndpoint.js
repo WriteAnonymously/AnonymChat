@@ -26,13 +26,37 @@ socket.onopen = function (ev) {
 };
 
 
-socket.onmessage = function (ev) {
-    console.log('message from server is :', ev.data.toString());
-    var para = document.createElement("P");
-    var message = JSON.parse(ev.data);
+/*
     var t = document.createTextNode(userName +":"+ message.content + "("+message.creationDate+")");
     para.appendChild(t);
-    document.getElementById("messages").appendChild(para);
+*
+* */
+
+function displayMessage(message){
+
+}
+
+function displayOldMessages(oldMessages){
+    var parsedJSON = JSON.parse(oldMessages);
+    for (var i=0;i<parsedJSON.length;i++) {
+        console.log(parsedJSON[i].content);
+    }
+}
+
+socket.onmessage = function (ev) {
+    var type = ev.data.toString().charAt(0);
+    var messageReceived = ev.data.toString().substring(1);
+    console.log('message from server is :', messageReceived);
+    if (type === 'm'){
+        console.log('received message');
+        displayMessage(messageReceived);
+    } else if (type === 'l'){
+        console.log('recieved list');
+        displayOldMessages(messageReceived);
+    }
+    var para = document.createElement("P");
+  //  var message = JSON.parse(ev.data);
+ //   document.getElementById("messages").appendChild(para);
 };
 
 function sendMessage(){

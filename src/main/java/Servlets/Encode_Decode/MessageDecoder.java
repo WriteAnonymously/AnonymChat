@@ -19,7 +19,7 @@ public class MessageDecoder implements Decoder.Text<Message> {
 
         try {
             message = mapper.readValue(s, Message.class);
-             System.out.println(message.getContent()+"----Decoded");
+      //       System.out.println(message.getContent()+"----Decoded");
         } catch (IOException e) {
             e.printStackTrace();
         }

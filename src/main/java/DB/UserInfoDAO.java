@@ -5,9 +5,28 @@ import java.sql.*;
 public class UserInfoDAO {
     private Connection con;
     public static final String ATTRIBUTE = "userInfo";
-
     public UserInfoDAO(Connection con){
         this.con = con;
+    }
+
+    private class Pair{
+        private int key,value;
+        public Pair(int key, int value){
+            this.key = key;
+            this.value = value;
+        }
+        public int  getKey(){
+            return key;
+        }
+        public int getValue(){
+            return value;
+        }
+        public void setKey(int nKey){
+            key = nKey;
+        }
+        public void setValue(int nValue ){
+            value = nValue;
+        }
     }
 
     /**
@@ -18,6 +37,8 @@ public class UserInfoDAO {
      * @throws SQLException throws exception if occur any error
      * */
 
+    //აქ იმას ჩავამატებ, რომ ჩატის წევრების მაქსიმალურ რაოდენობას არ გადასცდეს - ნიკოლოზ ჭურღულია
+    // error -1 - რაღაც ვერ ჩაემატა საკაიფოდ
     public long addUser(long chatID, String name) throws SQLException {
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.USERS_TABLE
                         + " (chatid, username, creation_date) value "
@@ -51,5 +72,18 @@ public class UserInfoDAO {
             tu ar aris, daabrunebs. tu arada axlidan cdis.
          */
         return "wvera";
+    }
+
+    public Pair getCurrAndMax(long chatID) throws  SQLException{
+        Statement getAllowed = con.createStatement();
+        String allowed = "Select max_users_number from chats where id = " + chatID;
+        ResultSet st = getAllowed.executeQuery(allowed);
+        int maxNumber = st.getInt("max_users_number");
+        Statement cntUsers = con.createStatement();
+        String countUsers = "Select COUNT(id) as cnt from users where chatid = " + chatID;
+        ResultSet stcnt = cntUsers.executeQuery(countUsers);
+        int currNumber = st.getInt("cnt");
+        Pair pair = new Pair(currNumber,maxNumber);
+        return pair;
     }
 }

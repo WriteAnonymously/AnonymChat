@@ -42,7 +42,7 @@ function displayMessage(message){
     var para = document.createElement("P");
     var messagesDiv = document.getElementById("messages");
     messagesDiv.appendChild(para);
-    var t = document.createTextNode(userName +":"+ message.content + "("+message.creationDate+")");
+    var t = document.createTextNode(message.userId +":"+ message.content + "("+message.creationDate+")");
     para.appendChild(t);
 }
 
@@ -71,7 +71,7 @@ socket.onmessage = function (ev) {
 function sendMessage(input){
     var message = JSON.stringify({
         "chatId" : 1,
-        "userId" : userID,
+        "userId" : 1,
         "content": input,
         "creationDate": "now"
     });

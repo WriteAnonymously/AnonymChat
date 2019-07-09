@@ -48,7 +48,7 @@ public class ChatEndpoint implements ServletContextListener {
         messageInfoDAO = new MessageInfoDAO(con);
         System.out.println("New Connection:");
         List<Message> list = messageInfoDAO.getLastNMessages(100, 3);
-        sendMessage(list);
+        sendMessageUser(list, session);
         con.close();
     }
 
@@ -78,6 +78,9 @@ public class ChatEndpoint implements ServletContextListener {
     }
 
 
+    private void sendMessageUser(Object message, Session session) throws IOException, EncodeException {
+        session.getBasicRemote().sendObject(message);
+    }
 
     private void sendMessage(Object message) throws IOException, EncodeException {
         for (ChatEndpoint endpoint : endpoints) {

@@ -33,7 +33,7 @@ public class ConnectionPool extends MysqlDataSource {
             Statement statement = con.createStatement();
             ResultSet set = statement.executeQuery("select * from " + DBInfo.CHAT_TABLE);
             while (set.next()){
-                System.out.println(set.getString(1));
+              //  System.out.println(set.getString(1));
             }
         } catch (SQLException e) {
             e.printStackTrace();

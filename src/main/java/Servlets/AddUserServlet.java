@@ -19,8 +19,13 @@ import java.sql.SQLException;
 @WebServlet(name = "AddUserServlet", urlPatterns = {"/AddUserServlet"})
 public class AddUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters
-        String ID = request.getParameter("chatID");
+        System.out.println("Helloooo");
+        String ID = request.getParameter("chatId");
         String username = "Shota";
         UserInfoDAO dao = null;
         MessageInfoDAO messageInfoDAO = null;
@@ -39,6 +44,7 @@ public class AddUserServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+        System.out.println("In AdduSer, chatId = " + chatID);
         // generating username
 //        if(username == null){
 //            try {
@@ -50,6 +56,7 @@ public class AddUserServlet extends HttpServlet {
         // insert into DB
         try {
             long id = dao.addUser(chatID, username);
+            System.out.println("new user id = " + id);
             HttpSession session = request.getSession();
             session.setAttribute("id", id);
         } catch (SQLException e) {
@@ -62,9 +69,5 @@ public class AddUserServlet extends HttpServlet {
             e.printStackTrace();
         }
         dispatch.forward(request, response);
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
     }
 }

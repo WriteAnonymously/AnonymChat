@@ -2,6 +2,7 @@ package Sockets;
 
 
 import Classes.Message;
+import DB.ConnectionPool;
 import DB.MessageInfoDAO;
 import Servlets.Encode_Decode.MessageDecoder;
 import Servlets.Encode_Decode.MessageEncoder;
@@ -14,6 +15,7 @@ import javax.servlet.annotation.WebListener;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -40,16 +42,23 @@ public class ChatEndpoint implements ServletContextListener {
     public void onOpen(Session session) throws IOException, EncodeException, SQLException {
         this.session = session;
         endpoints.add(this);
-        MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
+        MessageInfoDAO messageInfoDAO = null;
+        ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
+        Connection con = connectionPool.getConnection();
+        messageInfoDAO = new MessageInfoDAO(con);
         System.out.println("New Connection:");
         List<Message> list = messageInfoDAO.getLastNMessages(100, 3);
         sendMessage(list);
+        con.close();
     }
 
     @OnMessage
     public void onMessage(Session session, Message message) throws IOException, EncodeException, SQLException {
         sendMessage(message);
-        MessageInfoDAO messageInfoDAO = (MessageInfoDAO)servletContext.getAttribute(MessageInfoDAO.ATTRIBUTE);
+        MessageInfoDAO messageInfoDAO = null;
+        ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
+        Connection con = connectionPool.getConnection();
+        messageInfoDAO = new MessageInfoDAO(con);
         message.setChatId(3);
         message.setUserId(1);
         messageInfoDAO.addMessage(message);

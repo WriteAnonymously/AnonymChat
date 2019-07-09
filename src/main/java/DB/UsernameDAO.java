@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class UsernameDAO {
     private Connection con;
-    public static final String ATTRIBUTE = "usernameInfo";
+    public static final String ATTRIBUTE = "usernameInfoDAO";
 
     public UsernameDAO(Connection con){
         this.con = con;
@@ -24,7 +24,10 @@ public class UsernameDAO {
                 + "(?);");
         statement.setString(1, name);
         statement.executeUpdate();
+        statement.close();
     }
+
+
 
     /**
      * gets n random usernames
@@ -41,6 +44,7 @@ public class UsernameDAO {
             String name = set.getString("username");
             usernames.add(name);
         }
+        statement.close();
         return usernames;
     }
 

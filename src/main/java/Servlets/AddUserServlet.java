@@ -1,5 +1,7 @@
 package Servlets;
 
+import DB.ConnectionPool;
+import DB.MessageInfoDAO;
 import DB.UserInfoDAO;
 
 import javax.servlet.RequestDispatcher;
@@ -11,13 +13,23 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet(name = "AddUserServlet", urlPatterns = {"/AddUserServlet"})
 public class AddUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters
-        UserInfoDAO dao = (UserInfoDAO) getServletContext().getAttribute(UserInfoDAO.ATTRIBUTE);
+        UserInfoDAO dao = null;
+        MessageInfoDAO messageInfoDAO = null;
+        ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
+        Connection con = null;
+        try {
+            con = connectionPool.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        dao = new UserInfoDAO(con);
         String ID = request.getParameter("chatID");
         String username = request.getParameter("username");
         long chatID = -1;
@@ -43,6 +55,11 @@ public class AddUserServlet extends HttpServlet {
             e.printStackTrace();
         }
         RequestDispatcher dispatch = request.getRequestDispatcher("/Models/Homepage.html");
+        try {
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         dispatch.forward(request, response);
     }
 

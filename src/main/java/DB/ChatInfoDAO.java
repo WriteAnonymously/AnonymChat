@@ -33,27 +33,22 @@ public class ChatInfoDAO {
         statement.setString(2, status);
         statement.setString(3, description);
         statement.setInt(4, maxUsersAllowed);
-        synchronized (connection) {
-            statement.executeUpdate();
-            return getLastInsertedID();
-        }
+        statement.executeUpdate();
+        statement.close();
+        return getLastInsertedID();
     }
 
 
     /**
      * finds the last inserted id
      * */
-    private long getLastInsertedID() {
-        try {
-            Statement st = connection.createStatement();
-            String q = "select LAST_INSERT_ID();";
-            ResultSet set = st.executeQuery(q);
-            set.last();
-            return Long.parseLong(set.getString(1));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
+    private long getLastInsertedID() throws SQLException {
+        Statement st = connection.createStatement();
+        String q = "select LAST_INSERT_ID();";
+        ResultSet set = st.executeQuery(q);
+        set.last();
+        st.close();
+        return Long.parseLong(set.getString(1));
     }
 
     /**
@@ -79,6 +74,7 @@ public class ChatInfoDAO {
             PublicChat chat = new PublicChat(id, name, description, maxNumber, date);
             topChatsSet.add(chat);
         }
+        statement.close();
         return topChatsSet;
     }
 
@@ -97,6 +93,7 @@ public class ChatInfoDAO {
         while (set.next()){
             userNames.add(set.getString(1));
         }
+        statement.close();
         return userNames;
     }
 }

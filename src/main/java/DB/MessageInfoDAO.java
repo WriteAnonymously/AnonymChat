@@ -37,16 +37,11 @@ public class MessageInfoDAO {
                 + "(?, ?, ? , sysdate());");
 
             statement.setLong(1, chatID);
-
             statement.setLong(2, userID);
-
             statement.setString(3, content);
-
             System.out.println(statement);
             statement.executeUpdate();
-
-
-
+            statement.close();
     }
 
     /**
@@ -70,6 +65,7 @@ public class MessageInfoDAO {
             Message curr = new Message(chatID, userID, content, date);
             msgs.add(curr);
         }
+        st.close();
         return msgs;
     }
 

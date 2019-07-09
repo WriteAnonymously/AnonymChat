@@ -1,6 +1,8 @@
 package Servlets;
 
 import DB.ChatInfoDAO;
+import DB.ConnectionPool;
+import DB.MessageInfoDAO;
 import DB.PrepareDB;
 
 import javax.servlet.RequestDispatcher;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 
@@ -28,7 +31,16 @@ public class PublicChatServlet extends HttpServlet {
             e.printStackTrace();
         }
         // insert into DB
-        ChatInfoDAO dao = (ChatInfoDAO) getServletContext().getAttribute(ChatInfoDAO.ATTRIBUTE);
+        ChatInfoDAO dao = null;
+        MessageInfoDAO messageInfoDAO = null;
+        ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
+        Connection con = null;
+        try {
+            con = connectionPool.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        dao = new ChatInfoDAO(con);
         try {
             long id = dao.addChat(name, ChatInfoDAO.PUBLIC, description, lim);
             request.setAttribute("id", id);
@@ -37,6 +49,11 @@ public class PublicChatServlet extends HttpServlet {
         }
         // forward to another page
         RequestDispatcher dispatch = request.getRequestDispatcher("/Models/Homepage.html");
+        try {
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         dispatch.forward(request, response);
     }
 

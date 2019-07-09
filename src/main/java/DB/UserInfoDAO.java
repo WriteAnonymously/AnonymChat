@@ -5,28 +5,9 @@ import java.sql.*;
 public class UserInfoDAO {
     private Connection con;
     public static final String ATTRIBUTE = "userInfo";
+
     public UserInfoDAO(Connection con){
         this.con = con;
-    }
-
-    private class Pair{
-        private int key,value;
-        public Pair(int key, int value){
-            this.key = key;
-            this.value = value;
-        }
-        public int  getKey(){
-            return key;
-        }
-        public int getValue(){
-            return value;
-        }
-        public void setKey(int nKey){
-            key = nKey;
-        }
-        public void setValue(int nValue ){
-            value = nValue;
-        }
     }
 
     /**
@@ -34,11 +15,9 @@ public class UserInfoDAO {
      *
      * @param chatID id of chat where user to be added
      * @param name name of user to add
+     * @return id of added user
      * @throws SQLException throws exception if occur any error
      * */
-
-    //აქ იმას ჩავამატებ, რომ ჩატის წევრების მაქსიმალურ რაოდენობას არ გადასცდეს - ნიკოლოზ ჭურღულია
-    // error -1 - რაღაც ვერ ჩაემატა საკაიფოდ
     public long addUser(long chatID, String name) throws SQLException {
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.USERS_TABLE
                         + " (chatid, username, creation_date) value "
@@ -47,44 +26,44 @@ public class UserInfoDAO {
         statement.setString(2, name);
         System.out.println(statement.toString());
         statement.executeUpdate();
-        try {
-            Statement st = con.createStatement();
-            String q = "select LAST_INSERT_ID();";
-            ResultSet set = st.executeQuery(q);
-            set.last();
-            return Long.parseLong(set.getString(1));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        Statement st = con.createStatement();
+        String q = "select LAST_INSERT_ID();";
+        ResultSet set = st.executeQuery(q);
+        set.last();
+        return Long.parseLong(set.getString(1));
     }
 
     /**
-     * generates a random username
+     * finds the number of users in chat and maximal number of users allowed
      *
-     * @param chatID id of chat where user to be added
-     * @throws SQLException throws exception if occur any error
+     * @return Pair of the values where
      * */
-    public String generateName(long chatID) throws SQLException{
-        /*
-            gvchirdeba username-ebis table.
-            randomad airchevs usernames am tabledan da mere amowmebs mocemul chatshi aris tu ara es username dakavebuli
-            tu ar aris, daabrunebs. tu arada axlidan cdis.
-         */
-        return "wvera";
-    }
-
     public Pair getCurrAndMax(long chatID) throws  SQLException{
         Statement getAllowed = con.createStatement();
-        String allowed = "Select max_users_number from chats where id = " + chatID;
+        String allowed = "Select max_users_number from " + DBInfo.CHAT_TABLE + " where id = " + chatID;
         ResultSet st = getAllowed.executeQuery(allowed);
         int maxNumber = st.getInt("max_users_number");
         Statement cntUsers = con.createStatement();
-        String countUsers = "Select COUNT(id) as cnt from users where chatid = " + chatID;
+        String countUsers = "Select COUNT(id) as cnt from " + DBInfo.USERS_TABLE + " where chatid = " + chatID;
         ResultSet stcnt = cntUsers.executeQuery(countUsers);
         int currNumber = st.getInt("cnt");
-        Pair pair = new Pair(currNumber,maxNumber);
+        Pair pair = new Pair(currNumber, maxNumber);
         return pair;
     }
 
+
+    /* the class for storing maximal and current number of chats */
+    public class Pair {
+        private int current, maximal;
+        public Pair(int current, int maximal){
+            this.current = current;
+            this.maximal = maximal;
+        }
+        public int  getCurrent(){
+            return current;
+        }
+        public int getMaximal(){
+            return maximal;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package DB;
 
 import Classes.Chat;
+import org.apache.commons.dbcp.BasicDataSource;
 
 import java.io.*;
 import java.sql.*;
@@ -42,7 +43,7 @@ public class PrepareDB {
         Statement statement = connection.createStatement();
         statement.executeUpdate("use anonym_chat_schema;");
 //        prepareStructure();
-
+        BasicDataSource pool = new BasicDataSource();
         return connection;
     }
     /*

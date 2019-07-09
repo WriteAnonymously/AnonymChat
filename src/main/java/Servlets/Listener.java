@@ -1,9 +1,6 @@
 package Servlets;
 
-import DB.ChatInfoDAO;
-import DB.MessageInfoDAO;
-import DB.PrepareDB;
-import DB.UserInfoDAO;
+import DB.*;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -30,19 +27,8 @@ public class Listener implements ServletContextListener,
          You can initialize servlet context related data here.
       */
       //  System.out.println("Starting initializing connection;");
-        try {
-            Connection con = PrepareDB.getInstance();
-            ChatInfoDAO chat = new ChatInfoDAO(con);
-            UserInfoDAO user = new UserInfoDAO(con);
-            MessageInfoDAO message = new MessageInfoDAO(con);
-            sce.getServletContext().setAttribute(ChatInfoDAO.ATTRIBUTE, chat);
-            sce.getServletContext().setAttribute(UserInfoDAO.ATTRIBUTE, user);
-            sce.getServletContext().setAttribute(MessageInfoDAO.ATTRIBUTE, message);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        ConnectionPool connectionPool = ConnectionPool.getInstance();
+        sce.getServletContext().setAttribute(ConnectionPool.ATTRIBUTE, connectionPool);
      //   System.out.println("done initializing connection;");
     }
 

@@ -20,6 +20,8 @@ import java.sql.SQLException;
 public class AddUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters
+        String ID = request.getParameter("chatID");
+        String username = "Shota";
         UserInfoDAO dao = null;
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
@@ -30,8 +32,7 @@ public class AddUserServlet extends HttpServlet {
             e.printStackTrace();
         }
         dao = new UserInfoDAO(con);
-        String ID = request.getParameter("chatID");
-        String username = request.getParameter("username");
+
         long chatID = -1;
         try{
             chatID = Long.parseLong(ID);
@@ -54,7 +55,7 @@ public class AddUserServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        RequestDispatcher dispatch = request.getRequestDispatcher("/Models/Homepage.html");
+        RequestDispatcher dispatch = request.getRequestDispatcher("/Models/ChatPage.html");
         try {
             con.close();
         } catch (SQLException e) {

@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @WebListener
-@ServerEndpoint(value = "/The_Chat", decoders = MessageDecoder.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
+@ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, decoders = MessageDecoder.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
 public class ChatEndpoint implements ServletContextListener {
     private static ServletContext servletContext;
 

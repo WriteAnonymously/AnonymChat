@@ -53,6 +53,7 @@ public class Listener implements ServletContextListener,
     // -------------------------------------------------------
     public void sessionCreated(HttpSessionEvent se) {
         /* Session is created. */
+        System.out.println("Session created");
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {

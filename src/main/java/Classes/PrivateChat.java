@@ -1,11 +1,12 @@
 package Classes;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class PrivateChat extends Chat {
     private ArrayList<String> members;
 
-    public PrivateChat(long ID, String name, String description, int numMembers, Date creationDate) {
+    public PrivateChat(long ID, String name, String description, int numMembers, String creationDate) {
         super(ID, name, description, numMembers, creationDate);
     }
 

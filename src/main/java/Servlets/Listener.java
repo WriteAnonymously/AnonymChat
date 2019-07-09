@@ -29,6 +29,15 @@ public class Listener implements ServletContextListener,
       //  System.out.println("Starting initializing connection;");
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         sce.getServletContext().setAttribute(ConnectionPool.ATTRIBUTE, connectionPool);
+        Connection con = null;
+        try {
+            con = connectionPool.getConnection();
+            System.out.println("daemata");
+            PrepareDB.addInfo(con);
+            System.out.println("ukve Shig aris");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
      //   System.out.println("done initializing connection;");
     }
 

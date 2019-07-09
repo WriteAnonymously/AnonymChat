@@ -1,6 +1,7 @@
 package DB;
 
 import Classes.Chat;
+import Classes.Message;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import java.io.*;
@@ -37,7 +38,7 @@ public class PrepareDB {
      *
      * @return Connection to database
      * */
-    private static Connection getConnect() throws ClassNotFoundException, SQLException {
+    public static Connection getConnect() throws ClassNotFoundException, SQLException {
         Class.forName(DB.DBInfo.DRIVER);
         connection = DriverManager.getConnection("jdbc:mysql://"+ DB.DBInfo.MYSQL_DATABASE_SERVER, DB.DBInfo.MYSQL_USERNAME, DB.DBInfo.MYSQL_PASSWORD);
         Statement statement = connection.createStatement();
@@ -92,5 +93,23 @@ public class PrepareDB {
             }
         }
         return connection;
+    }
+
+    public static void addInfo(Connection con) throws SQLException {
+        UserInfoDAO user = new UserInfoDAO(con);
+        MessageInfoDAO messageInfoDAO = new MessageInfoDAO(con);
+        ChatInfoDAO chat = new ChatInfoDAO(con);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        user.addUser(1, "natela");
+        user.addUser(1, "natela");
+        user.addUser(1, "natela");
+        user.addUser(1, "natela");
+        messageInfoDAO.addMessage(1, 1, "salami gagartyi kalami");
+        messageInfoDAO.addMessage(1, 1, "salami gagartyi kalami");
+        messageInfoDAO.addMessage(1, 1, "salami");
+        messageInfoDAO.addMessage(1, 1, "salami");
     }
 }

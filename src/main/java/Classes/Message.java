@@ -1,5 +1,6 @@
 package Classes;
 
+import java.sql.Time;
 import java.util.Date;
 
 /*
@@ -8,7 +9,8 @@ import java.util.Date;
  */
 public class Message {
       private long chatId, userId;
-      private String content, creationDate;
+      private String content;
+      private String creationDate;
 
     public Message(){}
 

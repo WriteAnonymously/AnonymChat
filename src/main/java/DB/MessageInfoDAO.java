@@ -34,12 +34,12 @@ public class MessageInfoDAO {
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.MESSAGE_TABLE
                 + " (chatid, userid, content, creation_date) value "
 
-                + "(?, ?, ? , sysdate());");
+                + "(?, ?, ? , now(4));");
 
             statement.setLong(1, chatID);
             statement.setLong(2, userID);
             statement.setString(3, content);
-            System.out.println(statement);
+            System.out.println(userID + "  " + chatID + "  " + statement);
             statement.executeUpdate();
             statement.close();
     }
@@ -55,13 +55,14 @@ public class MessageInfoDAO {
         List<Message> msgs = new ArrayList<Message>();
         Statement st = con.createStatement();
         String s = "SELECT userid, content, creation_date FROM "
-                + DBInfo.MESSAGE_TABLE + " WHERE chatid = " + chatID + " ORDER BY creation_date DESC LIMIT " + n + ";";
+                + DBInfo.MESSAGE_TABLE + " WHERE chatid = " + chatID + " ORDER BY creation_date LIMIT " + n + ";";
         System.out.println(s);
         ResultSet rs = st.executeQuery(s);
         while (rs.next()) {
             long userID = Long.parseLong(rs.getString("userid"));
             String content = rs.getString("content");
-            String date = (rs.getString("creation_date"));
+            System.out.println(rs.getString("creation_date"));
+            String date = rs.getString("creation_date");
             Message curr = new Message(chatID, userID, content, date);
             msgs.add(curr);
         }

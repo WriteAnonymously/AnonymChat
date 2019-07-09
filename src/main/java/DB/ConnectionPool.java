@@ -6,6 +6,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * the class is for storing an Connections to Database and getting and putting it
@@ -13,6 +20,9 @@ import java.sql.Statement;
 
 public class ConnectionPool extends MysqlDataSource {
     public static final String ATTRIBUTE = "connectionPool";
+    private static final int CONNECTION_NUMBER = 20;
+    private ArrayList <Connection> freeConnections, busyConnections;
+    private Semaphore connectionLock, lock;
 
     private static ConnectionPool connectionPool = new ConnectionPool();
 

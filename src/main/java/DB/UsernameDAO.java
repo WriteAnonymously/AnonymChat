@@ -19,7 +19,7 @@ public class UsernameDAO {
      * @throws SQLException throws exception if occur any error
      * */
     public void addUsername(String name) throws SQLException {
-        PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.USERS_TABLE
+        PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.USERNAMES_TABLE
                 + " (username) value "
                 + "(?);");
         statement.setString(1, name);
@@ -34,7 +34,7 @@ public class UsernameDAO {
      * */
     public Set<String> getNUsernames(int n) throws SQLException {
         Set<String> usernames = new HashSet<String>();
-        PreparedStatement statement = con.prepareStatement("select username from " + DBInfo.USERS_TABLE
+        PreparedStatement statement = con.prepareStatement("select username from " + DBInfo.USERNAMES_TABLE
                 + " order by RAND() limit ?;");
         statement.setInt(1, n);
         ResultSet set = statement.executeQuery();

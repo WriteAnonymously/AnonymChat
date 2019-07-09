@@ -1,5 +1,6 @@
 package Classes;
 
+import java.sql.Time;
 import java.util.Date;
 
 /*
@@ -8,11 +9,12 @@ import java.util.Date;
  */
 public class Message {
       private long chatId, userId;
-      private String content, creationDate;
+      private String content;
+      private Time creationDate;
 
     public Message(){}
 
-    public Message(long chatId, long userId, String content, String creationDate){
+    public Message(long chatId, long userId, String content, Time creationDate){
         this.chatId = chatId;
         this.userId = userId;
         this.content = content;
@@ -26,7 +28,7 @@ public class Message {
         this.chatId = chatId;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Time creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -46,7 +48,7 @@ public class Message {
         return content;
     }
 
-    public String getCreationDate(){
+    public Time getCreationDate(){
         return creationDate;
     }
 }

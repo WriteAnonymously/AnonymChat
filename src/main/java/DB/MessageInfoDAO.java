@@ -34,7 +34,7 @@ public class MessageInfoDAO {
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.MESSAGE_TABLE
                 + " (chatid, userid, content, creation_date) value "
 
-                + "(?, ?, ? , sysdate());");
+                + "(?, ?, ? , now());");
 
             statement.setLong(1, chatID);
             statement.setLong(2, userID);
@@ -61,7 +61,7 @@ public class MessageInfoDAO {
         while (rs.next()) {
             long userID = Long.parseLong(rs.getString("userid"));
             String content = rs.getString("content");
-            String date = (rs.getString("creation_date"));
+            Time date = Time.valueOf(rs.getString("creation_date"));
             Message curr = new Message(chatID, userID, content, date);
             msgs.add(curr);
         }

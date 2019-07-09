@@ -26,7 +26,7 @@ public class AddUserServlet extends HttpServlet {
         Connection con = null;
         try {
             con = connectionPool.getConnection();
-        } catch (SQLException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         dao = new UserInfoDAO(con);

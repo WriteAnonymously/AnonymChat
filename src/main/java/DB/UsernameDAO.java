@@ -27,8 +27,6 @@ public class UsernameDAO {
         statement.close();
     }
 
-
-
     /**
      * gets n random usernames
      *
@@ -47,6 +45,4 @@ public class UsernameDAO {
         statement.close();
         return usernames;
     }
-
-
 }

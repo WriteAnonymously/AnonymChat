@@ -10,12 +10,13 @@ import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 import java.io.IOException;
+import java.sql.Time;
 
 public class MessageDecoder implements Decoder.Text<Message> {
 
     public Message decode(String s) throws DecodeException {
         ObjectMapper mapper = new ObjectMapper();
-        Message message = new Message(1, 1, "Not received", "now");
+        Message message = new Message(1, 1, "Not received", null);
 
         try {
             message = mapper.readValue(s, Message.class);

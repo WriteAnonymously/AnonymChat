@@ -39,7 +39,7 @@ public class ChatEndpoint implements ServletContextListener {
     private Session session;
 
     @OnOpen
-    public void onOpen(Session session) throws IOException, EncodeException, SQLException {
+    public void onOpen(Session session) throws IOException, EncodeException, SQLException, InterruptedException {
         this.session = session;
         endpoints.add(this);
         MessageInfoDAO messageInfoDAO = null;
@@ -53,7 +53,7 @@ public class ChatEndpoint implements ServletContextListener {
     }
 
     @OnMessage
-    public void onMessage(Session session, Message message) throws IOException, EncodeException, SQLException {
+    public void onMessage(Session session, Message message) throws IOException, EncodeException, SQLException, InterruptedException {
         sendMessage(message);
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);

@@ -37,8 +37,9 @@ public class PrepareDB {
      *
      * @return Connection to database
      * */
-    private static Connection getConnect() throws ClassNotFoundException, SQLException {
-        Class.forName(DB.DBInfo.DRIVER);
+    public static Connection getConnect() throws ClassNotFoundException, SQLException {
+        if (connection == null)
+            Class.forName(DB.DBInfo.DRIVER);
         connection = DriverManager.getConnection("jdbc:mysql://"+ DB.DBInfo.MYSQL_DATABASE_SERVER, DB.DBInfo.MYSQL_USERNAME, DB.DBInfo.MYSQL_PASSWORD);
         Statement statement = connection.createStatement();
         statement.executeUpdate("use anonym_chat_schema;");

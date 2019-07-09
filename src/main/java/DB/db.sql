@@ -37,3 +37,9 @@ CREATE TABLE usernames(
     id bigint primary key auto_increment,
     username VARCHAR(100)
 );
+
+CREATE TABLE tags(
+    id bigint primary key auto_increment,
+    name VARCHAR(100),
+    chatid bigint
+);

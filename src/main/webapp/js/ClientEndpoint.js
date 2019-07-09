@@ -28,6 +28,7 @@ socket.onopen = function (ev) {
 document.getElementById("sendButton").addEventListener("click", function (ev) {
     var input = document.getElementById("textInput").value;
     sendMessage(input);
+    document.getElementById('textInput').value = '';
 });
 
 
@@ -44,7 +45,14 @@ function displayMessage(message){
     messagesDiv.appendChild(para);
     var t = document.createTextNode(message.userId +":"+ message.content + "("+message.creationDate+")");
     para.appendChild(t);
+    gotoBottom("messages");
 }
+
+function gotoBottom(id){
+    var element = document.getElementById(id);
+    element.scrollTop = element.scrollHeight - element.clientHeight;
+}
+
 
 function displayOldMessages(oldMessages){
     var parsedJSON = JSON.parse(oldMessages);

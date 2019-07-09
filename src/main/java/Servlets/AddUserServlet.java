@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@WebServlet(name = "AddUserServlet", urlPatterns = {"/AddUserServlet"})
+@WebServlet(name = "ChatRoom", urlPatterns = {"/ChatRoom"})
 public class AddUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -24,7 +24,7 @@ public class AddUserServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters
-        System.out.println("Helloooo");
+        System.out.println("adding User in servlet");
         String ID = request.getParameter("chatId");
         String username = "Shota";
         UserInfoDAO dao = null;
@@ -57,8 +57,10 @@ public class AddUserServlet extends HttpServlet {
         try {
             long id = dao.addUser(chatID, username);
             System.out.println("new user id = " + id);
-            HttpSession session = request.getSession();
+            HttpSession session = request.getSession(true);
             session.setAttribute("id", id);
+            session.setAttribute("chatId", chatID);
+            session.setAttribute("username", username);
         } catch (SQLException e) {
             e.printStackTrace();
         }

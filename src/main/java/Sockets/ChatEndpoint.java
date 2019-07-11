@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @WebListener
@@ -37,12 +39,22 @@ public class ChatEndpoint implements ServletContextListener {
     }
 
     private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
+    private static final Map<Integer, ChatEndpoint> endpointMap = new ConcurrentHashMap<Integer, ChatEndpoint>();
     private Session session;
 
     @OnOpen
-    public void onOpen(Session session) throws IOException, EncodeException, SQLException, InterruptedException {
+    public void onOpen(EndpointConfig endpointConfig, Session session) throws IOException, EncodeException, SQLException, InterruptedException {
         this.session = session;
         endpoints.add(this);
+        long chatId = (Long) endpointConfig.getUserProperties().get("chatId");
+        System.out.println(chatId);
+        long id = (Long) endpointConfig.getUserProperties().get("userId");
+        String username = (String) endpointConfig.getUserProperties().get("username");
+
+        session.getUserProperties().put("username", username);
+        System.out.println(chatId + "ChatId");
+        System.out.println(id + "userId");
+        System.out.println(username + "username");
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();

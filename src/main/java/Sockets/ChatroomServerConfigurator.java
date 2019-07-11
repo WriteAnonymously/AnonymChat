@@ -8,26 +8,35 @@ import javax.websocket.server.ServerEndpointConfig;
 public class ChatroomServerConfigurator extends ServerEndpointConfig.Configurator {
     @Override
     public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
+        System.out.println("Endconfig");
         HttpSession session = (HttpSession)request.getHttpSession();
-        String username = null, chatId = null, userId = null;
-        Object obj;
+        String username = null;
+        long chatId = -1, userId = -1;
+        if (session == null){
+            System.out.println("NULL");
+            return;
+        } else {
+            System.out.println("not null");
+        }
         try{
-            obj = session.getAttribute("username");
-            if (obj != null){
-                username = (String)obj;
+            if (session.getAttribute("username") != null){
+                username = (String)session.getAttribute("username") ;
+                System.out.println(username);
+            } else {
+                System.out.println("Parameter not found");
             }
-            obj = session.getAttribute("chatId");
-            if (obj != null){
-                chatId = (String)obj;
+            if (session.getAttribute("chatId") != null){
+                chatId = (Long) session.getAttribute("chatId");
+                System.out.println(chatId);
             }
-            obj = session.getAttribute("id");
-            if (obj != null){
-                userId = (String)obj;
+            if (session.getAttribute("id") != null){
+                userId = (Long) session.getAttribute("id");
+                System.out.println(userId);
             }
         } catch (Exception e){
             e.printStackTrace();
         }
-        if (username != null && chatId != null && userId != null){
+        if (username != null && chatId != -1 && userId != -1){
             sec.getUserProperties().put("username", username);
             sec.getUserProperties().put("chatId", chatId);
             sec.getUserProperties().put("userId", userId);

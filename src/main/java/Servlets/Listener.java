@@ -32,9 +32,9 @@ public class Listener implements ServletContextListener,
         Connection con = null;
         try {
             con = connectionPool.getConnection();
-            System.out.println("daemata");
+          //  System.out.println("daemata");
             PrepareDB.addInfo(con);
-            System.out.println("ukve Shig aris");
+          //  System.out.println("ukve Shig aris");
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -19,15 +19,19 @@ import java.sql.SQLException;
 @WebServlet(name = "ChatRoom", urlPatterns = {"/ChatRoom"})
 public class AddUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters
         System.out.println("adding User in servlet");
         String ID = request.getParameter("chatId");
+        if (ID == null){
+            return;
+        }
         String username = "Shota";
         UserInfoDAO dao = null;
+
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = null;
@@ -57,14 +61,15 @@ public class AddUserServlet extends HttpServlet {
         try {
             long id = dao.addUser(chatID, username);
             System.out.println("new user id = " + id);
-            HttpSession session = request.getSession(true);
+            HttpSession session = request.getSession();
             session.setAttribute("id", id);
             session.setAttribute("chatId", chatID);
             session.setAttribute("username", username);
+            System.out.println("Attributes set");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        RequestDispatcher dispatch = request.getRequestDispatcher("/Models/ChatPage.html");
+       RequestDispatcher dispatch = request.getRequestDispatcher("/Models/ChatPage.html");
         try {
             con.close();
         } catch (SQLException e) {

@@ -24,7 +24,7 @@ public class PublicChatServlet extends HttpServlet {
         String description = request.getParameter("description");
         String limit = request.getParameter("limit");
         String hashtags = request.getParameter("tags");
-        int lim = 100;
+        int lim = ChatInfoDAO.DEFAULT_LIMIT;
         try{
             lim = Integer.parseInt(limit);
         } catch (NumberFormatException e) {

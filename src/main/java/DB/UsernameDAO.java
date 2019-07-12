@@ -38,10 +38,10 @@ public class UsernameDAO {
         PreparedStatement statement = con.prepareStatement("select username from " + DBInfo.USERNAMES_TABLE
                 + " order by id limit 1;");
         ResultSet set = statement.executeQuery();
-        statement.close();
         if(set.next()) {
             result = set.getString("username");
         }
+        statement.close();
         return result;
     }
 

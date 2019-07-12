@@ -26,4 +26,12 @@ public class User {
         return this.chatId;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User)){
+            return false;
+        }
+        User u = (User) obj;
+        return id.equals(u.id) && username.equals(u.username) && chatId.equals(u.chatId);
+    }
 }

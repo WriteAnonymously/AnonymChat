@@ -1,5 +1,7 @@
 package DB;
 
+import Classes.User;
+
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;

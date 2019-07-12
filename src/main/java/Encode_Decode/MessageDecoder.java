@@ -14,6 +14,8 @@ public class MessageDecoder implements Decoder.Text<Message> {
         ObjectMapper mapper = new ObjectMapper();
         Message message = new Message(1, 1, "tamro", "Not received", "a");
 
+        System.out.println("es aris S -- " + s);
+
         try {
             message = mapper.readValue(s, Message.class);
         } catch (IOException e) {

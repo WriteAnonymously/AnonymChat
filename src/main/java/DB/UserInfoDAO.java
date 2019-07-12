@@ -1,5 +1,7 @@
 package DB;
 
+import Classes.User;
+
 import java.sql.*;
 
 public class UserInfoDAO {
@@ -31,5 +33,19 @@ public class UserInfoDAO {
         ResultSet set = st.executeQuery(q);
         set.last();
         return Long.parseLong(set.getString(1));
+    }
+
+    /**
+     * gets back last inserted user
+     *
+     * @return last inserted user
+     * */
+    public User getLastUser() throws SQLException {
+        User user = null;
+        PreparedStatement statement = con.prepareStatement("select * from " + DBInfo.USERS_TABLE + " order by creation_date desc limit 1;");
+        ResultSet ansSet = statement.executeQuery();
+        ansSet.next();
+        user = new User(ansSet.getString("id"), ansSet.getString("username"), ansSet.getString("chatid"));
+        return user;
     }
 }

@@ -10,7 +10,6 @@ import javax.websocket.server.ServerEndpointConfig;
 public class ChatroomServerConfigurator extends ServerEndpointConfig.Configurator {
     @Override
     public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
-        System.out.println("Endconfig");
         HttpSession session = (HttpSession)request.getHttpSession();
         String username = null;
         long chatId = -1, userId = -1;
@@ -42,7 +41,7 @@ public class ChatroomServerConfigurator extends ServerEndpointConfig.Configurato
             sec.getUserProperties().put("username", username);
             sec.getUserProperties().put("chatId", chatId);
             sec.getUserProperties().put("userId", userId);
-            System.out.println("Wohoo Configureeeed");
+            System.out.println("Parameters set (endconfig)");
         }
     }
 }

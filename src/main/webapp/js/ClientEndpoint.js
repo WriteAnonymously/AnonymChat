@@ -6,14 +6,6 @@ var userID = -1;
 var chatID = -1;
 
 socket.onopen = function (ev) {
-    var message = JSON.stringify({
-        "chatId" : 1,
-        "userId" : 1,
-        "userName" : "lamara",
-        "content": "Hi!",
-        "creationDate": "now"
-    });
-    socket.send(message);
     console.log("Connected");
 };
 
@@ -81,13 +73,12 @@ socket.onmessage = function (ev) {
 
 function sendMessage(input){
     var message = JSON.stringify({
-        "chatId" : 1,
-        "userId" : 1,
-        "userName" : "aa",
-        "content": "aaa",
+        "chatId" : chatID,
+        "userId" : userID,
+        "userName" : userName,
+        "content": input,
         "creationDate": "now"
     });
     socket.send(message);
-
 }
 

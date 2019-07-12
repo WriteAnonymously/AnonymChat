@@ -32,13 +32,6 @@ public class AddUserServlet extends HttpServlet {
             return;
         }
         HttpSession session = request.getSession();
-        String status = (String)session.getAttribute("status");
-        if (status != null && status.equals("loggedin")) {
-            System.out.println("Already logged");
-            RequestDispatcher dispatch = request.getRequestDispatcher("/Models/ChatPage.html");
-            dispatch.forward(request, response);
-            return;
-        }
         String username = "Shota";
         UserInfoDAO dao = null;
 

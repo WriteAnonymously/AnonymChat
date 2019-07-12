@@ -60,14 +60,14 @@ public class Message {
         this.content = content;
     }
 
-    /*
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Message)){
             return false;
         }
         Message m = (Message) obj;
-        return content.equals(m.content) && userName.equals(m.userName) && userID == m.userID
+        return content.equals(m.content) && userName.equals(m.userName) && userId == m.userId
                     && chatId == m.chatId;
-    } */
+    }
 }

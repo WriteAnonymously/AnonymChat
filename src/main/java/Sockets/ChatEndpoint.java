@@ -19,6 +19,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class ChatEndpoint implements ServletContextListener {
     }
 
     private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
-    private static final Map<Integer, List<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Integer, List<ChatEndpoint>>();
+    private static final Map<Long, Set<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Long, Set<ChatEndpoint>>();
     private Session session;
 
     @OnOpen
@@ -58,6 +59,10 @@ public class ChatEndpoint implements ServletContextListener {
         session.getUserProperties().put(Constants.CHAT_ID, chatId);
         session.getUserProperties().put(Constants.USERNAME, username);
         System.out.println(chatId + "-" + userId + "-" + username);
+
+        if (!endpointMap.containsKey(chatId)){endpointMap.put(chatId, new CopyOnWriteArraySet
+                <ChatEndpoint>());}
+        endpointMap.get(chatId).add(this);
 
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
@@ -85,8 +90,8 @@ public class ChatEndpoint implements ServletContextListener {
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
         endpoints.remove(this);
-        System.out.println("Disconnected");
-       // sendMessage("Discconected :(");
+        endpointMap.get(session.getUserProperties().get(Constants.CHAT_ID)).remove(this);
+        System.out.println("Disconnected Session");
     }
 
     @OnError
@@ -100,8 +105,12 @@ public class ChatEndpoint implements ServletContextListener {
     }
 
     private void sendMessage(Object message) throws IOException, EncodeException {
-        for (ChatEndpoint endpoint : endpoints) {
+        Long chatId = ((Message)message).getChatId();
+        for (ChatEndpoint endpoint : endpointMap.get(chatId)){
             endpoint.session.getBasicRemote().sendObject(message);
         }
+        /*for (ChatEndpoint endpoint : endpoints) {
+            endpoint.session.getBasicRemote().sendObject(message);
+        } */
     }
 }

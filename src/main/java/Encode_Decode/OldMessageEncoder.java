@@ -1,4 +1,4 @@
-package Servlets.Encode_Decode;
+package Encode_Decode;
 
 
 import Classes.Message;

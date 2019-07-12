@@ -71,7 +71,7 @@ public class AddUserServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-       RequestDispatcher dispatch = request.getRequestDispatcher("/Models/ChatPage.html");
+        RequestDispatcher dispatch = request.getRequestDispatcher("/Models/ChatPage.html");
         try {
             con.close();
         } catch (SQLException e) {

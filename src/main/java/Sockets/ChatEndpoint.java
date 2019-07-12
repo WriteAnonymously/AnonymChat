@@ -5,17 +5,15 @@ import Classes.Constants;
 import Classes.Message;
 import DB.ConnectionPool;
 import DB.MessageInfoDAO;
-import Servlets.Encode_Decode.MessageDecoder;
-import Servlets.Encode_Decode.MessageEncoder;
-import Servlets.Encode_Decode.OldMessageEncoder;
-import org.apache.tomcat.util.bcel.Const;
-import org.apache.tomcat.util.bcel.classfile.Constant;
+
+import Encode_Decode.MessageDecoder;
+import Encode_Decode.MessageEncoder;
+import Encode_Decode.OldMessageEncoder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import javax.servlet.http.Cookie;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;

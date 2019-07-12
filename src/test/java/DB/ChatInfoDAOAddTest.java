@@ -29,9 +29,6 @@ public class ChatInfoDAOAddTest {
             Assert.assertEquals(1,userID);
             userID = userInfoDAO.addUser(chatID,"geralt-rivieli");
             Assert.assertEquals(2,userID);
-
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

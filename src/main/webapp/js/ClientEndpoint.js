@@ -9,8 +9,8 @@ socket.onopen = function (ev) {
     var message = JSON.stringify({
         "chatId" : 1,
         "userId" : 1,
-        "userName" : 1,
-        "content": "aaa",
+        "userName" : "lamara",
+        "content": "Hi!",
         "creationDate": "now"
     });
     socket.send(message);
@@ -83,7 +83,7 @@ function sendMessage(input){
     var message = JSON.stringify({
         "chatId" : 1,
         "userId" : 1,
-        "userName" : 1,
+        "userName" : "aa",
         "content": "aaa",
         "creationDate": "now"
     });

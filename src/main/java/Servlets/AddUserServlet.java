@@ -57,7 +57,7 @@ public class AddUserServlet extends HttpServlet {
 //                e.printStackTrace();
 //            }
 //        }
-        // insert into DB
+//         insert into DB
         try {
             long id = dao.addUser(chatID, username);
             System.out.println("new user id = " + id);

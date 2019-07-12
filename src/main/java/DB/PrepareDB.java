@@ -39,12 +39,13 @@ public class PrepareDB {
      * @return Connection to database
      * */
     public static Connection getConnect() throws ClassNotFoundException, SQLException {
-        Class.forName(DB.DBInfo.DRIVER);
+        if (connection == null)
+            Class.forName(DB.DBInfo.DRIVER);
         connection = DriverManager.getConnection("jdbc:mysql://"+ DB.DBInfo.MYSQL_DATABASE_SERVER, DB.DBInfo.MYSQL_USERNAME, DB.DBInfo.MYSQL_PASSWORD);
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("use anonym_chat_schema;");
+//        Statement statement = connection.createStatement();
+//        statement.executeUpdate("use anonym_chat_schema;");
 //        prepareStructure();
-        BasicDataSource pool = new BasicDataSource();
+//        BasicDataSource pool = new BasicDataSource();
         return connection;
     }
     /*

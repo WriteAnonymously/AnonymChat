@@ -35,6 +35,7 @@ public class ConnectionPool extends MysqlDataSource {
             while (set.next()){
               //  System.out.println(set.getString(1));
             }
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

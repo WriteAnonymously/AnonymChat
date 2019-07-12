@@ -22,12 +22,12 @@ public class NameGenerator {
      * @param chatID id of chat
      * */
     public String generateName(long chatID) throws SQLException {
-        Set<String> usernames = chatdao.getUserNames(chatID);
-        int size = usernames.size();
+        Set<String> userNames = chatdao.getUserNames(chatID);
+        int size = userNames.size();
         Set<String> randomNames = userdao.getNUsernames(size + 1);
         String randomName = "";
         for(String name : randomNames){
-            if(!usernames.contains(name)){
+            if(!userNames.contains(name)){
                 randomName = name;
                 break;
             }

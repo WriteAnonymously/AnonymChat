@@ -8,40 +8,41 @@ import java.util.Date;
     ინახავს მესიჯის აიდის, ჩათის აიდის, ავტორის აიდის, ტექსტსა და შექმნის დროს.
  */
 public class Message {
-      private long chatId, userId;
-      private String content;
-      private String creationDate;
+    private long chatId, userID;
+    private String userName;
+    private String content;
+    private String creationDate;
 
-    public Message(){}
-
-    public Message(long chatId, long userId, String content, String creationDate){
+    public Message(long chatId, long userID, String userName, String content, String creationDate){
         this.chatId = chatId;
-        this.userId = userId;
+        this.userID = userID;
+        this.userName = userName;
         this.content = content;
         this.creationDate = creationDate;
-    }
-    public void setContent(String content){
-        this.content = content;
-    }
-
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
-    }
-
-    public void setCreationDate(String creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public long getChatId(){
         return chatId;
     }
 
+    public void setChatId(long chatId){
+        this.chatId = chatId;
+    }
+
+    public void setUserId(long userId){
+        this.userID = userId;
+    }
+
+    public void setUserName(String userName){
+        this.userName = userName;
+    }
+
     public long getUserId(){
-        return userId;
+        return userID;
+    }
+
+    public String getUserName(){
+        return userName;
     }
 
     public String getContent(){
@@ -50,5 +51,15 @@ public class Message {
 
     public String getCreationDate(){
         return creationDate;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Message)){
+            return false;
+        }
+        Message m = (Message) obj;
+        return content.equals(m.content) && userName.equals(m.userName) && userID == m.userID
+                    && chatId == m.chatId;
     }
 }

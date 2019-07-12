@@ -12,6 +12,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import javax.servlet.http.Cookie;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -46,23 +47,14 @@ public class ChatEndpoint implements ServletContextListener {
     public void onOpen(EndpointConfig endpointConfig, Session session) throws IOException, EncodeException, SQLException, InterruptedException {
         this.session = session;
         endpoints.add(this);
-        long chatId = (Long) endpointConfig.getUserProperties().get("chatId");
-        System.out.println(chatId);
-        long id = (Long) endpointConfig.getUserProperties().get("userId");
-        String username = (String) endpointConfig.getUserProperties().get("username");
-
-        session.getUserProperties().put("username", username);
-        System.out.println(chatId + "ChatId");
-        System.out.println(id + "userId");
-        System.out.println(username + "username");
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();
         messageInfoDAO = new MessageInfoDAO(con);
         System.out.println("New Connection:");
         List<Message> list = messageInfoDAO.getLastNMessages(100, 3);
-        sendMessageUser(list, session);
         con.close();
+        sendMessageUser(list, session);
     }
 
     @OnMessage
@@ -74,8 +66,9 @@ public class ChatEndpoint implements ServletContextListener {
         messageInfoDAO = new MessageInfoDAO(con);
         message.setChatId(3);
         message.setUserId(1);
+        message.setUserName("dachi");
         messageInfoDAO.addMessage(message);
-    //    System.out.println("New message in Server" + message.getContent());
+        con.close();
     }
 
     @OnClose

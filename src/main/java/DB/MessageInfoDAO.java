@@ -4,6 +4,7 @@ import Classes.Message;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MessageInfoDAO {
@@ -51,22 +52,40 @@ public class MessageInfoDAO {
      * @return List<Message> list of the messages
      * */
     public List<Message> getLastNMessages(int n, long chatID) throws SQLException {
-        List<Message> msgs = new ArrayList<Message>();
+        List<Message> messages = new ArrayList<Message>();
         Statement st = con.createStatement();
-        String s = "SELECT userid, content, creation_date FROM "
-                + DBInfo.MESSAGE_TABLE + " WHERE chatid = " + chatID + " ORDER BY creation_date LIMIT " + n + ";";
+        String s = "select m.userid as userid, m.content as content, m.creation_date as creation_date, u.username as username " +
+                "from " + DBInfo.MESSAGE_TABLE + " m " + "left join " + DBInfo.USERS_TABLE + " u " + "on u.id = m.userid " +
+                "where m.chatid = " + chatID + " order by m.creation_date desc limit " + n + ";";
         System.out.println(s);
         ResultSet rs = st.executeQuery(s);
         while (rs.next()) {
-            long userID = Long.parseLong(rs.getString("userid"));
+            long userID = rs.getLong("userid");
+            String userName = rs.getString("username");
             String content = rs.getString("content");
           //  System.out.println(rs.getString("creation_date"));
             String date = rs.getString("creation_date");
-            Message curr = new Message(chatID, userID, content, date);
-            msgs.add(curr);
+            date = clearDate(date);
+            Message curr = new Message(chatID, userID, userName, content, date);
+            messages.add(curr);
         }
+        Collections.reverse(messages);
         st.close();
-        return msgs;
+        return messages;
+    }
+
+    /**
+     * clears the date with microsecond elements
+     *
+     * @param date date to be cleared
+     * @return cleared date
+     * */
+    private String clearDate(String date) {
+        int pos = date.length() - 1;
+        while (date.charAt(pos) != '.'){
+            pos--;
+        }
+        return date.substring(0, pos);
     }
 
 }

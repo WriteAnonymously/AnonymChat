@@ -5,6 +5,7 @@ use anonym_chat_schema;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS chats;
+DROP TABLE IF EXISTS tags;
 
 CREATE TABLE chats(
     id bigint primary key auto_increment,

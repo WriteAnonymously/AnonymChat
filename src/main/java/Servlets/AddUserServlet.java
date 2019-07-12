@@ -1,5 +1,6 @@
 package Servlets;
 
+import Classes.Constants;
 import DB.ConnectionPool;
 import DB.MessageInfoDAO;
 import DB.UserInfoDAO;
@@ -25,8 +26,17 @@ public class AddUserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // preparing parameters
         System.out.println("adding User in servlet");
-        String ID = request.getParameter("chatId");
+        String ID = request.getParameter(Constants.CHAT_ID);
         if (ID == null){
+     //       System.out.println("Chat Id not Found");
+            return;
+        }
+        HttpSession session = request.getSession();
+        String status = (String)session.getAttribute("status");
+        if (status != null && status.equals("loggedin")) {
+            System.out.println("Already logged");
+            RequestDispatcher dispatch = request.getRequestDispatcher("/Models/ChatPage.html");
+            dispatch.forward(request, response);
             return;
         }
         String username = "Shota";
@@ -48,7 +58,6 @@ public class AddUserServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        System.out.println("In AdduSer, chatId = " + chatID);
         // generating username
 //        if(username == null){
 //            try {
@@ -61,10 +70,10 @@ public class AddUserServlet extends HttpServlet {
         try {
             long id = dao.addUser(chatID, username);
             System.out.println("new user id = " + id);
-            HttpSession session = request.getSession();
-            session.setAttribute("id", id);
-            session.setAttribute("chatId", chatID);
-            session.setAttribute("username", username);
+            session.setAttribute(Constants.USER_ID, id);
+            session.setAttribute(Constants.CHAT_ID, chatID);
+            session.setAttribute(Constants.USERNAME, username);
+            session.setAttribute("status","loggedin");
             System.out.println("Attributes set");
         } catch (SQLException e) {
             e.printStackTrace();

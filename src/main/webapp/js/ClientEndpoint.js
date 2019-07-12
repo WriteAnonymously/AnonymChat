@@ -1,23 +1,14 @@
 
 var socket = new WebSocket('ws://localhost:8080/The_Chat');
 
-var userName = makeid(10);
-var userID = Math.floor(Math.random() * Math.floor(100));
-
-function makeid(length) {
-        var result           = '';
-        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var charactersLength = characters.length;
-        for ( var i = 0; i < length; i++ ) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result;
-}
+var userName = null;
+var userID = -1;
+var chatID = -1;
 
 socket.onopen = function (ev) {
     var message = JSON.stringify({
         "chatId" : 1,
-        "userId" : userID,
+        "userId" : 1,
         "content": "Hii!",
         "creationDate": "now"
     });
@@ -66,20 +57,31 @@ socket.onmessage = function (ev) {
     var type = ev.data.toString().charAt(0);
     var messageReceived = ev.data.toString().substring(1);
     console.log('message from server is :', messageReceived);
-    if (type === 'm'){
+    if (type === 'l'){
+        console.log('recieved list');
+        displayOldMessages(messageReceived);
+    } else if (userID === -1 && userName === null){
+        var firstMessage = JSON.parse(messageReceived);
+        if (firstMessage.content === 'n'){
+            userName =  firstMessage.username;
+            chatID = firstMessage.chatId;
+            userID = firstMessage.userId;
+            console.log(chatID);
+            console.log(userID);
+        } else {
+            console.log("Error somewhere");
+        }
+    } else if (type === 'm'){
         console.log('received message');
         var message = JSON.parse(messageReceived);
         displayMessage(message);
-    } else if (type === 'l'){
-        console.log('recieved list');
-        displayOldMessages(messageReceived);
     }
 };
 
 function sendMessage(input){
     var message = JSON.stringify({
-        "chatId" : 1,
-        "userId" : 1,
+        "chatId" : chatID,
+        "userId" : userID,
         "content": input,
         "creationDate": "now"
     });

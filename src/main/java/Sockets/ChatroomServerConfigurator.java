@@ -1,5 +1,7 @@
 package Sockets;
 
+import Classes.Constants;
+
 import javax.servlet.http.HttpSession;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
@@ -19,18 +21,18 @@ public class ChatroomServerConfigurator extends ServerEndpointConfig.Configurato
             System.out.println("not null");
         }
         try{
-            if (session.getAttribute("username") != null){
-                username = (String)session.getAttribute("username") ;
+            if (session.getAttribute(Constants.USERNAME) != null){
+                username = (String)session.getAttribute(Constants.USERNAME) ;
                 System.out.println(username);
             } else {
                 System.out.println("Parameter not found");
             }
-            if (session.getAttribute("chatId") != null){
-                chatId = (Long) session.getAttribute("chatId");
+            if (session.getAttribute(Constants.CHAT_ID) != null){
+                chatId = (Long) session.getAttribute(Constants.CHAT_ID);
                 System.out.println(chatId);
             }
-            if (session.getAttribute("id") != null){
-                userId = (Long) session.getAttribute("id");
+            if (session.getAttribute(Constants.USER_ID) != null){
+                userId = (Long) session.getAttribute(Constants.USER_ID);
                 System.out.println(userId);
             }
         } catch (Exception e){

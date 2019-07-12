@@ -1,12 +1,15 @@
 package Sockets;
 
 
+import Classes.Constants;
 import Classes.Message;
 import DB.ConnectionPool;
 import DB.MessageInfoDAO;
 import Servlets.Encode_Decode.MessageDecoder;
 import Servlets.Encode_Decode.MessageEncoder;
 import Servlets.Encode_Decode.OldMessageEncoder;
+import org.apache.tomcat.util.bcel.Const;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -39,29 +42,34 @@ public class ChatEndpoint implements ServletContextListener {
     }
 
     private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
-    private static final Map<Integer, ChatEndpoint> endpointMap = new ConcurrentHashMap<Integer, ChatEndpoint>();
+    private static final Map<Integer, List<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Integer, List<ChatEndpoint>>();
     private Session session;
 
     @OnOpen
     public void onOpen(EndpointConfig endpointConfig, Session session) throws IOException, EncodeException, SQLException, InterruptedException {
         this.session = session;
         endpoints.add(this);
-        long chatId = (Long) endpointConfig.getUserProperties().get("chatId");
-        System.out.println(chatId);
-        long id = (Long) endpointConfig.getUserProperties().get("userId");
-        String username = (String) endpointConfig.getUserProperties().get("username");
+        if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){
+            System.out.println("Please refresh page");
+            return;
+        }
+        long chatId = (Long) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
+        long userId = (Long) endpointConfig.getUserProperties().get(Constants.USER_ID);
+        String username = (String) endpointConfig.getUserProperties().get(Constants.USERNAME);
 
-        session.getUserProperties().put("username", username);
-        System.out.println(chatId + "ChatId");
-        System.out.println(id + "userId");
-        System.out.println(username + "username");
+        session.getUserProperties().put(Constants.USER_ID, userId);
+        session.getUserProperties().put(Constants.CHAT_ID, chatId);
+        session.getUserProperties().put(Constants.USERNAME, username);
+        System.out.println(chatId + "-" + userId + "-" + username);
+
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();
         messageInfoDAO = new MessageInfoDAO(con);
         System.out.println("New Connection:");
-        List<Message> list = messageInfoDAO.getLastNMessages(100, 3);
+        List<Message> list = messageInfoDAO.getLastNMessages(200, chatId);
         sendMessageUser(list, session);
+        sendMessageUser(new Message(chatId, userId, "n", "Now"), session);
         con.close();
     }
 
@@ -72,8 +80,7 @@ public class ChatEndpoint implements ServletContextListener {
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();
         messageInfoDAO = new MessageInfoDAO(con);
-        message.setChatId(3);
-        message.setUserId(1);
+        System.out.println(message.getContent() + message.getChatId());
         messageInfoDAO.addMessage(message);
     //    System.out.println("New message in Server" + message.getContent());
     }

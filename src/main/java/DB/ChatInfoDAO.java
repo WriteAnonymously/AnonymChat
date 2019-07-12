@@ -11,9 +11,10 @@ import java.util.Set;
 
 public class ChatInfoDAO {
     private Connection connection;
-    public static String ATTRIBUTE = "chatInfo";
-    public static String PUBLIC = "Public";
-    public static String PRIVATE = "Private";
+    public static final String ATTRIBUTE = "chatInfo";
+    public static final String PUBLIC = "Public";
+    public static final String PRIVATE = "Private";
+    public static final Integer DEFAULT_LIMIT = 100;
     public ChatInfoDAO(Connection connection){
         this.connection = connection;
     }
@@ -28,32 +29,26 @@ public class ChatInfoDAO {
     public long addChat(String chatName, String status, String description, int maxUsersAllowed) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("insert into " + DBInfo.CHAT_TABLE
                 + " (name, status, description, max_users_number, creation_date) value "
-                + "(?, ?, ?, ?, sysdate());");
+                + "(?, ?, ?, ?, now(4));");
         statement.setString(1, chatName);
         statement.setString(2, status);
         statement.setString(3, description);
         statement.setInt(4, maxUsersAllowed);
-        synchronized (connection) {
-            statement.executeUpdate();
-            return getLastInsertedID();
-        }
+        statement.executeUpdate();
+        statement.close();
+        return getLastInsertedID();
     }
 
 
     /**
      * finds the last inserted id
      * */
-    private long getLastInsertedID() {
-        try {
-            Statement st = connection.createStatement();
-            String q = "select LAST_INSERT_ID();";
-            ResultSet set = st.executeQuery(q);
-            set.last();
-            return Long.parseLong(set.getString(1));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
+    private long getLastInsertedID() throws SQLException {
+        Statement st = connection.createStatement();
+        String q = "select LAST_INSERT_ID();";
+        ResultSet set = st.executeQuery(q);
+        set.last();
+        return Long.parseLong(set.getString(1));
     }
 
     /**
@@ -75,10 +70,11 @@ public class ChatInfoDAO {
             String description = set.getString("description");
             int maxNumber = Integer.parseInt(set.getString("max_users_number"));
             String status = set.getString("status");
-            Date date = Date.valueOf(set.getString("creation_date"));
+            String date = set.getString("creation_date");
             PublicChat chat = new PublicChat(id, name, description, maxNumber, date);
             topChatsSet.add(chat);
         }
+        statement.close();
         return topChatsSet;
     }
 
@@ -97,7 +93,41 @@ public class ChatInfoDAO {
         while (set.next()){
             userNames.add(set.getString(1));
         }
+        statement.close();
         return userNames;
     }
 
+    /**
+     * finds the number of users in chat and maximal number of users allowed
+     *
+     * @return Pair of the values where
+     * */
+    public Pair getCurrAndMax(long chatID) throws  SQLException{
+        Statement getAllowed = connection.createStatement();
+        String allowed = "Select max_users_number from " + DBInfo.CHAT_TABLE + " where id = " + chatID;
+        ResultSet st = getAllowed.executeQuery(allowed);
+        int maxNumber = st.getInt("max_users_number");
+        Statement cntUsers = connection.createStatement();
+        String countUsers = "Select COUNT(id) as cnt from " + DBInfo.USERS_TABLE + " where chatid = " + chatID;
+        ResultSet stcnt = cntUsers.executeQuery(countUsers);
+        int currNumber = stcnt.getInt("cnt");
+        Pair pair = new Pair(currNumber, maxNumber);
+        return pair;
+    }
+
+
+    /* the class for storing maximal and current number of chats */
+    public class Pair {
+        private int current, maximal;
+        public Pair(int current, int maximal){
+            this.current = current;
+            this.maximal = maximal;
+        }
+        public int  getCurrent(){
+            return current;
+        }
+        public int getMaximal(){
+            return maximal;
+        }
+    }
 }

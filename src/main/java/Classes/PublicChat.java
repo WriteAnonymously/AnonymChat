@@ -1,13 +1,14 @@
 package Classes;
 
 import java.sql.Array;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class PublicChat extends Chat {
     private ArrayList<String> tags;
 
-    public PublicChat(long ID, String name, String description, int limit, Date creationDate) {
+    public PublicChat(long ID, String name, String description, int limit, String creationDate) {
         super(ID, name, description, limit, creationDate);
     }
 

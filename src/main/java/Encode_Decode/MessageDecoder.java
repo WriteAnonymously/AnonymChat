@@ -1,29 +1,26 @@
-package Servlets.Encode_Decode;
+package Encode_Decode;
 
+import Classes.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 import java.io.IOException;
 
-public class MessageDecoder implements Decoder.Text<WebSocketMessage> {
-    private static Gson gson = new Gson();
+public class MessageDecoder implements Decoder.Text<Message> {
 
-    public WebSocketMessage decode(String s) throws DecodeException {
+    public Message decode(String s) throws DecodeException {
         ObjectMapper mapper = new ObjectMapper();
-        WebSocketMessage message = new WebSocketMessage("Not received", "aa");
-        
+        Message message = new Message(1, 1, "tamro", "Not received", "a");
+
+        System.out.println("es aris S -- " + s);
+
         try {
-            message = mapper.readValue(s, WebSocketMessage.class);
-            System.out.println(message.getContent()+"----Decoded");
+            message = mapper.readValue(s, Message.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return message;
     }
 

@@ -1,4 +1,5 @@
 package Classes;
+import java.sql.Time;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -8,15 +9,14 @@ public class Chat {
     private String description;
     private int limit;
     private int numMembers;
-    private Date creationDate;
+    private String creationDate;
     private HashSet<String> usedUsernames;
     private static final int DEFAULT_LIMIT = 1000;
 
-    public Chat(long ID, String name, String description, int limit, Date creationDate) {
+    public Chat(long ID, String name, String description, int limit, String creationDate) {
         this.ID = ID;
         this.name = name;
         this.description = description;
-        this.numMembers = numMembers;
         this.creationDate = creationDate;
     }
 
@@ -38,7 +38,7 @@ public class Chat {
         return numMembers;
     }
 
-    public Date getCreationTime() {
+    public String getCreationTime() {
         return creationDate;
     }
 

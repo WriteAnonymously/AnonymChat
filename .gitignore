@@ -8,6 +8,9 @@
 *.iml
 .idea/*
 
+
+src/main/java/DB/DBInfo.java
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -124,3 +127,5 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 # End of https://www.gitignore.io/api/java,maven,intellij
+
+DBinfo.java

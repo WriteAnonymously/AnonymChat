@@ -1,9 +1,6 @@
 package Servlets;
 
-import DB.ChatInfoDAO;
-import DB.MessageInfoDAO;
-import DB.PrepareDB;
-import DB.UserInfoDAO;
+import DB.*;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -29,19 +26,20 @@ public class Listener implements ServletContextListener,
          initialized(when the Web application is deployed).
          You can initialize servlet context related data here.
       */
+      //  System.out.println("Starting initializing connection;");
+        ConnectionPool connectionPool = ConnectionPool.getInstance();
+        sce.getServletContext().setAttribute(ConnectionPool.ATTRIBUTE, connectionPool);
+        Connection con = null;
         try {
-            Connection con = PrepareDB.getInstance();
-            ChatInfoDAO chat = new ChatInfoDAO(con);
-            UserInfoDAO user = new UserInfoDAO(con);
-            MessageInfoDAO message = new MessageInfoDAO(con);
-            sce.getServletContext().setAttribute(ChatInfoDAO.ATTRIBUTE, chat);
-            sce.getServletContext().setAttribute(UserInfoDAO.ATTRIBUTE, user);
-            sce.getServletContext().setAttribute(MessageInfoDAO.ATTRIBUTE, message);
+            con = connectionPool.getConnection();
+          //  System.out.println("daemata");
+            PrepareDB.addInfo(con);
+            System.out.println("ukve Shig aris");
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
+     //   System.out.println("done initializing connection;");
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
@@ -56,6 +54,7 @@ public class Listener implements ServletContextListener,
     // -------------------------------------------------------
     public void sessionCreated(HttpSessionEvent se) {
         /* Session is created. */
+        System.out.println("Session created");
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {

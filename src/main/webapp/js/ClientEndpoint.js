@@ -1,43 +1,83 @@
 
 var socket = new WebSocket('ws://localhost:8080/The_Chat');
 
-var userId = makeid(10);
-
-function makeid(length) {
-        var result           = '';
-        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var charactersLength = characters.length;
-        for ( var i = 0; i < length; i++ ) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result;
-}
+var userName = null;
+var userID = -1;
+var chatID = -1;
 
 socket.onopen = function (ev) {
-    var message = JSON.stringify({
-        "content": "Hi server!",
-        "user" : userId
-    });
-    socket.send(message);
     console.log("Connected");
 };
 
+document.getElementById("sendButton").addEventListener("click", function (ev) {
+    var input = document.getElementById("textInput").value;
+    sendMessage(input);
+    document.getElementById('textInput').value = '';
+});
+
+
+/*
+
+function getRandomColor() {
+ return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+}
+* */
+
+function displayMessage(message){
+    var para = document.createElement("P");
+    var messagesDiv = document.getElementById("messages");
+    messagesDiv.appendChild(para);
+    var t = document.createTextNode(message.userId + ":" + message.content + "("+message.creationDate+")");
+    para.appendChild(t);
+    gotoBottom("messages");
+}
+
+function gotoBottom(id){
+    var element = document.getElementById(id);
+    element.scrollTop = element.scrollHeight - element.clientHeight;
+}
+
+
+function displayOldMessages(oldMessages){
+    var parsedJSON = JSON.parse(oldMessages);
+    for (var i=0;i<parsedJSON.length;i++) {
+       displayMessage(parsedJSON[i]);
+    //   console.log(parsedJSON[i].content);
+    }
+}
 
 socket.onmessage = function (ev) {
-    console.log('message from server is :', ev.data.toString());
-    var para = document.createElement("P");
-    var message = JSON.parse(ev.data);
-    var t = document.createTextNode(message.user +":"+ message.content);
-    para.appendChild(t);
-    document.getElementById("messages").appendChild(para);
+    var type = ev.data.toString().charAt(0);
+    var messageReceived = ev.data.toString().substring(1);
+    console.log('message from server is :', messageReceived);
+    if (type === 'l'){
+        console.log('recieved list');
+        displayOldMessages(messageReceived);
+    } else if (userID === -1 && userName === null){
+        var firstMessage = JSON.parse(messageReceived);
+        if (firstMessage.content === 'n'){
+            userName =  firstMessage.username;
+            chatID = firstMessage.chatId;
+            userID = firstMessage.userId;
+            console.log(chatID);
+            console.log(userID);
+        } else {
+            console.log("Error somewhere");
+        }
+    } else if (type === 'm'){
+        console.log('received message');
+        var message = JSON.parse(messageReceived);
+        displayMessage(message);
+    }
 };
 
-function sendMessage(){
-   // var newMessage = document.getElementById("inp").value;
-    //console.log(newMessage);
+function sendMessage(input){
     var message = JSON.stringify({
-        "content": "new Message",
-        "user" : userId
+        "chatId" : chatID,
+        "userId" : userID,
+        "userName" : userName,
+        "content": input,
+        "creationDate": "now"
     });
     socket.send(message);
 }

@@ -1,41 +1,97 @@
 package Sockets;
 
 
-import Servlets.Encode_Decode.MessageDecoder;
-import Servlets.Encode_Decode.MessageEncoder;
-import Servlets.Encode_Decode.WebSocketMessage;
+import Classes.Constants;
+import Classes.Message;
+import DB.ConnectionPool;
+import DB.MessageInfoDAO;
 
+import Encode_Decode.MessageDecoder;
+import Encode_Decode.MessageEncoder;
+import Encode_Decode.OldMessageEncoder;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-@ServerEndpoint(value = "/The_Chat", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
-public class ChatEndpoint {
+@WebListener
+@ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, decoders = MessageDecoder.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
+public class ChatEndpoint implements ServletContextListener {
+    private static ServletContext servletContext;
+
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        servletContext = servletContextEvent.getServletContext();
+    }
+
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+
+    }
 
     private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
+    private static final Map<Long, Set<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Long, Set<ChatEndpoint>>();
     private Session session;
 
     @OnOpen
-    public void onOpen(Session session) throws IOException, EncodeException {
+    public void onOpen(EndpointConfig endpointConfig, Session session) throws IOException, EncodeException, SQLException, InterruptedException {
         this.session = session;
         endpoints.add(this);
-        sendMessage(new WebSocketMessage("Hello from server", "server"));
-        System.out.println("new connection");
+        if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){
+            System.out.println("Please refresh page");
+            return;
+        }
+        long chatId = (Long) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
+        long userId = (Long) endpointConfig.getUserProperties().get(Constants.USER_ID);
+        String username = (String) endpointConfig.getUserProperties().get(Constants.USERNAME);
+
+        session.getUserProperties().put(Constants.USER_ID, userId);
+        session.getUserProperties().put(Constants.CHAT_ID, chatId);
+        session.getUserProperties().put(Constants.USERNAME, username);
+        System.out.println(chatId + "-" + userId + "-" + username);
+
+        if (!endpointMap.containsKey(chatId)){endpointMap.put(chatId, new CopyOnWriteArraySet
+                <ChatEndpoint>());}
+        endpointMap.get(chatId).add(this);
+
+        MessageInfoDAO messageInfoDAO = null;
+        ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
+        Connection con = connectionPool.getConnection();
+        messageInfoDAO = new MessageInfoDAO(con);
+        List<Message> list = messageInfoDAO.getLastNMessages(200, chatId);
+        con.close();
+
+        sendMessageUser(list, session);
+        sendMessageUser(new Message(chatId, userId, "-", "n",   "Now"), session);
     }
 
     @OnMessage
-    public void onMessage(Session session, WebSocketMessage message) throws IOException, EncodeException {
+    public void onMessage(Session session, Message message) throws IOException, EncodeException, SQLException, InterruptedException {
         sendMessage(message);
-        System.out.println("New message in Server" + message.getContent());
+        MessageInfoDAO messageInfoDAO = null;
+        ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
+        Connection con = connectionPool.getConnection();
+        messageInfoDAO = new MessageInfoDAO(con);
+        System.out.println(message.getContent() + message.getChatId());
+        messageInfoDAO.addMessage(message);
+        con.close();
     }
 
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
         endpoints.remove(this);
-        System.out.println("Disconnected");
-       // sendMessage("Discconected :(");
+        endpointMap.get(session.getUserProperties().get(Constants.CHAT_ID)).remove(this);
+        System.out.println("Disconnected Session");
     }
 
     @OnError
@@ -44,9 +100,17 @@ public class ChatEndpoint {
     }
 
 
-    private void sendMessage(WebSocketMessage message) throws IOException, EncodeException {
-        for (ChatEndpoint endpoint : endpoints) {
+    private void sendMessageUser(Object message, Session session) throws IOException, EncodeException {
+        session.getBasicRemote().sendObject(message);
+    }
+
+    private void sendMessage(Object message) throws IOException, EncodeException {
+        Long chatId = ((Message)message).getChatId();
+        for (ChatEndpoint endpoint : endpointMap.get(chatId)){
             endpoint.session.getBasicRemote().sendObject(message);
         }
+        /*for (ChatEndpoint endpoint : endpoints) {
+            endpoint.session.getBasicRemote().sendObject(message);
+        } */
     }
 }

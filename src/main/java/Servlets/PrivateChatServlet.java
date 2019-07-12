@@ -1,6 +1,8 @@
 package Servlets;
 
 import DB.ChatInfoDAO;
+import DB.ConnectionPool;
+import DB.MessageInfoDAO;
 import DB.PrepareDB;
 
 import javax.servlet.RequestDispatcher;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 
@@ -31,7 +34,15 @@ public class PrivateChatServlet extends HttpServlet {
         for(int i = 0; i < members; i++){
             String member = request.getParameter("Member" + i);
         }
-        ChatInfoDAO dao = (ChatInfoDAO) getServletContext().getAttribute(ChatInfoDAO.ATTRIBUTE);
+        ChatInfoDAO dao = null;
+        ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
+        Connection con = null;
+        try {
+            con = connectionPool.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        dao = new ChatInfoDAO(con);
         try {
             long id = dao.addChat(name, ChatInfoDAO.PRIVATE, description, members);
             request.setAttribute("id", id);
@@ -40,6 +51,11 @@ public class PrivateChatServlet extends HttpServlet {
         }
         // forward to another page
         RequestDispatcher dispatch = request.getRequestDispatcher("/Models/Homepage.html");
+        try {
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         dispatch.forward(request, response);
 
     }

@@ -1,6 +1,8 @@
 package DB;
 
 import Classes.Chat;
+import Classes.Message;
+import org.apache.commons.dbcp.BasicDataSource;
 
 import java.io.*;
 import java.sql.*;
@@ -36,15 +38,17 @@ public class PrepareDB {
      *
      * @return Connection to database
      * */
-    private static Connection getConnect() throws ClassNotFoundException, SQLException {
-        Class.forName(DB.DBInfo.DRIVER);
+    public static Connection getConnect() throws ClassNotFoundException, SQLException {
+        if (connection == null)
+            Class.forName(DB.DBInfo.DRIVER);
         connection = DriverManager.getConnection("jdbc:mysql://"+ DB.DBInfo.MYSQL_DATABASE_SERVER, DB.DBInfo.MYSQL_USERNAME, DB.DBInfo.MYSQL_PASSWORD);
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("use anonym_chat_schema;");
+//        Statement statement = connection.createStatement();
+//        statement.executeUpdate("use anonym_chat_schema;");
 //        prepareStructure();
+//        BasicDataSource pool = new BasicDataSource();
         return connection;
     }
-
+    /*
     /**
      * prepare database for use including drop old tables and create new ones
      * */
@@ -52,7 +56,7 @@ public class PrepareDB {
         BufferedReader reader;
         try {
             System.out.println(System.getProperty("user.dir"));
-            reader = new BufferedReader(new FileReader("src/main/java/DB/db.sql"));
+            reader = new BufferedReader(new FileReader(DBInfo.DB_PATH));
             String q = "";
             while (true){
                 String line = reader.readLine();
@@ -90,5 +94,23 @@ public class PrepareDB {
             }
         }
         return connection;
+    }
+
+    public static void addInfo(Connection con) throws SQLException {
+        UserInfoDAO user = new UserInfoDAO(con);
+        MessageInfoDAO messageInfoDAO = new MessageInfoDAO(con);
+        ChatInfoDAO chat = new ChatInfoDAO(con);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        user.addUser(1, "natela");
+        user.addUser(1, "natela");
+        user.addUser(1, "natela");
+        user.addUser(1, "natela");
+        messageInfoDAO.addMessage(1, 1, "salami gagartyi kalami");
+        messageInfoDAO.addMessage(1, 1, "salami gagartyi kalami");
+        messageInfoDAO.addMessage(1, 1, "salami");
+        messageInfoDAO.addMessage(1, 1, "salami");
     }
 }

@@ -1,10 +1,12 @@
 package DB;
 
+import Classes.User;
+
 import java.sql.*;
 
 public class UserInfoDAO {
     private Connection con;
-    public static String ATTRIBUTE = "userInfo";
+    public static final String ATTRIBUTE = "userInfo";
 
     public UserInfoDAO(Connection con){
         this.con = con;
@@ -15,40 +17,35 @@ public class UserInfoDAO {
      *
      * @param chatID id of chat where user to be added
      * @param name name of user to add
+     * @return id of added user
      * @throws SQLException throws exception if occur any error
      * */
     public long addUser(long chatID, String name) throws SQLException {
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.USERS_TABLE
                         + " (chatid, username, creation_date) value "
-                        + "(?, ?, sysdate());");
+                        + "(?, ?, now(4));");
         statement.setLong(1, chatID);
         statement.setString(2, name);
         System.out.println(statement.toString());
         statement.executeUpdate();
-        try {
-            Statement st = con.createStatement();
-            String q = "select LAST_INSERT_ID();";
-            ResultSet set = st.executeQuery(q);
-            set.last();
-            return Long.parseLong(set.getString(1));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        Statement st = con.createStatement();
+        String q = "select LAST_INSERT_ID();";
+        ResultSet set = st.executeQuery(q);
+        set.last();
+        return Long.parseLong(set.getString(1));
     }
 
     /**
-     * generates a random username
+     * gets back last inserted user
      *
-     * @param chatID id of chat where user to be added
-     * @throws SQLException throws exception if occur any error
+     * @return last inserted user
      * */
-    public String generateName(long chatID) throws SQLException{
-        /*
-            gvchirdeba username-ebis table.
-            randomad airchevs usernames am tabledan da mere amowmebs mocemul chatshi aris tu ara es username dakavebuli
-            tu ar aris, daabrunebs. tu arada axlidan cdis.
-         */
-        return "wvera";
+    public User getLastUser() throws SQLException {
+        User user = null;
+        PreparedStatement statement = con.prepareStatement("select * from " + DBInfo.USERS_TABLE + " order by creation_date desc limit 1;");
+        ResultSet ansSet = statement.executeQuery();
+        ansSet.next();
+        user = new User(ansSet.getString("id"), ansSet.getString("username"), ansSet.getString("chatid"));
+        return user;
     }
 }

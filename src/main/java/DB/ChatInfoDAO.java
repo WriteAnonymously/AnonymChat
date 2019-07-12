@@ -14,6 +14,7 @@ public class ChatInfoDAO {
     public static final String ATTRIBUTE = "chatInfo";
     public static final String PUBLIC = "Public";
     public static final String PRIVATE = "Private";
+    public static final Integer DEFAULT_LIMIT = 100;
     public ChatInfoDAO(Connection connection){
         this.connection = connection;
     }

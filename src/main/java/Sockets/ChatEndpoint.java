@@ -15,6 +15,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import javax.servlet.http.Cookie;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -30,11 +31,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, decoders = MessageDecoder.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
 public class ChatEndpoint implements ServletContextListener {
     private static ServletContext servletContext;
-    private String username, chatId, userId;
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         servletContext = servletContextEvent.getServletContext();
-     //   System.out.println("Socket part");
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
@@ -66,11 +65,11 @@ public class ChatEndpoint implements ServletContextListener {
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();
         messageInfoDAO = new MessageInfoDAO(con);
-        System.out.println("New Connection:");
         List<Message> list = messageInfoDAO.getLastNMessages(200, chatId);
-        sendMessageUser(list, session);
-        sendMessageUser(new Message(chatId, userId, "n", "Now"), session);
         con.close();
+
+        sendMessageUser(list, session);
+        sendMessageUser(new Message(chatId, userId, "-", "n",   "Now"), session);
     }
 
     @OnMessage
@@ -82,7 +81,7 @@ public class ChatEndpoint implements ServletContextListener {
         messageInfoDAO = new MessageInfoDAO(con);
         System.out.println(message.getContent() + message.getChatId());
         messageInfoDAO.addMessage(message);
-    //    System.out.println("New message in Server" + message.getContent());
+        con.close();
     }
 
     @OnClose

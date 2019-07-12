@@ -16,7 +16,7 @@ public class MessageDecoder implements Decoder.Text<Message> {
 
     public Message decode(String s) throws DecodeException {
         ObjectMapper mapper = new ObjectMapper();
-        Message message = new Message(1, 1, "Not received", null);
+        Message message = new Message(1, 1, "tamro", "Not received", "a");
 
         try {
             message = mapper.readValue(s, Message.class);

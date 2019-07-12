@@ -1,9 +1,7 @@
 package Servlets;
 
-import DB.ChatInfoDAO;
-import DB.ConnectionPool;
-import DB.MessageInfoDAO;
-import DB.PrepareDB;
+import Classes.TextParser;
+import DB.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,6 +13,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 @WebServlet(name = "PublicChatServlet", urlPatterns = {"/PublicChatServlet"})
@@ -24,15 +23,14 @@ public class PublicChatServlet extends HttpServlet {
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String limit = request.getParameter("limit");
-        int lim = 100;
+        String hashtags = request.getParameter("tags");
+        int lim = ChatInfoDAO.DEFAULT_LIMIT;
         try{
             lim = Integer.parseInt(limit);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         // insert into DB
-        ChatInfoDAO dao = null;
-        MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = null;
         try {
@@ -40,10 +38,13 @@ public class PublicChatServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        dao = new ChatInfoDAO(con);
+        ChatInfoDAO chatDao = new ChatInfoDAO(con);
+        TagsDAO tagDao = new TagsDAO(con);
         try {
-            long id = dao.addChat(name, ChatInfoDAO.PUBLIC, description, lim);
+            long id = chatDao.addChat(name, ChatInfoDAO.PUBLIC, description, lim);
             request.setAttribute("id", id);
+            ArrayList<String> tags = TextParser.parseForAddition(hashtags, name, description);
+            tagDao.addTags(tags, id);
         } catch (SQLException e) {
             e.printStackTrace();
         }

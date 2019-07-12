@@ -31,4 +31,24 @@ public class MessageInfoDAOAddTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void getMessageCorrectTest(){
+        try {
+            Connection con = PrepareDB.getInstance();
+            ChatInfoDAO chatDao = new ChatInfoDAO(con);
+            UserInfoDAO userDao = new UserInfoDAO(con);
+            MessageInfoDAO messageDao = new MessageInfoDAO(con);
+            long chatId = chatDao.addChat("amreza", "saqartvelo", "chven vart saqartvelo",10);
+            long userId = userDao.addUser(chatId, "lamara");
+            messageDao.addMessage(userId,chatId, "me miyvars balaxi da chemi gogo");
+            List<Message> list = messageDao.getLastNMessages(1, chatId);
+            Message expectedMessage = new Message(chatId, userId, "lamara", "me miyvars balaxi da chemi gogo", "200");
+            Assert.assertEquals("lamara", list.get(0).getUserName());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package Servlets;
 
+import Classes.Constants;
 import Classes.TextParser;
 import DB.*;
 
@@ -42,14 +43,14 @@ public class PublicChatServlet extends HttpServlet {
         TagsDAO tagDao = new TagsDAO(con);
         try {
             long id = chatDao.addChat(name, ChatInfoDAO.PUBLIC, description, lim);
-            request.setAttribute("id", id);
+            request.setAttribute(Constants.CHAT_ID, id);
             ArrayList<String> tags = TextParser.parseForAddition(hashtags, name, description);
             tagDao.addTags(tags, id);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         // forward to another page
-        RequestDispatcher dispatch = request.getRequestDispatcher("/Models/Homepage.html");
+        RequestDispatcher dispatch = request.getRequestDispatcher("/PrivateChatServlet");
         try {
             con.close();
         } catch (SQLException e) {

@@ -4,50 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome to the real world</title>
+    <script src="../js/WelcomePage.js"></script>
     <link rel="stylesheet" href="../Style/WelcomePageStyle.css">
 </head>
 
 <body>
-    <form action="/Models/PublicChatFields.html">
+    <form action="../Models/PublicChatFields.html">
         <input type="submit" value="New Public Chat" class="button">
     </form>
-    <form action="/Models/PrivateChatFields.html">
+    <form action="../Models/PrivateChatFields.html">
         <input type="submit" value="New Private Chat" class="button">
     </form>
-    <div class="rooms">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-    </div>
-
-    <div class = "test">
-        <form action="/ChatRoom" method="get">
-            <input type=hidden name=chatId value=1>
-            <div>
-                <button>Connect 1</button>
-            </div>
-        </form>
-        <br>
-        <br>
-        <br>
-        <form action="/ChatRoom" method="get">
-            <input type=hidden name=chatId value=2>
-            <div>
-                <button>Connect 2</button>
-            </div>
-        </form>
-    </div>
-
-    <div style="width:300px;height:270px;border:1px solid #000; float: right; margin-top: 220px">
-        ak chaiwereba sortirebis ambebi
+    
+    <div id="roomsDiv" class="rooms"></div>
+    <body onload=makeEnvironment()></body>
+    <div id="chatInfo" style="width:300px;height:270px;border:1px solid #000; float: right; margin-top: 220px">
     </div>
 </body>
-    <script src = "/js/WelcomePage.js"></script>
 </html>

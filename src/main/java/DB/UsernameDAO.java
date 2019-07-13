@@ -28,6 +28,22 @@ public class UsernameDAO {
         statement.executeUpdate();
         statement.close();
     }
+    /**
+     * gets last username from table
+     *
+     * @throws SQLException throws exception if occur any error
+     * */
+    public String getLastUsername() throws SQLException {
+        String result = "";
+        PreparedStatement statement = con.prepareStatement("select username from " + DBInfo.USERNAMES_TABLE
+                + " order by id limit 1;");
+        ResultSet set = statement.executeQuery();
+        if(set.next()) {
+            result = set.getString("username");
+        }
+        statement.close();
+        return result;
+    }
 
     /**
      * gets n random usernames

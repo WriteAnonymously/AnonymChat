@@ -45,12 +45,12 @@ public class PublicChatServlet extends HttpServlet {
         try {
             chatId = chatDao.addChat(name, ChatInfoDAO.PUBLIC, description, lim);
             request.setAttribute(Constants.CHAT_ID, chatId);
+
             ArrayList<String> tags = TextParser.parseForAddition(hashtags, name, description);
             tagDao.addTags(tags, chatId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // forward to another page
         try {
             con.close();
         } catch (SQLException e) {

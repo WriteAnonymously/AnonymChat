@@ -1,4 +1,4 @@
-package Classes;
+package DB;
 
 import DB.PrepareDB;
 import DB.UsernameDAO;
@@ -9,10 +9,19 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
-public class GetRandomUsernamesTest {
+public class UsernameDAOTest {
 
     @Test
-    public void addTest(){
+    public void addTest() throws SQLException, ClassNotFoundException {
+        UsernameDAO dao = new UsernameDAO(PrepareDB.getInstance());
+        String actual = "saba";
+        dao.addUsername(actual);
+        String last = dao.getLastUsername();
+        Assert.assertEquals(last, actual);
+    }
+
+    @Test
+    public void getUsernames1(){
         Connection con = null;
         try{
             con = PrepareDB.getInstance();
@@ -39,7 +48,7 @@ public class GetRandomUsernamesTest {
     }
 
     @Test
-    public void randomTest(){
+    public void getUsernames2(){
         Connection con = null;
         try{
             con = PrepareDB.getInstance();
@@ -65,4 +74,5 @@ public class GetRandomUsernamesTest {
             e.printStackTrace();
         }
     }
+
 }

@@ -50,7 +50,6 @@ public class AddUserServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-
         ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
         UsernameDAO usernameDAO = new UsernameDAO(con);
         NameGenerator ng = new NameGenerator(chatInfoDAO, usernameDAO);
@@ -59,7 +58,6 @@ public class AddUserServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
 
         try {
             long id = dao.addUser(chatID, username);

@@ -1,6 +1,7 @@
 package DB;
 
 import Classes.Chat;
+import Classes.PrivateChat;
 import Classes.PublicChat;
 
 import java.sql.*;
@@ -95,6 +96,29 @@ public class ChatInfoDAO {
         }
         statement.close();
         return userNames;
+    }
+
+    /**
+     * returns chat information by id
+     *
+     * @param chatId id of chat
+     * @return Chat info of chat
+     * */
+    public Chat getChatInfo(long chatId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select * from " + DBInfo.CHAT_TABLE + " where id = ? ");
+        statement.setLong(1, chatId);
+        Chat chat = null;
+        ResultSet set = statement.executeQuery();
+        set.last();
+        String status = set.getString("status");
+        if (status.equals(ChatInfoDAO.PRIVATE)){
+            chat = new PrivateChat(chatId, set.getString("name"), set.getString("description"),
+                        set.getInt("max_users_number"), set.getString("creation_date"));
+        } else {
+            chat = new PublicChat(chatId, set.getString("name"), set.getString("description"),
+                    set.getInt("max_users_number"), set.getString("creation_date"));
+        }
+        return chat;
     }
 
     /**

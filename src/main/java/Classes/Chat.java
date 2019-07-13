@@ -58,4 +58,14 @@ public class Chat {
     public int hashCode() {
         return name.hashCode();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Chat)){
+            return false;
+        }
+        Chat chat = (Chat)obj;
+        return ID == chat.ID && name.equals(chat.name) && description.equals(chat.description)
+                && limit == chat.limit;
+    }
 }

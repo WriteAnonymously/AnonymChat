@@ -56,5 +56,4 @@ public class AddUserServletTest {
         verify(session).setAttribute("status", "loggedin");
         verify(dispatcher).forward(request, response);
     }
-    
 }

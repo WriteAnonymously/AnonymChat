@@ -24,10 +24,10 @@ public class AddUserServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // preparing parameters
         System.out.println("adding User in servlet");
         String ID = request.getParameter(Constants.CHAT_ID);
         if (ID == null){
+
      //       System.out.println("Chat Id not Found");
             return;
         }

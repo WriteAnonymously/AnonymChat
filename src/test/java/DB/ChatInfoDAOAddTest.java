@@ -1,6 +1,7 @@
 package DB;
 
 import Classes.Chat;
+import Classes.PrivateChat;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,4 +37,14 @@ public class ChatInfoDAOAddTest {
         }
     }
 
+    @Test
+    public void chatInfoGetInfoTest() throws SQLException, ClassNotFoundException {
+        Connection con = PrepareDB.getInstance();
+        ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
+        long chatId = chatInfoDAO.addChat("amxela chati", ChatInfoDAO.PRIVATE, "adeqi dajeqi", 10);
+        Chat chat = chatInfoDAO.getChatInfo(chatId);
+        Assert.assertTrue(chat instanceof PrivateChat);
+        Chat chat1 = new Chat(chatId, "amxela chati", "adeqi dajeqi", 10, null);
+        Assert.assertEquals(chat1, chat);
+    }
 }

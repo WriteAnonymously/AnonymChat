@@ -1,0 +1,74 @@
+@charset "UTF-8";
+.button {
+	display:inline-block;
+	margin-left:1100px;
+	margin-top:20px;
+	font-weight:bold;
+	font-size:18px;
+	padding:5px 10px;
+	border-radius:5px;
+	background-image: linear-gradient(bottom, rgb(245, 241, 241) 0%, rgb(218,214,214) 100%);
+	box-shadow: 0px 6px 0px #808080, 0px 3px 15px rgba(0,0,0,.4), inset 0px 1px 0px rgba(255,255,255,.3), inset 0px 0px 3px rgba(255,255,255,.5);
+}
+
+.button:active{
+	transform: translate(0, 4px);
+	transition: all .2s ease-in-out;
+}
+
+.rooms {
+	width:750px;
+	height:455px;
+	border: 3px outset rgba(255,255,255, 0.1);
+	border-radius: 5px;
+	float:left;
+	margin-top: 50px;
+	margin-left: 50px;
+	transform-style: preserve-3d;
+	position: relative;
+	text-align: center;
+}
+
+.chatRoom {
+	width: 100px;
+	height: 180px;
+	margin-left: 40px;
+	margin-top: 40px;
+	float:left;
+	transform-style: preserve-3d;
+	background-color:rgba(255,255,255, 0.1);
+	border-radius:10px;
+}
+
+
+
+.chatRoom:hover {
+	transform: translate(0, -20px);
+}
+
+.centered-text {
+	position: absolute;
+	top: 50%;
+	text-color: white;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: white;
+}
+
+.chatImg {
+	width: 100%;
+	height: 100%;
+	position: center;
+}
+
+.button:hover {
+	background-image: linear-gradient(bottom, rgb(255,250,250) 0%, rgb(229,230,230) 100%);
+}
+
+body {
+	background-color: black;
+}
+
+h5 {
+	color:white;
+}

@@ -3,6 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
+  <script>
+    var curMessages = 100;
+    $(document).ready(function(){
+      $("messages").scroll(function(){
+        var curHeight = document.getElementById('messages').clientHeight;
+        var scrollHeight = document.getElementById('messages').scrollHeight;
+        if (scrollHeight > curHeight * 0.85){
+
+        }
+      });
+    });
+  </script>
   <style>
     body {
       box-sizing: border-box;
@@ -58,7 +70,6 @@
   <div class="chat-name">Chat Name</div>
   <div class="description">Description</div>
   <div class="messages" id = "messages">
-
   </div>
   <form class="message-form" onsubmit="return false;" autocomplete="off">
     <input class="message-form__input"  id = "textInput" placeholder="Type a message.." type="text"/>

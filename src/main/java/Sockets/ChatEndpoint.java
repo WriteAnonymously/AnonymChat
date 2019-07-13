@@ -10,7 +10,6 @@ import DB.MessageInfoDAO;
 import Encode_Decode.MessageEncoder;
 import Encode_Decode.OldMessageEncoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -44,7 +43,7 @@ public class ChatEndpoint implements ServletContextListener {
 
     @OnOpen
     public void onOpen(EndpointConfig endpointConfig, Session session) throws IOException, EncodeException, SQLException, InterruptedException {
-       this.session = session;
+        this.session = session;
         User user = null;
         long chatId = -1;
         if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){

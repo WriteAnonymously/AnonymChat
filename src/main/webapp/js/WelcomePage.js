@@ -2,23 +2,18 @@ function sendRequest(method, url, ind, id, callback) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            window.alert("aq shemovida da napovni aris??????")
             callback(xhttp.responseText);
         }
     };
 
     if (id !== null) {
         var toPass = "id="+id;
-        window.alert(id + " jet araa");
         xhttp.open(method, url, ind);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(toPass);
-        window.alert(id + " ariiiiiiiii");
     } else {
-        window.alert("shemovida aq ids gareeesdsds");
         xhttp.open(method, url, ind);
         xhttp.send();
-        window.alert("shemovida aq ids gareeesdsds");
     }
 }
 
@@ -48,7 +43,7 @@ function makeRoom(name, id) {
     roomDiv.classList.add("chatRoom");
     var roomImg = document.createElement("img");
     roomImg.src = "../images/door.jpg";
-   // roomImg.src = "store-images/TShirt.jpg";
+    // roomImg.src = "store-images/TShirt.jpg";
     roomImg.id = id;
     roomImg.name = name;
     roomImg.classList.add("chatImg");
@@ -72,6 +67,5 @@ function drawRooms(rooms) {
 }
 
 function makeEnvironment() {
-    window.alert("dasawyisi");
     sendRequest("get", "topRooms", true, null, drawRooms);
 }

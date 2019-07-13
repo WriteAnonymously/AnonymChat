@@ -62,7 +62,16 @@
             }
         }
     </style>
+    <script>
+        function hover(element) {
+            element.setAttribute('src', '../images/doorOpened.jpg');
+        }
 
+        function unhover(element) {
+            element.setAttribute('src', '../images/doorClosed.jpg');
+        }
+
+    </script>
 </head>
 
 <div class="header">
@@ -83,16 +92,16 @@
         <input type="submit" value="New Private Chat" class="button">
     </form>
     <div class="rooms">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
-        <img src="../images/door.jpg" class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);" class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);" class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);"  class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);"  class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);"  class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);"  class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);"  class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);"  class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);"  class="chatRoom">
+        <img src="../images/doorClosed.jpg" onmouseover="hover(this);" onmouseout="unhover(this);"  class="chatRoom">
     </div>
 
     <div class = "test">

@@ -88,7 +88,7 @@ public class ChatEndpoint implements ServletContextListener {
             sendMessage(Constants.SOCKET_INFO_BOT, bot.randomUser(), chatId);
             return;
         }
-        
+
         sendMessage(Constants.SOCKET_INFO_MESSAGE, message, message.getChatId());
         messageInfoDAO = new MessageInfoDAO(con);
         System.out.println(message.getContent() + message.getChatId());

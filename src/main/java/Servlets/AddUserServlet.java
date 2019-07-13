@@ -1,5 +1,6 @@
 package Servlets;
 
+import Classes.Chat;
 import Classes.Constants;
 import Classes.NameGenerator;
 import Classes.User;
@@ -31,7 +32,6 @@ public class AddUserServlet extends HttpServlet {
 
 
         String ID = request.getParameter(Constants.CHAT_ID);
-
         if (ID == null){
             response.sendRedirect("/WelcomeServlet");
             return;
@@ -62,9 +62,13 @@ public class AddUserServlet extends HttpServlet {
         UserInfoDAO userInfoDAO = new UserInfoDAO(con);
         ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
         UsernameDAO usernameDAO = new UsernameDAO(con);
+
+        Chat chatInfo = null;
         NameGenerator ng = new NameGenerator(chatInfoDAO, usernameDAO);
         try {
             username = ng.generateName(chatID);
+            chatInfo = chatInfoDAO.getChatInfo(chatID);
+            System.out.println(chatInfo.getName()+"nqqq");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -74,6 +78,7 @@ public class AddUserServlet extends HttpServlet {
             User user = new User(id, username, chatID);
             System.out.println("new user id = " + id);
             session.setAttribute(ID, user);
+            session.setAttribute(Constants.CHAT_INFO, chatInfo);
             session.setAttribute(Constants.CHAT_ID, ID);
             System.out.println("Attributes set");
         } catch (SQLException e) {

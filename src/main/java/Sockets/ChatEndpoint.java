@@ -1,14 +1,14 @@
 package Sockets;
 
 
+import Classes.Chat;
 import Classes.Constants;
 import Classes.Message;
 import Classes.User;
 import DB.ConnectionPool;
 import DB.MessageInfoDAO;
 
-import Encode_Decode.MessageEncoder;
-import Encode_Decode.OldMessageEncoder;
+import Encode_Decode.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.internal.ws.api.ha.StickyFeature;
 
@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @WebListener
-@ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
+@ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, encoders = {SocketInfoMessageEncoder.class})
 public class ChatEndpoint implements ServletContextListener {
     private static final Map<Long, Set<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Long, Set<ChatEndpoint>>();
     private static ServletContext servletContext;
@@ -45,13 +45,15 @@ public class ChatEndpoint implements ServletContextListener {
     @OnOpen
     public void onOpen(EndpointConfig endpointConfig, Session session) throws IOException, EncodeException, SQLException, InterruptedException {
        this.session = session;
-        User user = null;
+       User user = null;
+       Chat chatInfo = null;
         long chatId = -1;
         if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){
             System.out.println("Please refresh page");
             return;
         } else {
             String ID = (String) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
+            chatInfo = ((Chat)endpointConfig.getUserProperties().get(Constants.CHAT_INFO));
             chatId = Long.parseLong(ID);
             user = ((User)endpointConfig.getUserProperties().get(ID));
         }
@@ -72,14 +74,15 @@ public class ChatEndpoint implements ServletContextListener {
         List<Message> list = messageInfoDAO.getLastNMessages(200, chatId);
         con.close();
 
-        sendMessageUser(list, session);
-        sendMessageUser(new Message(chatId, userId, username, "n",   "Now"), session);
+        sendMessageUser(Constants.SOCKET_INFO_OLD_MESSAGES, list, session);
+        sendMessageUser(Constants.SOCKET_INFO_USER, user, session);
+        sendMessageUser(Constants.SOCKET_INFO_CHAT, chatInfo, session);
     }
 
     @OnMessage
     public void onMessage(Session session, String msg) throws IOException, EncodeException, SQLException, InterruptedException, DecodeException {
-        Message message =  decodeMessage(msg);
-        sendMessage(message);
+        Message message =  MessageHandlerDecode.decodeMessage(msg);
+        sendMessage(Constants.SOCKET_INFO_MESSAGE, message);
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();
@@ -108,36 +111,21 @@ public class ChatEndpoint implements ServletContextListener {
 
 
 
-    private void sendMessageUser(Object message, Session session) throws IOException, EncodeException {
-        session.getBasicRemote().sendObject(message);
+    private void sendMessageUser(String type, Object message, Session session) throws IOException, EncodeException {
+        session.getBasicRemote().sendObject(new SocketInfoMessage(type, message));
     }
 
-    private void sendMessage(Object message) throws IOException, EncodeException {
+    private void sendMessage(String type, Object message) throws IOException, EncodeException {
         Long chatId = ((Message)message).getChatId();
         Set<ChatEndpoint> endpoints = endpointMap.get(chatId);
         for (ChatEndpoint endpoint : endpoints){
-            endpoint.session.getBasicRemote().sendObject(message);
+            endpoint.session.getBasicRemote().sendObject(new SocketInfoMessage(type, message));
         }
     }
 
-    /**
-     * Parses the message and responses after the type of message
-     */
-    private void handleMessage(String message) throws DecodeException {
-        Message mes = decodeMessage(message);
-    }
 
-    private Message decodeMessage(String s) throws DecodeException {
-        ObjectMapper mapper = new ObjectMapper();
-        Message message = new Message(1, 1, "-", "Not received", "Infinity");
 
-        try {
-            message = mapper.readValue(s, Message.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return message;
-    }
+
 
 
 }

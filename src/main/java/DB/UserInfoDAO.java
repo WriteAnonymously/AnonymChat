@@ -22,8 +22,8 @@ public class UserInfoDAO {
      * */
     public long addUser(long chatID, String name) throws SQLException {
         PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.USERS_TABLE
-                        + " (chatid, username, creation_date) value "
-                        + "(?, ?, now(4));");
+                + " (chatid, username, creation_date) value "
+                + "(?, ?, now(4));");
         statement.setLong(1, chatID);
         statement.setString(2, name);
         System.out.println(statement.toString());

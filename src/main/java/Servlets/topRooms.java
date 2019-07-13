@@ -32,22 +32,22 @@ import java.util.List;
 @WebServlet(name = "topRooms", urlPatterns = {"/topRooms"})
 public class topRooms extends HttpServlet {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
-        	Connection con = null;	
-		ChatInfoDAO dao = null;	
+		Connection con = null;
+		ChatInfoDAO dao = null;
 		try {
-            		con = connectionPool.getConnection();
-        	} catch (SQLException e) {
-            		e.printStackTrace();
-        	}
+			con = connectionPool.getConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		dao = new ChatInfoDAO(con);
 
-		
+
 		ArrayList<String> res = new ArrayList<String>();
 		ArrayList<Chat> chats = null;
 		try {

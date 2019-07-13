@@ -1,6 +1,5 @@
 package Servlets;
 
-<<<<<<< HEAD
 import Classes.Constants;
 import DB.ChatInfoDAO;
 import Classes.Chat;
@@ -18,8 +17,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.servlet.ServletContext;
-=======
->>>>>>> 1b5e584d4e8d302f814ea1bab230d9ced9413fd0
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;

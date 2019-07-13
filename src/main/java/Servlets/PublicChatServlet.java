@@ -41,22 +41,23 @@ public class PublicChatServlet extends HttpServlet {
         }
         ChatInfoDAO chatDao = new ChatInfoDAO(con);
         TagsDAO tagDao = new TagsDAO(con);
+        long chatId = -1;
         try {
-            long id = chatDao.addChat(name, ChatInfoDAO.PUBLIC, description, lim);
-            request.setAttribute(Constants.CHAT_ID, id);
+            chatId = chatDao.addChat(name, ChatInfoDAO.PUBLIC, description, lim);
+            request.setAttribute(Constants.CHAT_ID, chatId);
+
             ArrayList<String> tags = TextParser.parseForAddition(hashtags, name, description);
-            tagDao.addTags(tags, id);
+            tagDao.addTags(tags, chatId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // forward to another page
-        RequestDispatcher dispatch = request.getRequestDispatcher("/PrivateChatServlet");
         try {
             con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        dispatch.forward(request, response);
+        String path = "/ChatRoom?" + Constants.CHAT_ID + "="+Long.toString(chatId);
+        response.sendRedirect(path);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

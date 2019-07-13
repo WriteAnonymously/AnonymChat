@@ -1,7 +1,7 @@
 
 var socket = new WebSocket('ws://localhost:8080/The_Chat');
 
-var userName = null;
+var userName = 'NULL';
 var userID = -1;
 var chatID = -1;
 
@@ -16,18 +16,12 @@ document.getElementById("sendButton").addEventListener("click", function (ev) {
 });
 
 
-/*
-
-function getRandomColor() {
- return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
-}
-* */
 
 function displayMessage(message){
     var para = document.createElement("P");
     var messagesDiv = document.getElementById("messages");
     messagesDiv.appendChild(para);
-    var t = document.createTextNode(message.userId + ":" + message.content + "("+message.creationDate+")");
+    var t = document.createTextNode(message.userName + ":" + message.content + "("+message.creationDate+")");
     para.appendChild(t);
     gotoBottom("messages");
 }
@@ -42,7 +36,6 @@ function displayOldMessages(oldMessages){
     var parsedJSON = JSON.parse(oldMessages);
     for (var i=0;i<parsedJSON.length;i++) {
        displayMessage(parsedJSON[i]);
-    //   console.log(parsedJSON[i].content);
     }
 }
 
@@ -53,12 +46,14 @@ socket.onmessage = function (ev) {
     if (type === 'l'){
         console.log('recieved list');
         displayOldMessages(messageReceived);
-    } else if (userID === -1 && userName === null){
+    } else if (userID === -1 && userName.valueOf() === 'NULL'){
         var firstMessage = JSON.parse(messageReceived);
-        if (firstMessage.content === 'n'){
-            userName =  firstMessage.username;
+        if (firstMessage.content.valueOf() === 'n'){
+            userName =  firstMessage.userName.valueOf();
             chatID = firstMessage.chatId;
             userID = firstMessage.userId;
+            console.log(firstMessage.userName);
+            console.log(firstMessage.content);
             console.log(chatID);
             console.log(userID);
         } else {

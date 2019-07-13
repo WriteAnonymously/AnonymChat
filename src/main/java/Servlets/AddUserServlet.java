@@ -1,9 +1,8 @@
 package Servlets;
 
 import Classes.Constants;
-import DB.ConnectionPool;
-import DB.MessageInfoDAO;
-import DB.UserInfoDAO;
+import Classes.NameGenerator;
+import DB.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -25,14 +24,14 @@ public class AddUserServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("adding User in servlet");
+
         String ID = request.getParameter(Constants.CHAT_ID);
         if (ID == null){
-
-     //       System.out.println("Chat Id not Found");
+            response.sendRedirect("/WelcomeServlet");
             return;
         }
         HttpSession session = request.getSession();
-        String username = "Shota";
+        String username = "Anon";
         UserInfoDAO dao = null;
 
         MessageInfoDAO messageInfoDAO = null;
@@ -51,15 +50,15 @@ public class AddUserServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        // generating username
-//        if(username == null){
-//            try {
-//                username = dao.generateName(chatID);
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//         insert into DB
+        ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
+        UsernameDAO usernameDAO = new UsernameDAO(con);
+        NameGenerator ng = new NameGenerator(chatInfoDAO, usernameDAO);
+        try {
+            username = ng.generateName(chatID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         try {
             long id = dao.addUser(chatID, username);
             System.out.println("new user id = " + id);
@@ -71,12 +70,13 @@ public class AddUserServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        RequestDispatcher dispatch = request.getRequestDispatcher("/Models/ChatPage.html");
+        String path = "/Models/ChatPage.html";
         try {
             con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        RequestDispatcher dispatch = request.getRequestDispatcher(path);
         dispatch.forward(request, response);
     }
 }

@@ -7,7 +7,8 @@ import org.apache.commons.dbcp.BasicDataSource;
 import java.io.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PrepareDB {
@@ -22,14 +23,28 @@ public class PrepareDB {
             MessageInfoDAO messageInfoDAO = new MessageInfoDAO(con);
             UserInfoDAO userInfoDAO = new UserInfoDAO(con);
             ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("use anonym_chat_schema;");
+
             long charID = chatInfoDAO.addChat("chat", "public", "kai chat",  1);
             long userID = userInfoDAO.addUser(1, "wvera");
+
+            addUserNames(con);
+            addInfo(con);
             List<Chat> lst = chatInfoDAO.getTopNChats(1);
             Chat ch = lst.get(0);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void addUserNames(Connection con) throws SQLException {
+        UsernameDAO usernameDAO = new UsernameDAO(con);
+        List<String> names = new ArrayList<String>(Arrays.asList("saba", "vaxo", "vasila", "dachvi", "churgula"));
+        for (int i = 0; i < names.size(); i++){
+            usernameDAO.addUsername(names.get(i));
         }
     }
 

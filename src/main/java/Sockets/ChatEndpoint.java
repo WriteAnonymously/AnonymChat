@@ -6,9 +6,9 @@ import Classes.Message;
 import DB.ConnectionPool;
 import DB.MessageInfoDAO;
 
-import Encode_Decode.MessageDecoder;
 import Encode_Decode.MessageEncoder;
 import Encode_Decode.OldMessageEncoder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -19,7 +19,6 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,9 +26,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @WebListener
-@ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, decoders = MessageDecoder.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
+@ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
 public class ChatEndpoint implements ServletContextListener {
+    // private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
+    private static final Map<Long, Set<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Long, Set<ChatEndpoint>>();
     private static ServletContext servletContext;
+    private Session session;
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         servletContext = servletContextEvent.getServletContext();
@@ -39,14 +41,10 @@ public class ChatEndpoint implements ServletContextListener {
 
     }
 
-    private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
-    private static final Map<Long, Set<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Long, Set<ChatEndpoint>>();
-    private Session session;
-
     @OnOpen
     public void onOpen(EndpointConfig endpointConfig, Session session) throws IOException, EncodeException, SQLException, InterruptedException {
-        this.session = session;
-        endpoints.add(this);
+       this.session = session;
+       //endpoints.add(this);
         if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){
             System.out.println("Please refresh page");
             return;
@@ -60,8 +58,7 @@ public class ChatEndpoint implements ServletContextListener {
         session.getUserProperties().put(Constants.USERNAME, username);
         System.out.println(chatId + "-" + userId + "-" + username);
 
-        if (!endpointMap.containsKey(chatId)){endpointMap.put(chatId, new CopyOnWriteArraySet
-                <ChatEndpoint>());}
+        if (!endpointMap.containsKey(chatId)){endpointMap.put(chatId, new CopyOnWriteArraySet<ChatEndpoint>());}
         endpointMap.get(chatId).add(this);
 
         MessageInfoDAO messageInfoDAO = null;
@@ -72,11 +69,12 @@ public class ChatEndpoint implements ServletContextListener {
         con.close();
 
         sendMessageUser(list, session);
-        sendMessageUser(new Message(chatId, userId, "-", "n",   "Now"), session);
+        sendMessageUser(new Message(chatId, userId, username, "n",   "Now"), session);
     }
 
     @OnMessage
-    public void onMessage(Session session, Message message) throws IOException, EncodeException, SQLException, InterruptedException {
+    public void onMessage(Session session, String msg) throws IOException, EncodeException, SQLException, InterruptedException, DecodeException {
+        Message message =  decodeMessage(msg);
         sendMessage(message);
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
@@ -89,8 +87,14 @@ public class ChatEndpoint implements ServletContextListener {
 
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
-        endpoints.remove(this);
-        endpointMap.get(session.getUserProperties().get(Constants.CHAT_ID)).remove(this);
+      //  endpoints.remove(this);
+        try{
+            if (session.getUserProperties().get(Constants.CHAT_ID) != null && endpointMap.containsKey(session.getUserProperties().get(Constants.CHAT_ID))) {
+                endpointMap.get(session.getUserProperties().get(Constants.CHAT_ID)).remove(this);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         System.out.println("Disconnected Session");
     }
 
@@ -100,17 +104,37 @@ public class ChatEndpoint implements ServletContextListener {
     }
 
 
+
     private void sendMessageUser(Object message, Session session) throws IOException, EncodeException {
         session.getBasicRemote().sendObject(message);
     }
 
     private void sendMessage(Object message) throws IOException, EncodeException {
         Long chatId = ((Message)message).getChatId();
-        for (ChatEndpoint endpoint : endpointMap.get(chatId)){
+        Set<ChatEndpoint> endpoints = endpointMap.get(chatId);
+        for (ChatEndpoint endpoint : endpoints){
             endpoint.session.getBasicRemote().sendObject(message);
         }
-        /*for (ChatEndpoint endpoint : endpoints) {
-            endpoint.session.getBasicRemote().sendObject(message);
-        } */
     }
+
+    /**
+     * Parses the message and responses after the type of message
+     */
+    private void handleMessage(String message) throws DecodeException {
+        Message mes = decodeMessage(message);
+    }
+
+    private Message decodeMessage(String s) throws DecodeException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = new Message(1, 1, "-", "Not received", "Infinity");
+
+        try {
+            message = mapper.readValue(s, Message.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return message;
+    }
+
+
 }

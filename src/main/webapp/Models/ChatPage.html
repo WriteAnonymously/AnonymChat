@@ -5,60 +5,61 @@
   <meta name="viewport" content="width=device-width">
   <style>
     body {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 13px;
-      display: flex;
-      flex-direction: column;
-      max-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0 auto;
+      max-width: 800px;
+      padding: 0 20px;
     }
 
-    .chat-name,
-    .description,
-    .messages {
-      border: 1px solid #e4e4e4;
-      padding: 15px;
-      margin-bottom: 15px;
+    .container {
+      border: 2px solid #dedede;
+      background-color: #f1f1f1;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 10px 0;
     }
 
-    .messages {
-      flex-shrink: 1;
-      overflow: auto;
+    .darker {
+      border-color: #ccc;
+      background-color: #ddd;
     }
 
-    .message {
-      padding: 5px 0;
-    }
-    .message .member {
-      display: inline-block;
-    }
-
-    .member {
-      padding-right: 10px;
-      position: relative;
+    .container::after {
+      content: "";
+      clear: both;
+      display: table;
     }
 
-    .message-form {
-      display: flex;
-      flex-shrink: 0;
+    .container img {
+      float: left;
+      max-width: 60px;
+      width: 100%;
+      margin-right: 20px;
+      border-radius: 50%;
     }
-    .message-form__input {
-      flex-grow: 1;
-      border: 1px solid #dfdfdf;
-      padding: 10px 15px;
-      font-size: 16px;
+
+    .container img.right {
+      float: right;
+      margin-left: 20px;
+      margin-right:0;
     }
-    .message-form__button {
-      margin: 10px;
+
+    .time-right {
+      float: right;
+      color: #aaa;
+    }
+
+    .time-left {
+      float: left;
+      color: #999;
     }
   </style>
 </head>
 <body>
   <div class="chat-name">Chat Name</div>
   <div class="description">Description</div>
-  <div class="messages" id = "messages">
-
+  <div class="container" id = "messages">
+    <p>Hey! I'm fine. Thanks for asking!</p>
+    <span class="time-left">11:01</span>
   </div>
   <form class="message-form" onsubmit="return false;" autocomplete="off">
     <input class="message-form__input"  id = "textInput" placeholder="Type a message.." type="text"/>

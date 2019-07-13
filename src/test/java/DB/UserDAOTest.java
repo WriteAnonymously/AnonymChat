@@ -16,7 +16,7 @@ public class UserDAOTest {
             ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
             long chatId = chatInfoDAO.addChat("saxalxo", ChatInfoDAO.PRIVATE, "magaria", 10);
             long userId = userInfoDAO.addUser(chatId, "vipi");
-            Assert.assertEquals(new User(String.valueOf(userId), "vipi", String.valueOf(chatId)), userInfoDAO.getLastUser());
+            Assert.assertEquals(new User(userId, "vipi", chatId), userInfoDAO.getLastUser());
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

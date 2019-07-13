@@ -2,6 +2,7 @@ package Servlets;
 
 import Classes.Constants;
 import Classes.NameGenerator;
+import Classes.User;
 import DB.*;
 
 import javax.servlet.RequestDispatcher;
@@ -19,22 +20,38 @@ import java.sql.SQLException;
 @WebServlet(name = "ChatRoom", urlPatterns = {"/ChatRoom"})
 public class AddUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("aq shemovida she chema");
         doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("adding User in servlet");
+        String chatPath = "/Models/ChatPage.html";
+        response.setHeader("Cache-Control", "private,no-store,no-cache");
+
 
         String ID = request.getParameter(Constants.CHAT_ID);
+
         if (ID == null){
             response.sendRedirect("/WelcomeServlet");
             return;
         }
-        HttpSession session = request.getSession();
-        String username = "Anon";
-        UserInfoDAO dao = null;
+        long chatID = -1;
+        try{
+            chatID = Long.parseLong(ID);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
 
-        MessageInfoDAO messageInfoDAO = null;
+        HttpSession session = request.getSession();
+        if (session.getAttribute(ID) != null){
+            System.out.println("Already been");
+            RequestDispatcher dispatch = request.getRequestDispatcher(chatPath);
+            dispatch.forward(request, response);
+            return;
+        }
+
+        String username = "Anon";
         ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = null;
         try {
@@ -42,14 +59,7 @@ public class AddUserServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        dao = new UserInfoDAO(con);
-
-        long chatID = -1;
-        try{
-            chatID = Long.parseLong(ID);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
+        UserInfoDAO userInfoDAO = new UserInfoDAO(con);
         ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
         UsernameDAO usernameDAO = new UsernameDAO(con);
         NameGenerator ng = new NameGenerator(chatInfoDAO, usernameDAO);
@@ -60,23 +70,21 @@ public class AddUserServlet extends HttpServlet {
         }
 
         try {
-            long id = dao.addUser(chatID, username);
+            long id = userInfoDAO.addUser(chatID, username);
+            User user = new User(id, username, chatID);
             System.out.println("new user id = " + id);
-            session.setAttribute(Constants.USER_ID, id);
-            session.setAttribute(Constants.CHAT_ID, chatID);
-            session.setAttribute(Constants.USERNAME, username);
-            session.setAttribute("status","loggedin");
+            session.setAttribute(ID, user);
+            session.setAttribute(Constants.CHAT_ID, ID);
             System.out.println("Attributes set");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String path = "/Models/ChatPage.html";
         try {
             con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        RequestDispatcher dispatch = request.getRequestDispatcher(path);
+        RequestDispatcher dispatch = request.getRequestDispatcher(chatPath);
         dispatch.forward(request, response);
     }
 }

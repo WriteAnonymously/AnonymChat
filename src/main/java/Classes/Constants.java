@@ -10,5 +10,5 @@ public class Constants {
     public static final String SOCKET_INFO_OLD_MESSAGES = "oldMessages";
     public static final String SOCKET_INFO_CHAT = "newChatInfo";
     public static final String SOCKET_INFO_USER = "newUserInfo";
-
+    public static final String SOCKET_INFO_BOT = "botMessage";
 }

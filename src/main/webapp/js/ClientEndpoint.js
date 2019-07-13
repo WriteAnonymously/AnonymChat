@@ -26,10 +26,14 @@ function updateChatInfo() {
 
 
 function displayMessage(message){
+    displayText(message.userName + ":" + message.content + "("+message.creationDate+")");
+}
+
+function displayText(input) {
     var para = document.createElement("P");
     var messagesDiv = document.getElementById("messages");
     messagesDiv.appendChild(para);
-    var t = document.createTextNode(message.userName + ":" + message.content + "("+message.creationDate+")");
+    var t = document.createTextNode(input);
     para.appendChild(t);
     gotoBottom("messages");
 }
@@ -70,6 +74,8 @@ socket.onmessage = function (ev) {
         console.log('received message');
         var message = JSON.parse(messageReceived);
         displayMessage(message);
+    } else if (type === 'b'){
+        displayText("BOT: "+messageReceived);
     }
 };
 

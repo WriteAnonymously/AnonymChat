@@ -1,10 +1,7 @@
 package Sockets;
 
 
-import Classes.Chat;
-import Classes.Constants;
-import Classes.Message;
-import Classes.User;
+import Classes.*;
 import DB.ConnectionPool;
 import DB.MessageInfoDAO;
 
@@ -81,10 +78,18 @@ public class ChatEndpoint implements ServletContextListener {
     @OnMessage
     public void onMessage(Session session, String msg) throws IOException, EncodeException, SQLException, InterruptedException, DecodeException {
         Message message =  MessageHandlerDecode.decodeMessage(msg);
-        sendMessage(Constants.SOCKET_INFO_MESSAGE, message);
+        Long chatId = message.getChatId();
+
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();
+        if (message.getContent().startsWith("BOT:")) {
+            ChatBot bot = new ChatBot(message.getChatId(), con);
+            sendMessage(Constants.SOCKET_INFO_BOT, bot.randomUser(), chatId);
+            return;
+        }
+        
+        sendMessage(Constants.SOCKET_INFO_MESSAGE, message, message.getChatId());
         messageInfoDAO = new MessageInfoDAO(con);
         System.out.println(message.getContent() + message.getChatId());
         messageInfoDAO.addMessage(message);
@@ -114,8 +119,7 @@ public class ChatEndpoint implements ServletContextListener {
         session.getBasicRemote().sendObject(new SocketInfoMessage(type, message));
     }
 
-    private void sendMessage(String type, Object message) throws IOException, EncodeException {
-        Long chatId = ((Message)message).getChatId();
+    private void sendMessage(String type, Object message, Long chatId) throws IOException, EncodeException {
         Set<ChatEndpoint> endpoints = endpointMap.get(chatId);
         for (ChatEndpoint endpoint : endpoints){
             endpoint.session.getBasicRemote().sendObject(new SocketInfoMessage(type, message));

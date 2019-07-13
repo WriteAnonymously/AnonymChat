@@ -29,7 +29,11 @@ public class SocketInfoMessageEncoder implements Encoder.Text<SocketInfoMessage>
         } else if (type.equals(Constants.SOCKET_INFO_OLD_MESSAGES)) {
             List<Message> messages = (List<Message>)socketInfoMessage.getObject();
             result = "l" + gson.toJson(messages);
+        } else if (type.equals(Constants.SOCKET_INFO_BOT)) {
+            String message = (String)socketInfoMessage.getObject();
+            result = "b" + message;
         }
+        System.out.println(result);
         return result;
     }
 

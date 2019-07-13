@@ -86,9 +86,12 @@ public class ChatInfoDAO {
      * */
     public Set<String> getUserNames(long chatID) throws SQLException {
         Set<String> userNames = new HashSet<String>();
-        PreparedStatement statement = connection.prepareStatement("select name from " + DBInfo.USERS_TABLE
-                                + "where chatid = ?;");
+        PreparedStatement statement = connection.prepareStatement("select username from " + DBInfo.USERS_TABLE
+                                + " where chatid = ?;");
         statement.setLong(1, chatID);
+
+        System.out.println(statement);
+        System.out.println(chatID + "CHATID");
         ResultSet set = statement.executeQuery();
         while (set.next()){
             userNames.add(set.getString(1));

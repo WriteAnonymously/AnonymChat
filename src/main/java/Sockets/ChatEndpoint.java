@@ -3,12 +3,14 @@ package Sockets;
 
 import Classes.Constants;
 import Classes.Message;
+import Classes.User;
 import DB.ConnectionPool;
 import DB.MessageInfoDAO;
 
 import Encode_Decode.MessageEncoder;
 import Encode_Decode.OldMessageEncoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.internal.ws.api.ha.StickyFeature;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -28,7 +30,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @WebListener
 @ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
 public class ChatEndpoint implements ServletContextListener {
-    // private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
     private static final Map<Long, Set<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Long, Set<ChatEndpoint>>();
     private static ServletContext servletContext;
     private Session session;
@@ -44,18 +45,21 @@ public class ChatEndpoint implements ServletContextListener {
     @OnOpen
     public void onOpen(EndpointConfig endpointConfig, Session session) throws IOException, EncodeException, SQLException, InterruptedException {
        this.session = session;
-       //endpoints.add(this);
+        User user = null;
+        long chatId = -1;
         if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){
             System.out.println("Please refresh page");
             return;
+        } else {
+            String ID = (String) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
+            chatId = Long.parseLong(ID);
+            user = ((User)endpointConfig.getUserProperties().get(ID));
         }
-        long chatId = (Long) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
-        long userId = (Long) endpointConfig.getUserProperties().get(Constants.USER_ID);
-        String username = (String) endpointConfig.getUserProperties().get(Constants.USERNAME);
+        long userId = user.getId();
+        String username = user.getUsername();
 
-        session.getUserProperties().put(Constants.USER_ID, userId);
+        session.getUserProperties().put(Constants.USER_ATR, user);
         session.getUserProperties().put(Constants.CHAT_ID, chatId);
-        session.getUserProperties().put(Constants.USERNAME, username);
         System.out.println(chatId + "-" + userId + "-" + username);
 
         if (!endpointMap.containsKey(chatId)){endpointMap.put(chatId, new CopyOnWriteArraySet<ChatEndpoint>());}
@@ -87,10 +91,9 @@ public class ChatEndpoint implements ServletContextListener {
 
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
-      //  endpoints.remove(this);
         try{
-            if (session.getUserProperties().get(Constants.CHAT_ID) != null && endpointMap.containsKey(session.getUserProperties().get(Constants.CHAT_ID))) {
-                endpointMap.get(session.getUserProperties().get(Constants.CHAT_ID)).remove(this);
+            if (session.getUserProperties().get(Constants.USER_ATR) != null && endpointMap.containsKey(((User)session.getUserProperties().get(Constants.USER_ATR)).getChatId())) {
+                endpointMap.get(((User)session.getUserProperties().get(Constants.USER_ATR)).getChatId()).remove(this);
             }
         } catch (Exception e){
             e.printStackTrace();

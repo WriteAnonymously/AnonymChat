@@ -45,7 +45,7 @@ public class UserInfoDAO {
         PreparedStatement statement = con.prepareStatement("select * from " + DBInfo.USERS_TABLE + " order by creation_date desc limit 1;");
         ResultSet ansSet = statement.executeQuery();
         ansSet.next();
-        user = new User(ansSet.getString("id"), ansSet.getString("username"), ansSet.getString("chatid"));
+        user = new User(Long.parseLong(ansSet.getString("id")), ansSet.getString("username"), Long.parseLong(ansSet.getString("chatid")));
         return user;
     }
 }

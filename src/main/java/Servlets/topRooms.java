@@ -38,8 +38,9 @@ public class topRooms extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
-        	Connection con = null;	
-		ChatInfoDAO dao = null;	
+		Connection con = null;
+		ChatInfoDAO dao = null;
+		System.out.println("aq shemovida");
 		try {
             		con = connectionPool.getConnection();
         	} catch (SQLException e) {

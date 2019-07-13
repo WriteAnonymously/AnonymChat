@@ -111,6 +111,7 @@ public class ChatInfoDAO {
         PreparedStatement statement = connection.prepareStatement("select * from " + DBInfo.CHAT_TABLE + " where id = ? ");
         statement.setLong(1, chatId);
         Chat chat = null;
+        System.out.println(statement);
         ResultSet set = statement.executeQuery();
         set.last();
         String status = set.getString("status");

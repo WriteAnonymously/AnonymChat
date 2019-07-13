@@ -15,7 +15,7 @@ public class MessageEncoder implements Encoder.Text<Message> {
 
     public String encode(Message message) throws EncodeException {
         String json = "m"+ gson.toJson(message);
-        //System.out.println(json+"--- Encoded");
+      //  System.out.println(json+"--- Encoded");
         return json;
     }
 

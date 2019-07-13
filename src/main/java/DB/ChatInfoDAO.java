@@ -90,6 +90,9 @@ public class ChatInfoDAO {
         PreparedStatement statement = connection.prepareStatement("select username from " + DBInfo.USERS_TABLE
                                 + " where chatid = ?;");
         statement.setLong(1, chatID);
+
+        System.out.println(statement);
+        System.out.println(chatID + "CHATID");
         ResultSet set = statement.executeQuery();
         while (set.next()){
             userNames.add(set.getString(1));

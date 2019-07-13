@@ -7,8 +7,6 @@
 
 *.iml
 .idea/*
-
-
 src/main/java/DB/DBInfo.java
 
 # User-specific stuff

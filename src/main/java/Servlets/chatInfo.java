@@ -29,48 +29,50 @@ import java.util.List;
 /**
  * Servlet implementation class roomInfo
  */
-@WebServlet(name = "topRooms", urlPatterns = {"/topRooms"})
-public class topRooms extends HttpServlet {
+@WebServlet(name = "chatInfo", urlPatterns = {"/chatInfo"})
+public class chatInfo extends HttpServlet {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String id = request.getParameter("id");
+		System.out.println("es aris id" + id + "aq aris");
 		ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
-        	Connection con = null;	
+		String name = "Chat Name : ";
+		String desc = "Chat Description : ";
+		String date = "Creation Date : ";
+		Connection con = null;
 		ChatInfoDAO dao = null;	
 		try {
-            		con = connectionPool.getConnection();
-        	} catch (SQLException e) {
-            		e.printStackTrace();
-        	}
-		dao = new ChatInfoDAO(con);
-
-		
-		ArrayList<String> res = new ArrayList<String>();
-		ArrayList<Chat> chats = null;
-		try {
-			chats = (ArrayList<Chat>) dao.getTopNChats(10);
+			con = connectionPool.getConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		for (int k = 0; k < chats.size(); k++) {
-			Chat curChat = chats.get(k);
-			res.add(k, curChat.getName());
-			res.add(curChat.getID() + "");
+
+		dao = new ChatInfoDAO(con);
+		Chat curChat = null;
+		try {
+			curChat = dao.getChatInfo(Long.parseLong(id));
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		ArrayList<String> res = new ArrayList<String>();
+		res.add(name + curChat.getName());
+		res.add(desc + curChat.getDescription());
+		res.add(date + curChat.getCreationTime());
 		PrintWriter out = response.getWriter();
-		out.print(res);
+		out.println(res);
 		try {
 			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
 	}
 
 }

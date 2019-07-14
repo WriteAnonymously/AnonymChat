@@ -18,12 +18,11 @@ public class Constants {
 
     public static void main(String[] args){
         List<MailMessage> list = new ArrayList<MailMessage>();
-//        list.add("v.kotoreishvili@gmail.com");
-//        list.add("vkoto17@freeuni.edu.ge");
-//        list.add("sstur17@freeuni.edu.ge");
-//        list.add("dkurt17@freeuni.edu.ge");
-//        list.add("nkhur17@freeuni.edu.ge");
-//        list.add("nchur17@freeuni.edu.ge");
+        list.add(new MailMessage("vkoto17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
+        list.add(new MailMessage("sstur17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
+        list.add(new MailMessage("dkurt17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
+        list.add(new MailMessage("nchur17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
+        list.add(new MailMessage("nkhur17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
         MessageSender sender = new MessageSender(list);
         try {
             sender.send();

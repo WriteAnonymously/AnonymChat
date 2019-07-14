@@ -31,7 +31,8 @@ function writeOnTheWall(roomInfo) {
     var info = roomInfo.substr(1, roomInfo.length - 3);
     var res = info.split(",");
     for (k = 0; k < res.length; k++) {
-        var txt = document.createElement("strong");
+        var txt = document.createElement("h1");
+        txt.classList.add("infoTittle");
         txt.appendChild(document.createTextNode(res[k]));
         txtDiv.appendChild(txt);
     }
@@ -43,7 +44,6 @@ function makeRoom(name, id) {
     roomDiv.classList.add("chatRoom");
     var roomImg = document.createElement("img");
     roomImg.src = "../images/door.jpg";
-    // roomImg.src = "store-images/TShirt.jpg";
     roomImg.id = id;
     roomImg.name = name;
     roomImg.classList.add("chatImg");

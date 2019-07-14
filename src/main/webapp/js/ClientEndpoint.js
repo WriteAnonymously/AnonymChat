@@ -86,7 +86,7 @@ function displayOldMessages(oldMessages){
     }
     curMessages = parsedJSON.length;
     for (var i=0;i<parsedJSON.length;i++) {
-       displayMessage(parsedJSON[i]);
+        displayMessage(parsedJSON[i]);
     }
 }
 
@@ -150,8 +150,8 @@ function requestMessages(){
 
 
 
- $(document).ready(function(){
-      $("#messages").scroll(function(){
+$(document).ready(function(){
+    $("#messages").scroll(function(){
         var scrollHeight = document.getElementById('messages').scrollHeight;
         var curHeight = scrollHeight-$("#messages").scrollTop();
         if (curHeight === scrollHeight){
@@ -162,8 +162,8 @@ function requestMessages(){
                 $("#messages").scrollTop(20);
             }
         }
-      });
- });
+    });
+});
 
 
 

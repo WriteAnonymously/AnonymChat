@@ -1,5 +1,6 @@
 package DB;
 
+import Classes.Chat;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ import java.util.*;
 public class TagsDaoTest {
     @Test
     public void testAddAndSearch() throws SQLException, ClassNotFoundException {
-       /* TagsDAO dao = new TagsDAO(PrepareDB.getInstance());
+        TagsDAO dao = new TagsDAO(PrepareDB.getInstance());
         ArrayList<String> tags = new ArrayList<String>();
         List<String> ex = new ArrayList<String>();
         ex.add("saba");
@@ -35,7 +36,7 @@ public class TagsDaoTest {
         ArrayList<Chat> chats = dao.searchChats(tags);
         Long actual = 2L;
         Assert.assertEquals(chats.size(), 3);
-        Assert.assertEquals(chats.get(0), actual); */
+        Assert.assertEquals((Long)chats.get(0).getID() , actual);
     }
 
     @Test

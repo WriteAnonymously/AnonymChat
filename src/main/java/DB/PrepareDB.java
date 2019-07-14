@@ -46,7 +46,9 @@ public class PrepareDB {
         for (int i = 0; i < names.size(); i++){
             usernameDAO.addUsername(names.get(i));
         }
+
     }
+
 
     /**
      * gets creates Connection instance and returns

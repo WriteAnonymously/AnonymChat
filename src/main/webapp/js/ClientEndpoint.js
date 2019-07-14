@@ -110,6 +110,12 @@ function requestMessages(){
             var messageReceived = this.responseText.substring(1);
             document.getElementById("messages").innerHTML = "";
             displayOldMessages(messageReceived);
+            var scrollHeight = document.getElementById('messages').scrollHeight;
+            if (scrollHeight > curScrollHeight){
+                $("#messages").scrollTop(scrollHeight-curScrollHeight);
+            } else {
+                $("#messages").scrollTop(20);
+            }
         }
     };
     xhttp.open("post", "/OldMessages", true);
@@ -119,17 +125,21 @@ function requestMessages(){
 }
 
 
+/*
+
  $(document).ready(function(){
       $("#messages").scroll(function(){
         var scrollHeight = document.getElementById('messages').scrollHeight;
         var curHeight = scrollHeight-$("#messages").scrollTop();
         if (curHeight === scrollHeight){
-        //  if (curHeight === scrollHeight * 0.85){
             console.log("Asqrola");
+            curMessages += 100;
             curScrollHeight = curHeight;
             requestMessages();
         }
       });
  });
 
+
+*/
 

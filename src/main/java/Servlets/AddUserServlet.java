@@ -32,6 +32,7 @@ public class AddUserServlet extends HttpServlet {
 
 
         String ID = request.getParameter(Constants.CHAT_ID);
+        System.out.println("IN "+ID);
         if (ID == null){
             response.sendRedirect("/WelcomeServlet");
             return;
@@ -46,6 +47,8 @@ public class AddUserServlet extends HttpServlet {
         HttpSession session = request.getSession();
         if (session.getAttribute(ID) != null){
             System.out.println("Already been");
+            System.out.println("name is"+((User)session.getAttribute(ID)).getUsername());
+            session.setAttribute(Constants.CHAT_ID, ID);
             session.setAttribute(Constants.FIRST_LOGIN, false);
             RequestDispatcher dispatch = request.getRequestDispatcher(chatPath);
             dispatch.forward(request, response);

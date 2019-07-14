@@ -26,6 +26,36 @@
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
+    .navbar {
+      overflow: hidden;
+      background-color: #34495e;
+      position: fixed;
+      top: 0;
+      width: 100%;
+    }
+    .navbar-right {
+      float: right;
+    }
+
+    .home {
+      text-align: left;
+    }
+    .navbar a {
+      float: left;
+      display: block;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .navbar a:hover {
+      background: #ddd;
+      color: black;
+    }
+
+
     .chat-name,
     .description,
     .messages {
@@ -67,8 +97,17 @@
   </style>
 </head>
 <body>
-  <div class="chat-name" id = "chat-name">Chat Name</div>
-  <div class="description" id = "descr">Description</div>
+<div class="navbar">
+  <a href="/WelcomeServlet">Home</a>
+  <div class="navbar-right">
+    <a href="#news">About Us</a>
+    <a href="#contact">Contact</a>
+  </div>
+
+</div>
+
+<div class="chat-name" id = "chat-name" style="margin-top:50px;">Chat Name</div>
+<div class="description" id = "descr">Description</div>
   <div class="messages" id = "messages">
   </div>
   <form class="message-form" onsubmit="return false;" autocomplete="off">

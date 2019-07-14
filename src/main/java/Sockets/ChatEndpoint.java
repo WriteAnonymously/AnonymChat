@@ -79,7 +79,6 @@ public class ChatEndpoint implements ServletContextListener {
     public void onMessage(Session session, String msg) throws IOException, EncodeException, SQLException, InterruptedException, DecodeException {
         Message message =  MessageHandlerDecode.decodeMessage(msg);
         Long chatId = message.getChatId();
-
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();

@@ -1,32 +1,132 @@
 @charset "UTF-8";
-.button {
-	display:inline-block;
-	margin-left:1100px;
-	margin-top:20px;
-	font-weight:bold;
-	font-size:18px;
-	padding:5px 10px;
-	border-radius:5px;
-	background-image: linear-gradient(bottom, rgb(245, 241, 241) 0%, rgb(218,214,214) 100%);
-	box-shadow: 0px 6px 0px #808080, 0px 3px 15px rgba(0,0,0,.4), inset 0px 1px 0px rgba(255,255,255,.3), inset 0px 0px 3px rgba(255,255,255,.5);
+body {
+	margin:0;
+	font-family: Arial;
+}
+#container {
+	width: 956px;
+	height: 311px;
+	margin:auto;
+	padding: 30px;
+
 }
 
-.button:active{
-	transform: translate(0, 4px);
-	transition: all .2s ease-in-out;
+* {
+	box-sizing: border-box;
 }
+
+form.search input[type=text] {
+	padding: 10px;
+	font-size: 17px;
+	border: 1px solid grey;
+	float: left;
+	width: 80%;
+	background: #f1f1f1;
+}
+
+form.search button {
+	float: left;
+	width: 20%;
+	padding: 10px;
+	background: #2196F3;
+	color: white;
+	font-size: 17px;
+	border: 1px solid grey;
+	border-left: none;
+	cursor: pointer;
+}
+
+form.search button:hover {
+	background: #0b7dda;
+}
+
+form.search::after {
+	content: "";
+	clear: both;
+	display: table;
+}
+
+.navbar {
+	overflow: hidden;
+	background-color: #34495e;
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+.navbar-right {
+	float: right;
+}
+
+.home {
+	text-align: left;
+}
+.navbar a {
+	float: left;
+	display: block;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+}
+
+.navbar a:hover {
+	background: #ddd;
+	color: black;
+}
+
+
+.button {
+	background-color: #4CAF50; /* Green */
+	border: none;
+	color: white;
+	padding: 16px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	-webkit-transition-duration: 0.4s; /* Safari */
+	transition-duration: 0.4s;
+	cursor: pointer;
+	float: right;
+}
+
+.public {
+	background-color: white;
+	color: black;
+	border: 2px solid #4CAF50;
+}
+
+.public:hover {
+	background-color: #4CAF50;
+	color: white;
+}
+
+.private {
+	background-color: white;
+	color: black;
+	border: 2px solid #008CBA;
+}
+
+.private:hover {
+	background-color: #008CBA;
+	color: white;
+}
+
 
 .rooms {
 	width:750px;
 	height:455px;
-	border: 3px outset rgba(255,255,255, 0.1);
+	border: 2px solid black;
 	border-radius: 5px;
 	float:left;
-	margin-top: 50px;
+	margin-top: 100px;
 	margin-left: 50px;
 	transform-style: preserve-3d;
 	position: relative;
 	text-align: center;
+	overflow: auto;
 }
 
 .chatRoom {
@@ -66,7 +166,7 @@
 }
 
 body {
-	background-color: black;
+	background-color: white;
 }
 
 h5 {

@@ -82,8 +82,9 @@ function drawRooms(rooms) {
     while(txtDiv.hasChildNodes()) {
         txtDiv.removeChild(txtDiv.lastChild);
     }
-    var rooms = rooms.substr(1, rooms.length - 3);
+    var rooms = rooms.substr(1, rooms.length - 2);
     var roomsInfos = rooms.split(",");
+    console.log(rooms);
     for (k = 0; k < roomsInfos.length/2; k++) {
         var name = roomsInfos[k];
         var id = roomsInfos[k + (roomsInfos.length/2)];

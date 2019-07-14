@@ -14,18 +14,31 @@ socket.onopen = function (ev) {
     console.log("Connected");
 };
 
+function getDateString(currentdate){
+    var dd = currentdate.getDate();
+    var mm = currentdate.getMonth()+1;
+    var hh = currentdate.getHours();
+    var m = currentdate.getMinutes();
+    var ss = currentdate.getSeconds();
+    if(mm<10){mm='0'+mm}
+    if (dd < 10) {dd = "0" + dd}
 
+    return currentdate.getFullYear() + "-"
+        + mm  + "-" +dd + " " + hh + ":" + m + ":" + ss;
+}
 
 document.getElementById("sendButton").addEventListener("click", function (ev) {
     var input = document.getElementById("textInput").value;
-    sendMessage(input);
-    document.getElementById('textInput').value = '';
+    if (!(input.length === 0)){
+        sendMessage(input);
+        document.getElementById('textInput').value = '';
+    }
 });
 
 function updateChatInfo() {
     console.log("updating");
-    document.getElementById("chat-name").innerText = "Chat Name :"+chatName;
-    document.getElementById("descr").innerText = "Description :"+chatDescript;
+    document.getElementById("chat-name").innerText = "Chat Name:"+chatName;
+    document.getElementById("descr").innerText = "Description:"+chatDescript;
 
 }
 
@@ -51,7 +64,10 @@ function displayText(bot, input) {
     messagesDiv.appendChild(para);
     var t = document.createTextNode(joypixels.shortnameToUnicode(input));
 
-    if (bot === true){para.appendChild(addBotImg())}
+    if (bot === true){
+        para.appendChild(addBotImg());
+        para.appendChild(document.createTextNode(" "));
+    }
     para.appendChild(t);
     gotoBottom("messages");
 }
@@ -104,7 +120,7 @@ function sendMessage(input){
         "userId" : userID,
         "userName" : userName,
         "content": input,
-        "creationDate": "now"
+        "creationDate": getDateString(new Date())
     });
     socket.send(message);
 }

@@ -171,17 +171,17 @@ body {
 
 .infoBox {
 	width:300px;
-	height:240px; 
-	float: right; 
-	margin-top: 90px; 
+	height:240px;
+	float: right;
+	margin-top: 90px;
 	margin-right: 60px;
 	background-color: #B3AEE8;
 	border-left: solid 10px #7A70E6;
 	border-radius: 4px;
 	line-height: 18px;
-    mc-auto-number-format: '{b}Note: {/b}';
-    overflow: hidden;
-    padding: 12px;
+	mc-auto-number-format: '{b}Note: {/b}';
+	overflow: hidden;
+	padding: 12px;
 }
 
 

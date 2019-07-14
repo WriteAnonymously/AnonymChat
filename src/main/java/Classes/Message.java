@@ -2,6 +2,7 @@ package Classes;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 /*
     მესიჯის კლასი.
@@ -11,7 +12,7 @@ public class Message {
     private long chatId, userId;
     private String userName, content, creationDate;
 
-    public Message (){}
+    public Message(List<MailMessage> toSend){}
     public Message(long chatId, long userId, String userName, String content, String creationDate){
         this.chatId = chatId;
         this.userId = userId;

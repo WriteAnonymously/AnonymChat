@@ -28,11 +28,11 @@ function writeOnTheWall(roomInfo) {
     while(txtDiv.hasChildNodes()) {
         txtDiv.removeChild(txtDiv.lastChild);
     }
-    var info = roomInfo.substr(1, roomInfo.length - 2);
+    var info = roomInfo.substr(1, roomInfo.length - 3);
     var res = info.split(",");
     for (k = 0; k < res.length; k++) {
         var txt = document.createElement("h1");
-	txt.classList.add("infoTittle");
+        txt.classList.add("infoTittle");
         txt.appendChild(document.createTextNode(res[k]));
         txtDiv.appendChild(txt);
     }

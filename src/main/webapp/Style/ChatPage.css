@@ -74,9 +74,10 @@ body {
 .message-form__input {
     flex-grow: 1;
     border: 1px solid #dfdfdf;
-    padding: 10px 15px;
+    padding: 40px 15px;
     font-size: 16px;
 }
 .message-form__button {
     margin: 10px;
+    padding: 20px 15px;
 }

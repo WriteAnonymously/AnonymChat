@@ -66,7 +66,6 @@ public class AddUserServlet extends HttpServlet {
             }
         }
 
-
         HttpSession session = request.getSession();
         if (session.getAttribute(ID) != null){
             System.out.println("You were here "+((User)session.getAttribute(ID)).getUsername());
@@ -135,7 +134,7 @@ public class AddUserServlet extends HttpServlet {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            if (idsInfo == null || idsInfo.getChatId() != (Long)attr){
+            if (idsInfo == null || idsInfo.getChatId() != Long.parseLong((String)attr)){
                 return null;
             }
             Pair ans = new Pair();
@@ -167,14 +166,12 @@ public class AddUserServlet extends HttpServlet {
         ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
         UsernameDAO usernameDAO = new UsernameDAO(con);
 
-        Chat chatInfo = null;
         NameGenerator ng = new NameGenerator(chatInfoDAO, usernameDAO);
         long userId = -1;
         try {
             username = ng.generateName(chatId);
             userId = userInfoDAO.addUser(chatId, username);
             dao.addUsedRandomIdentificator(param, chatId, userId);
-//            System.out.println(chatInfo.getName()+"nqqq");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -191,7 +188,7 @@ public class AddUserServlet extends HttpServlet {
             e.printStackTrace();
         }
         request.getSession().setAttribute(String.valueOf(chatId), user);
-        request.getSession().setAttribute(Constants.CHAT_INFO, chatInfo);
+        request.getSession().setAttribute(Constants.CHAT_INFO, chat);
         System.out.println("dasetiliaaaaaaaaaaaaaaa   " + request.getSession().getAttribute(Constants.CHAT_ID));
         return ans;
     }

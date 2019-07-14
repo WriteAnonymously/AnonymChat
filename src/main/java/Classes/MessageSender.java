@@ -58,6 +58,7 @@ public class MessageSender {
     /**
      * prepares message for sending
      * */
+
     private javax.mail.Message prepareMessage(Session session, MailMessage to) throws MessagingException {
         javax.mail.Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(DBInfo.myAccountEmail));

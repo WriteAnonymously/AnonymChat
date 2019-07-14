@@ -44,3 +44,13 @@ CREATE TABLE tags(
     name VARCHAR(100),
     chatid bigint
 );
+
+CREATE TABLE used_random_identificators(
+    id varchar(100) primary key,
+    chatid bigint
+);
+
+CREATE TABLE not_used_random_identificators(
+    id varchar(100) primary key,
+    chatid bigint
+);

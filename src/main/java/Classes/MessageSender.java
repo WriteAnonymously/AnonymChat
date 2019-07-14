@@ -1,8 +1,9 @@
 package Classes;
 
+import DB.DBInfo;
+
 import javax.mail.*;
 import javax.mail.Message;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
@@ -11,9 +12,6 @@ import java.util.Properties;
 
 public class MessageSender {
     private List<MailMessage> toAccounts;
-
-    private static final String myAccountEmail = "";
-    private static final String myAccountPassword = "";
 
     public MessageSender(List <MailMessage> to){
         this.toAccounts = new ArrayList<MailMessage>();
@@ -47,13 +45,13 @@ public class MessageSender {
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(myAccountEmail, myAccountPassword);
+                return new PasswordAuthentication(DBInfo.myAccountEmail, DBInfo.myAccountPassword);
             }
         });
 
         Message message = prepareMessage(session, to);
 
-        Transport.send(message, myAccountEmail, myAccountPassword);
+//        Transport.send(message, DBInfo.myAccountEmail, DBInfo.myAccountPassword);
         System.out.println("message sent to " + to);
     }
 
@@ -62,7 +60,7 @@ public class MessageSender {
      * */
     private javax.mail.Message prepareMessage(Session session, MailMessage to) throws MessagingException {
         javax.mail.Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(myAccountEmail));
+        message.setFrom(new InternetAddress(DBInfo.myAccountEmail));
         message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to.getMail()));
         message.setSubject(to.getSubject());
         ((MimeMessage) message).setText(to.getContent(), "UTF-8");

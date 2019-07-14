@@ -46,6 +46,7 @@ public class AddUserServlet extends HttpServlet {
         HttpSession session = request.getSession();
         if (session.getAttribute(ID) != null){
             System.out.println("Already been");
+            session.setAttribute(Constants.FIRST_LOGIN, false);
             RequestDispatcher dispatch = request.getRequestDispatcher(chatPath);
             dispatch.forward(request, response);
             return;
@@ -78,6 +79,7 @@ public class AddUserServlet extends HttpServlet {
             User user = new User(id, username, chatID);
             System.out.println("new user id = " + id);
             session.setAttribute(ID, user);
+            session.setAttribute(Constants.FIRST_LOGIN, true);
             session.setAttribute(Constants.CHAT_INFO, chatInfo);
             session.setAttribute(Constants.CHAT_ID, ID);
             System.out.println("Attributes set");

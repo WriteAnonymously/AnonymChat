@@ -43,6 +43,7 @@ public class ChatEndpoint implements ServletContextListener {
        this.session = session;
        User user = null;
        Chat chatInfo = null;
+       boolean firstLogin = false;
         long chatId = -1;
         if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){
             System.out.println("Please refresh page");
@@ -50,6 +51,7 @@ public class ChatEndpoint implements ServletContextListener {
         } else {
             String ID = (String) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
             chatInfo = ((Chat)endpointConfig.getUserProperties().get(Constants.CHAT_INFO));
+            firstLogin = (Boolean)endpointConfig.getUserProperties().get(Constants.FIRST_LOGIN);
             chatId = Long.parseLong(ID);
             user = ((User)endpointConfig.getUserProperties().get(ID));
         }
@@ -75,8 +77,10 @@ public class ChatEndpoint implements ServletContextListener {
         sendMessageUser(Constants.SOCKET_INFO_USER, user, session);
         sendMessageUser(Constants.SOCKET_INFO_CHAT, chatInfo, session);
 
-        ChatBot bot = new ChatBot(chatId, con);
-        sendMessage(Constants.SOCKET_INFO_BOT, bot.anounceNewUser(username), chatId);
+        if (firstLogin){
+            ChatBot bot = new ChatBot(chatId, con);
+            sendMessage(Constants.SOCKET_INFO_BOT, bot.anounceNewUser(username), chatId);
+        }
     }
 
     @OnMessage

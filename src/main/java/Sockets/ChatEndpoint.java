@@ -43,6 +43,7 @@ public class ChatEndpoint implements ServletContextListener {
        this.session = session;
        User user = null;
        Chat chatInfo = null;
+       boolean firstLogin = false;
         long chatId = -1;
         if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){
             System.out.println("Please refresh page");
@@ -50,6 +51,7 @@ public class ChatEndpoint implements ServletContextListener {
         } else {
             String ID = (String) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
             chatInfo = ((Chat)endpointConfig.getUserProperties().get(Constants.CHAT_INFO));
+            firstLogin = (Boolean)endpointConfig.getUserProperties().get(Constants.FIRST_LOGIN);
             chatId = Long.parseLong(ID);
             user = ((User)endpointConfig.getUserProperties().get(ID));
         }
@@ -70,9 +72,15 @@ public class ChatEndpoint implements ServletContextListener {
         List<Message> list = messageInfoDAO.getLastNMessages(200, chatId);
         con.close();
 
+
         sendMessageUser(Constants.SOCKET_INFO_OLD_MESSAGES, list, session);
         sendMessageUser(Constants.SOCKET_INFO_USER, user, session);
         sendMessageUser(Constants.SOCKET_INFO_CHAT, chatInfo, session);
+
+        if (firstLogin){
+            ChatBot bot = new ChatBot(chatId, con);
+            sendMessage(Constants.SOCKET_INFO_BOT, bot.announceNewUser(username), chatId);
+        }
     }
 
     @OnMessage
@@ -82,15 +90,14 @@ public class ChatEndpoint implements ServletContextListener {
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();
-        if (message.getContent().startsWith("BOT:")) {
-            ChatBot bot = new ChatBot(message.getChatId(), con);
-            sendMessage(Constants.SOCKET_INFO_BOT, bot.randomUser(), chatId);
-            return;
-        }
 
         sendMessage(Constants.SOCKET_INFO_MESSAGE, message, message.getChatId());
+        if (message.getContent().startsWith("BOT:")) {
+            ChatBot bot = new ChatBot(message.getChatId(), con);
+            sendMessage(Constants.SOCKET_INFO_BOT, bot.answerMessage(message.getContent()), chatId);
+        }
+
         messageInfoDAO = new MessageInfoDAO(con);
-        System.out.println(message.getContent() + message.getChatId());
         messageInfoDAO.addMessage(message);
         con.close();
     }

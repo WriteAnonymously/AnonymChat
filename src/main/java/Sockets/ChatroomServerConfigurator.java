@@ -18,6 +18,7 @@ public class ChatroomServerConfigurator extends ServerEndpointConfig.Configurato
             if (session.getAttribute(Constants.CHAT_ID) != null){
                 String chatId = (String) session.getAttribute(Constants.CHAT_ID);
                 if (session.getAttribute(chatId) != null){
+                    sec.getUserProperties().put(Constants.FIRST_LOGIN, session.getAttribute(Constants.FIRST_LOGIN));
                     sec.getUserProperties().put(Constants.CHAT_ID, session.getAttribute(Constants.CHAT_ID));
                     sec.getUserProperties().put(chatId, session.getAttribute(chatId));
                     sec.getUserProperties().put(Constants.CHAT_INFO, session.getAttribute(Constants.CHAT_INFO));

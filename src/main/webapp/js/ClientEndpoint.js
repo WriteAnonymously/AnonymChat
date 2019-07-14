@@ -8,6 +8,7 @@ var chatName = 'NO Name';
 var chatDescript = 'No Description';
 var curMessages = 100;
 var curScrollHeight = 0;
+var moreAvailable = true;
 
 socket.onopen = function (ev) {
     console.log("Connected");
@@ -61,6 +62,10 @@ function gotoBottom(id){
 
 function displayOldMessages(oldMessages){
     var parsedJSON = JSON.parse(oldMessages);
+    if (parsedJSON.length === curMessages){
+        moreAvailable = false;
+    }
+    curMessages = parsedJSON.length;
     for (var i=0;i<parsedJSON.length;i++) {
        displayMessage(parsedJSON[i]);
     }
@@ -110,13 +115,20 @@ function requestMessages(){
             var messageReceived = this.responseText.substring(1);
             document.getElementById("messages").innerHTML = "";
             displayOldMessages(messageReceived);
+            var scrollHeight = document.getElementById('messages').scrollHeight;
+            if (scrollHeight > curScrollHeight){
+                $("#messages").scrollTop(scrollHeight-curScrollHeight);
+            } else {
+                $("#messages").scrollTop(20);
+            }
         }
     };
     xhttp.open("post", "/OldMessages", true);
     console.log(curMessages);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("numMessage="+curMessages + "&chatId="+chatID);
+    xhttp.send("numMessage="+(curMessages+100) + "&chatId="+chatID);
 }
+
 
 
  $(document).ready(function(){
@@ -124,12 +136,16 @@ function requestMessages(){
         var scrollHeight = document.getElementById('messages').scrollHeight;
         var curHeight = scrollHeight-$("#messages").scrollTop();
         if (curHeight === scrollHeight){
-        //  if (curHeight === scrollHeight * 0.85){
-            console.log("Asqrola");
-            curScrollHeight = curHeight;
-            requestMessages();
+            if (moreAvailable){
+                curScrollHeight = curHeight;
+                requestMessages();
+            } else {
+                $("#messages").scrollTop(20);
+            }
         }
       });
  });
+
+
 
 

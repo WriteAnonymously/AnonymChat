@@ -21,17 +21,16 @@ import java.sql.SQLException;
 @WebServlet(name = "ChatRoom", urlPatterns = {"/ChatRoom"})
 public class AddUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("aq shemovida she chema");
         doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("adding User in servlet");
         String chatPath = "/Models/ChatPage.html";
         response.setHeader("Cache-Control", "private,no-store,no-cache");
 
 
         String ID = request.getParameter(Constants.CHAT_ID);
+        System.out.println("IN "+ID);
         if (ID == null){
             response.sendRedirect("/WelcomeServlet");
             return;
@@ -45,7 +44,8 @@ public class AddUserServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         if (session.getAttribute(ID) != null){
-            System.out.println("Already been");
+            System.out.println("You were here "+((User)session.getAttribute(ID)).getUsername());
+            session.setAttribute(Constants.CHAT_ID, ID);
             session.setAttribute(Constants.FIRST_LOGIN, false);
             RequestDispatcher dispatch = request.getRequestDispatcher(chatPath);
             dispatch.forward(request, response);

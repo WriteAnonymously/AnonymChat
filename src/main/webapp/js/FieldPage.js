@@ -14,6 +14,7 @@ function addMembers() {
 		newMember.classList.add("validateInput");
 		newMember.type = "text";
 		var tmp = k + 1;
+		newMember.id = "member"+tmp;
 		newMember.name = "member" + tmp + "@gmail.com";
 		newMember.placeholder = newMember.name;
 		memberDiv.appendChild(newMember);

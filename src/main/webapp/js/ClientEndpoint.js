@@ -62,6 +62,7 @@ function displayText(bot, input) {
     messagesDiv.appendChild(para);
     var t = document.createTextNode(input);
 
+
     if (bot === true){
         para.appendChild(addBotImg());
         para.appendChild(document.createTextNode(" "));

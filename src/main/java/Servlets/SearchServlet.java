@@ -26,6 +26,8 @@ public class SearchServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = null;
+
+        response.setHeader("Content-Type: \"text/plain\"", "Success");
         String line = request.getParameter("line");
         System.out.println("line = " + line);
         TagsDAO dao = null;

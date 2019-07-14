@@ -40,6 +40,7 @@ public class topRooms extends HttpServlet {
 		ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
 		Connection con = null;
 		ChatInfoDAO dao = null;
+		response.setHeader("Content-Type: \"text/plain\"", "Success");
 		try {
 			con = connectionPool.getConnection();
 		} catch (SQLException e) {

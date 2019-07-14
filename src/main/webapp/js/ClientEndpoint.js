@@ -11,6 +11,8 @@ socket.onopen = function (ev) {
     console.log("Connected");
 };
 
+
+
 document.getElementById("sendButton").addEventListener("click", function (ev) {
     var input = document.getElementById("textInput").value;
     sendMessage(input);
@@ -26,14 +28,25 @@ function updateChatInfo() {
 
 
 function displayMessage(message){
-    displayText(message.userName + ":" + message.content + "("+message.creationDate+")");
+    displayText(false,message.userName + ":" + message.content + "("+message.creationDate+")");
 }
 
-function displayText(input) {
+function addBotImg(){
+    var botImg = document.createElement("img");
+    botImg.src = 'images/bot.png';
+    botImg.setAttribute("height", "20");
+    botImg.setAttribute("width", "20");
+    botImg.setAttribute("alt", "BOT:");
+    return botImg;
+}
+
+function displayText(bot, input) {
     var para = document.createElement("P");
     var messagesDiv = document.getElementById("messages");
     messagesDiv.appendChild(para);
     var t = document.createTextNode(input);
+
+    if (bot === true){para.appendChild(addBotImg())}
     para.appendChild(t);
     gotoBottom("messages");
 }
@@ -56,15 +69,12 @@ socket.onmessage = function (ev) {
     var messageReceived = ev.data.toString().substring(1);
     console.log('message from server is :', messageReceived);
     if (type === 'l'){
-        console.log('recieved list');
         displayOldMessages(messageReceived);
     } else if (type === 'u'){
         var userInfo = JSON.parse(messageReceived);
         userName =  userInfo.username.valueOf();
         chatID = userInfo.chatId;
         userID = userInfo.id;
-        console.log(chatID);
-        console.log(userID);
     } else if (type === 'c'){
         var chatInfo = JSON.parse(messageReceived);
         chatDescript = chatInfo.description;
@@ -75,7 +85,7 @@ socket.onmessage = function (ev) {
         var message = JSON.parse(messageReceived);
         displayMessage(message);
     } else if (type === 'b'){
-        displayText("BOT: "+messageReceived);
+        displayText(true, messageReceived);
     }
 };
 
@@ -90,3 +100,18 @@ function sendMessage(input){
     socket.send(message);
 }
 
+
+/**
+ *
+ *  var curMessages = 100;
+ $(document).ready(function(){
+      $("messages").scroll(function(){
+        var curHeight = document.getElementById('messages').clientHeight;
+        var scrollHeight = document.getElementById('messages').scrollHeight;
+        if (scrollHeight > curHeight * 0.85){
+
+        }
+      });
+    });
+ *
+ * */

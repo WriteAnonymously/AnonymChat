@@ -70,9 +70,13 @@ public class ChatEndpoint implements ServletContextListener {
         List<Message> list = messageInfoDAO.getLastNMessages(200, chatId);
         con.close();
 
+
         sendMessageUser(Constants.SOCKET_INFO_OLD_MESSAGES, list, session);
         sendMessageUser(Constants.SOCKET_INFO_USER, user, session);
         sendMessageUser(Constants.SOCKET_INFO_CHAT, chatInfo, session);
+
+        ChatBot bot = new ChatBot(chatId, con);
+        sendMessage(Constants.SOCKET_INFO_BOT, bot.anounceNewUser(username), chatId);
     }
 
     @OnMessage
@@ -82,15 +86,14 @@ public class ChatEndpoint implements ServletContextListener {
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();
-        if (message.getContent().startsWith("BOT:")) {
-            ChatBot bot = new ChatBot(message.getChatId(), con);
-            sendMessage(Constants.SOCKET_INFO_BOT, bot.randomUser(), chatId);
-            return;
-        }
 
         sendMessage(Constants.SOCKET_INFO_MESSAGE, message, message.getChatId());
+        if (message.getContent().startsWith("BOT:")) {
+            ChatBot bot = new ChatBot(message.getChatId(), con);
+            sendMessage(Constants.SOCKET_INFO_BOT, bot.answerMessage(message.getContent()), chatId);
+        }
+
         messageInfoDAO = new MessageInfoDAO(con);
-        System.out.println(message.getContent() + message.getChatId());
         messageInfoDAO.addMessage(message);
         con.close();
     }

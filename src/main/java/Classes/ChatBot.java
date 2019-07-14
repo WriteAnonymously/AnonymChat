@@ -18,8 +18,15 @@ public class ChatBot {
         this.con = con;
     }
 
+    public String anounceNewUser(String username){
+        return "Say Hello to "+username;
+    }
+
     public String answerMessage(String query) throws SQLException {
-        return randomUser();
+        if (query.startsWith("BOT:RANDOM USER")) {
+            return randomUser();
+        }
+        return "Beep, Beep. I don't know the command";
     }
 
     public String randomUser() throws SQLException {
@@ -32,6 +39,6 @@ public class ChatBot {
             iter.next();
         }
         result = iter.next();
-        return  result;
+        return  "the random user is "+result;
     }
 }

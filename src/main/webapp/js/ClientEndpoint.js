@@ -43,11 +43,13 @@ function addBotImg(){
     return botImg;
 }
 
+
+
 function displayText(bot, input) {
     var para = document.createElement("P");
     var messagesDiv = document.getElementById("messages");
     messagesDiv.appendChild(para);
-    var t = document.createTextNode(input);
+    var t = document.createTextNode(joypixels.shortnameToUnicode(input));
 
     if (bot === true){para.appendChild(addBotImg())}
     para.appendChild(t);

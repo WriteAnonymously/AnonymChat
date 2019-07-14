@@ -181,7 +181,7 @@ public class AddUserServlet extends HttpServlet {
         Pair ans = new Pair();
         ans.chatId = chatId;
         ans.userId = userId;
-        request.getSession().setAttribute(Constants.CHAT_ID, String.valueOf(chatId));
+        request.getSession().setAttribute(Constants.CHAT_ID, Long.parseLong(String.valueOf(chatId)));
         User user = null;
         Chat chat = null;
         try {

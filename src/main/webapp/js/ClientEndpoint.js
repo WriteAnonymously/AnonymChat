@@ -56,6 +56,8 @@ function addBotImg(){
     return botImg;
 }
 
+
+
 function displayText(bot, input) {
     var para = document.createElement("P");
     var messagesDiv = document.getElementById("messages");

@@ -4,32 +4,70 @@ import DB.ChatInfoDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class ChatBot {
-    private Connection con;
-    private long chatId;
+    Map<Long, String> wordsMap;
     Random rand = new Random(System.currentTimeMillis());
 
-    public ChatBot(long chatId, Connection con) {
-        this.chatId = chatId;
-        this.con = con;
+    public ChatBot() {
+        wordsMap = new HashMap<Long, String>();
     }
 
     public String announceNewUser(String username){
         return "Say Hello to "+username;
     }
 
-    public String answerMessage(String query) throws SQLException {
-        if (query.startsWith("BOT:RANDOM USER")) {
-            return randomUser();
+    public String answerMessage(String query, String username, long chatId, Connection con) throws SQLException {
+        int type = getType(query);
+        if (type == 0) {
+            return "the random user is" +randomUser(chatId, con);
+        } else if (type == 1){
+            return randomNumber(10);
+        } else if (type == 2){
+            addNewWord(chatId, randomUser(chatId, con));
+            System.out.println(wordsMap.get(chatId));
+            return "guess who is he/she " + username + " explains";
+        } else if (type == 3){
+            System.out.println(chatId + "ch");
+            if (wordsMap.containsKey(chatId)){
+                String word = wordsMap.get(chatId);
+                System.out.println(word);
+                if (query.contains(word)){
+                    wordsMap.remove(chatId);
+                    return username+ " gets it!";
+                } else {
+                    return "nope";
+                }
+            } else {
+                return "no word to guess";
+            }
         }
         return "Beep, Beep. I don't know the command";
     }
 
-    public String randomUser() throws SQLException {
+    public int getType(String query){
+        if (query.startsWith("BOT:RANDOM USER")) {
+            return 0;
+        } else if (query.startsWith("BOT:RANDOM NUMBER")){
+            return 1;
+        } else if (query.startsWith("BOT:GUESS")){
+            return 2;
+        } else if (query.startsWith("BOT:ANSWER")){
+            return 3;
+        }
+        return -1;
+    }
+
+    public String answerWord(Long chatId){
+        if (wordsMap.containsKey(chatId)) {
+            return wordsMap.get(chatId);
+        } else {
+            return "NO WORD TO GUESS!! sorry ;)";
+        }
+    }
+
+    public String randomUser(long chatId, Connection con) throws SQLException {
         String result = "";
         ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
         Set<String> usernames = chatInfoDAO.getUserNames(chatId);
@@ -39,6 +77,15 @@ public class ChatBot {
             iter.next();
         }
         result = iter.next();
-        return  "the random user is "+result;
+        return  result;
+    }
+
+    public String randomNumber(int max){
+        return Integer.toString(rand.nextInt(max));
+    }
+
+    public void addNewWord(long chatId, String word){
+        System.out.println("Adding to"+chatId);
+        wordsMap.put(chatId, word);
     }
 }

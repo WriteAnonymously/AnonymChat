@@ -51,7 +51,7 @@ public class MessageSender {
 
         Message message = prepareMessage(session, to);
 
-//        Transport.send(message, DBInfo.myAccountEmail, DBInfo.myAccountPassword);
+        Transport.send(message, DBInfo.myAccountEmail, DBInfo.myAccountPassword);
         System.out.println("message sent to " + to);
     }
 

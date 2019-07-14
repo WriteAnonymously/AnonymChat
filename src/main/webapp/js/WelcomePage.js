@@ -43,7 +43,7 @@ function makeRoom(name, id) {
     roomDiv.classList.add("chatRoom");
     var roomImg = document.createElement("img");
     roomImg.src = "../images/door.jpg";
-   // roomImg.src = "store-images/TShirt.jpg";
+    // roomImg.src = "store-images/TShirt.jpg";
     roomImg.id = id;
     roomImg.name = name;
     roomImg.classList.add("chatImg");

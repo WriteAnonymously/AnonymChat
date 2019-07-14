@@ -1,13 +1,11 @@
 package Sockets;
 
 
-import Classes.Constants;
-import Classes.Message;
+import Classes.*;
 import DB.ConnectionPool;
 import DB.MessageInfoDAO;
 
-import Encode_Decode.MessageEncoder;
-import Encode_Decode.OldMessageEncoder;
+import Encode_Decode.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.ServletContext;
@@ -26,9 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @WebListener
-@ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, encoders = {MessageEncoder.class, OldMessageEncoder.class})
+@ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, encoders = {SocketInfoMessageEncoder.class})
 public class ChatEndpoint implements ServletContextListener {
-    // private static final Set<ChatEndpoint> endpoints = new CopyOnWriteArraySet<ChatEndpoint>();
     private static final Map<Long, Set<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Long, Set<ChatEndpoint>>();
     private static ServletContext servletContext;
     private Session session;
@@ -44,18 +41,23 @@ public class ChatEndpoint implements ServletContextListener {
     @OnOpen
     public void onOpen(EndpointConfig endpointConfig, Session session) throws IOException, EncodeException, SQLException, InterruptedException {
        this.session = session;
-       //endpoints.add(this);
+       User user = null;
+       Chat chatInfo = null;
+        long chatId = -1;
         if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){
             System.out.println("Please refresh page");
             return;
+        } else {
+            String ID = (String) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
+            chatInfo = ((Chat)endpointConfig.getUserProperties().get(Constants.CHAT_INFO));
+            chatId = Long.parseLong(ID);
+            user = ((User)endpointConfig.getUserProperties().get(ID));
         }
-        long chatId = (Long) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
-        long userId = (Long) endpointConfig.getUserProperties().get(Constants.USER_ID);
-        String username = (String) endpointConfig.getUserProperties().get(Constants.USERNAME);
+        long userId = user.getId();
+        String username = user.getUsername();
 
-        session.getUserProperties().put(Constants.USER_ID, userId);
+        session.getUserProperties().put(Constants.USER_ATR, user);
         session.getUserProperties().put(Constants.CHAT_ID, chatId);
-        session.getUserProperties().put(Constants.USERNAME, username);
         System.out.println(chatId + "-" + userId + "-" + username);
 
         if (!endpointMap.containsKey(chatId)){endpointMap.put(chatId, new CopyOnWriteArraySet<ChatEndpoint>());}
@@ -68,17 +70,25 @@ public class ChatEndpoint implements ServletContextListener {
         List<Message> list = messageInfoDAO.getLastNMessages(200, chatId);
         con.close();
 
-        sendMessageUser(list, session);
-        sendMessageUser(new Message(chatId, userId, username, "n",   "Now"), session);
+        sendMessageUser(Constants.SOCKET_INFO_OLD_MESSAGES, list, session);
+        sendMessageUser(Constants.SOCKET_INFO_USER, user, session);
+        sendMessageUser(Constants.SOCKET_INFO_CHAT, chatInfo, session);
     }
 
     @OnMessage
     public void onMessage(Session session, String msg) throws IOException, EncodeException, SQLException, InterruptedException, DecodeException {
-        Message message =  decodeMessage(msg);
-        sendMessage(message);
+        Message message =  MessageHandlerDecode.decodeMessage(msg);
+        Long chatId = message.getChatId();
         MessageInfoDAO messageInfoDAO = null;
         ConnectionPool connectionPool = (ConnectionPool) servletContext.getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = connectionPool.getConnection();
+        if (message.getContent().startsWith("BOT:")) {
+            ChatBot bot = new ChatBot(message.getChatId(), con);
+            sendMessage(Constants.SOCKET_INFO_BOT, bot.randomUser(), chatId);
+            return;
+        }
+
+        sendMessage(Constants.SOCKET_INFO_MESSAGE, message, message.getChatId());
         messageInfoDAO = new MessageInfoDAO(con);
         System.out.println(message.getContent() + message.getChatId());
         messageInfoDAO.addMessage(message);
@@ -87,10 +97,9 @@ public class ChatEndpoint implements ServletContextListener {
 
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
-      //  endpoints.remove(this);
         try{
-            if (session.getUserProperties().get(Constants.CHAT_ID) != null && endpointMap.containsKey(session.getUserProperties().get(Constants.CHAT_ID))) {
-                endpointMap.get(session.getUserProperties().get(Constants.CHAT_ID)).remove(this);
+            if (session.getUserProperties().get(Constants.USER_ATR) != null && endpointMap.containsKey(((User)session.getUserProperties().get(Constants.USER_ATR)).getChatId())) {
+                endpointMap.get(((User)session.getUserProperties().get(Constants.USER_ATR)).getChatId()).remove(this);
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -105,36 +114,20 @@ public class ChatEndpoint implements ServletContextListener {
 
 
 
-    private void sendMessageUser(Object message, Session session) throws IOException, EncodeException {
-        session.getBasicRemote().sendObject(message);
+    private void sendMessageUser(String type, Object message, Session session) throws IOException, EncodeException {
+        session.getBasicRemote().sendObject(new SocketInfoMessage(type, message));
     }
 
-    private void sendMessage(Object message) throws IOException, EncodeException {
-        Long chatId = ((Message)message).getChatId();
+    private void sendMessage(String type, Object message, Long chatId) throws IOException, EncodeException {
         Set<ChatEndpoint> endpoints = endpointMap.get(chatId);
         for (ChatEndpoint endpoint : endpoints){
-            endpoint.session.getBasicRemote().sendObject(message);
+            endpoint.session.getBasicRemote().sendObject(new SocketInfoMessage(type, message));
         }
     }
 
-    /**
-     * Parses the message and responses after the type of message
-     */
-    private void handleMessage(String message) throws DecodeException {
-        Message mes = decodeMessage(message);
-    }
 
-    private Message decodeMessage(String s) throws DecodeException {
-        ObjectMapper mapper = new ObjectMapper();
-        Message message = new Message(1, 1, "-", "Not received", "Infinity");
 
-        try {
-            message = mapper.readValue(s, Message.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return message;
-    }
+
 
 
 }

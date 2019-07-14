@@ -15,6 +15,16 @@ public class TagsDAO {
         this.con = con;
     }
 
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        TagsDAO dao = new TagsDAO(PrepareDB.getInstance());
+        List<String> tags = new ArrayList<String>(Arrays.asList("saba", "vaxo", "nata", "dachvi", "churgula"));
+        List<String> othertags = new ArrayList<String>(Arrays.asList("wvera", "gurama"));
+        dao.addTags(tags, 10);
+        dao.addTags(othertags, 20);
+
+
+    }
+
     /**
      * adds new tag in database
      *
@@ -23,7 +33,6 @@ public class TagsDAO {
      * @throws SQLException throws exception if occur any error
      * */
     public void addTags(List<String> tags, long chatID) throws SQLException {
-        System.out.println(chatID + "id");
         for(int i = 0; i < tags.size(); i++) {
             PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.TAG_TABLE
                     + " (name, chatid) value "
@@ -32,6 +41,7 @@ public class TagsDAO {
             statement.setLong(2, chatID);
             statement.executeUpdate();
         }
+
     }
 
     /**
@@ -74,4 +84,26 @@ public class TagsDAO {
         }
         return chats;
     }
+
+    /**
+     * returns all the tags of a given chat
+     *
+     * @param chatId id of chat
+     * @throws SQLException throws exception if occur any error
+     * */
+    public ArrayList<String> getTags(Long chatId) throws SQLException {
+        ArrayList<String> result = new ArrayList<String>();
+        PreparedStatement statement = con.prepareStatement("select name from " + DBInfo.TAG_TABLE
+                + " t where t.chatid = ?;");
+        statement.setLong(1, chatId);
+        ResultSet set = statement.executeQuery();
+        while(set.next()){
+            String tag = set.getString("name");
+            result.add(tag);
+        }
+        statement.close();
+        return result;
+    }
+
+
 }

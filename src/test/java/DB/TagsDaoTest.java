@@ -4,10 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TagsDaoTest {
     @Test
@@ -38,5 +35,16 @@ public class TagsDaoTest {
         Long actual = 2L;
         Assert.assertEquals(chats.size(), 3);
         Assert.assertEquals(chats.get(0), actual);
+    }
+
+    @Test
+    public void getTest() throws SQLException, ClassNotFoundException {
+        TagsDAO dao = new TagsDAO(PrepareDB.getInstance());
+        List<String> tags = new ArrayList<String>(Arrays.asList("erti", "ori", "sami", "otxi", "xuti"));
+        List<String> othertags = new ArrayList<String>(Arrays.asList("wvera", "gurama"));
+        dao.addTags(tags, 10);
+        dao.addTags(othertags, 20);
+        ArrayList<String> result = dao.getTags((long) 10);
+        Assert.assertEquals(result, tags);
     }
 }

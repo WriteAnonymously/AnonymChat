@@ -5,16 +5,16 @@ package Classes;
     ინახავს მომხმარებლის აიდის, ნიქნეიმსა და ჩათის აიდის.
  */
 public class User {
+    private long id, chatId;
+    private String username;
 
-    private String id, username, chatId;
-
-    public User(String id, String username, String chatId){
+    public User(long id, String username, long chatId){
         this.id = id;
         this.username = username;
         this.chatId = chatId;
     }
 
-    public String getId(){
+    public long getId(){
         return this.id;
     }
 
@@ -22,7 +22,7 @@ public class User {
         return this.username;
     }
 
-    public String getChatId(){
+    public long getChatId(){
         return this.chatId;
     }
 
@@ -32,6 +32,6 @@ public class User {
             return false;
         }
         User u = (User) obj;
-        return id.equals(u.id) && username.equals(u.username) && chatId.equals(u.chatId);
+        return id == u.id && username.equals(u.username) && chatId == u.chatId;
     }
 }

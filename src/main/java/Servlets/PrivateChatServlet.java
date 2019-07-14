@@ -46,7 +46,7 @@ public class PrivateChatServlet extends HttpServlet {
         }
         Set <String> mails = new HashSet<String>();
         for(int i = 1; i < members; i++){
-            String member = request.getParameter("member" + i + "@gmail.com");
+            String member = request.getParameter("member" + i);
             if (member != null && member.indexOf("@") != -1 && member.indexOf(".") != -1) {
                 System.out.println(member);
                 mails.add(member);
@@ -72,14 +72,12 @@ public class PrivateChatServlet extends HttpServlet {
 
         String chatPath = "/ChatRoom?" + Constants.RANDOM_PARAMETER + "=" + s;
 
-        RequestDispatcher dispatch = request.getRequestDispatcher(chatPath);
-
         try {
             con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        dispatch.forward(request, response);
+        response.sendRedirect(chatPath);
 
     }
 

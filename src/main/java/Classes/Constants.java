@@ -16,6 +16,7 @@ public class Constants {
     public static final String SOCKET_INFO_USER = "newUserInfo";
     public static final String SOCKET_INFO_BOT = "botMessage";
     public static final String FIRST_LOGIN = "firstLogin";
+    public static final String NUM_MESSAGE = "numMessage";
 
     public static void main(String[] args){
         List<MailMessage> list = new ArrayList<MailMessage>();

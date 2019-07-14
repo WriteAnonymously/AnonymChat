@@ -6,6 +6,8 @@ var userID = -1;
 var chatID = -1;
 var chatName = 'NO Name';
 var chatDescript = 'No Description';
+var curMessages = 100;
+var curScrollHeight = 0;
 
 socket.onopen = function (ev) {
     console.log("Connected");
@@ -100,18 +102,34 @@ function sendMessage(input){
     socket.send(message);
 }
 
+function requestMessages(){
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+            var messageReceived = this.responseText.substring(1);
+            document.getElementById("messages").innerHTML = "";
+            displayOldMessages(messageReceived);
+        }
+    };
+    xhttp.open("post", "/OldMessages", true);
+    console.log(curMessages);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("numMessage="+curMessages + "&chatId="+chatID);
+}
 
-/**
- *
- *  var curMessages = 100;
+
  $(document).ready(function(){
-      $("messages").scroll(function(){
-        var curHeight = document.getElementById('messages').clientHeight;
+      $("#messages").scroll(function(){
         var scrollHeight = document.getElementById('messages').scrollHeight;
-        if (scrollHeight > curHeight * 0.85){
-
+        var curHeight = scrollHeight-$("#messages").scrollTop();
+        if (curHeight === scrollHeight){
+        //  if (curHeight === scrollHeight * 0.85){
+            console.log("Asqrola");
+            curScrollHeight = curHeight;
+            requestMessages();
         }
       });
-    });
- *
- * */
+ });
+
+

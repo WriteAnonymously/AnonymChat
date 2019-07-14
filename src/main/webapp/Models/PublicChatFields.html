@@ -7,13 +7,40 @@
 
 </head>
 <body>
-    <h1> Create New Public Chat </h1>
-        <form action=/PublicChatServlet method="post">
-            <h6> Chat Name* <input type="text" name="name" class="fieldArea"> </h6>
-            <h6> Chat Description <input type="text" name="description" class="fieldArea"> </h6>
-            <h6> Maximum Number of Members <input type="text" name="limit" class="fieldArea"> </h6>
-            <h6> Hashtags <input type="text" name="tags" class="fieldArea" value="#"> </h6>
-            <input type="submit" name="enterButton" value="Create" class="button">
+<div class="background">
+<div class="fieldContainer">
+    <div class="containerWrapper">
+        <form action=/PublicChatServlet method="post" class="formClass">
+					<span class="formTitle">
+						Create New Public Chat
+					</span>
+            <div class="inputField validateInput" data-validate="Name is required">
+                <input class="inputType" type="text" name="name" placeholder="Chat Name">
+                <span class="focusInput"></span>
+            </div>
+            <div class="inputField validateInput" data-validate="Description is required">
+                <input class="inputType" type="text" name="description" placeholder="Chat Description">
+                <span class="focusInput"></span>
+            </div>
+            <div class="inputField validateInput" data-validate="Number of Member is required">
+                <input class="inputType" type="text" name="limit" id="numMembers"
+                       placeholder="Maximum Number of Members">
+                <span class="focusInput"></span>
+            </div>
+
+            <div class="inputField validateInput" data-validate="Number of Member is required">
+                <input class="inputType" type="text" name="tags" placeholder="Hashtags (write comma(,) after each tag)">
+                <span class="focusInput"></span>
+            </div>
+
+            <div class="containerFormBtn">
+                <button name="enterButton" value="Create" class="formBtn">
+                    Create
+                </button>
+            </div>
         </form>
+    </div>
+</div>
+</div>
 </body>
 </html>

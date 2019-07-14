@@ -149,7 +149,6 @@ function requestMessages(){
 }
 
 
-
 $(document).ready(function(){
     $("#messages").scroll(function(){
         var scrollHeight = document.getElementById('messages').scrollHeight;
@@ -164,7 +163,3 @@ $(document).ready(function(){
         }
     });
 });
-
-
-
-

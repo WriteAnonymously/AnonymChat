@@ -48,4 +48,14 @@ public class UserInfoDAO {
         user = new User(Long.parseLong(ansSet.getString("id")), ansSet.getString("username"), Long.parseLong(ansSet.getString("chatid")));
         return user;
     }
+
+    public User getUser(long userId) throws SQLException {
+        User user = null;
+        PreparedStatement statement = con.prepareStatement("select id, chatid, username from " + DBInfo.USERS_TABLE + " where id = ?;");
+        statement.setLong(1, userId);
+        ResultSet ansSet = statement.executeQuery();
+        ansSet.next();
+        user = new User(Long.parseLong(ansSet.getString("id")), ansSet.getString("username"), Long.parseLong(ansSet.getString("chatid")));
+        return user;
+    }
 }

@@ -15,8 +15,8 @@ function addMembers() {
 		newMember.type = "text";
 		var tmp = k + 1;
 		newMember.id = "member"+tmp;
-		newMember.name = "member" + tmp + "@gmail.com";
-		newMember.placeholder = newMember.name;
+		// newMember.name = "member" + tmp + "@gmail.com";
+		// newMember.placeholder = newMember.name;
 		memberDiv.appendChild(newMember);
 		list.appendChild(memberDiv);
      }

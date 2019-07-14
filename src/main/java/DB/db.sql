@@ -47,10 +47,14 @@ CREATE TABLE tags(
 
 CREATE TABLE used_random_identificators(
     id varchar(100) primary key,
-    chatid bigint
+    chatid bigint,
+    userid bigint,
+    FOREIGN KEY (chatID) REFERENCES chats(id),
+    FOREIGN KEY (userID) REFERENCES users(id)
 );
 
 CREATE TABLE not_used_random_identificators(
     id varchar(100) primary key,
-    chatid bigint
+    chatid bigint,
+    FOREIGN KEY (chatID) REFERENCES chats(id)
 );

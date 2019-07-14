@@ -4,6 +4,8 @@ var socket = new WebSocket('ws://localhost:8080/The_Chat');
 var userName = 'NULL';
 var userID = -1;
 var chatID = -1;
+var chatName = 'NO Name';
+var chatDescript = 'No Description';
 
 socket.onopen = function (ev) {
     console.log("Connected");
@@ -15,13 +17,23 @@ document.getElementById("sendButton").addEventListener("click", function (ev) {
     document.getElementById('textInput').value = '';
 });
 
+function updateChatInfo() {
+    console.log("updating");
+    document.getElementById("chat-name").innerText = "Chat Name :"+chatName;
+    document.getElementById("descr").innerText = "Description :"+chatDescript;
+
+}
 
 
 function displayMessage(message){
+    displayText(message.userName + ":" + message.content + "("+message.creationDate+")");
+}
+
+function displayText(input) {
     var para = document.createElement("P");
     var messagesDiv = document.getElementById("messages");
     messagesDiv.appendChild(para);
-    var t = document.createTextNode(message.userName + ":" + message.content + "("+message.creationDate+")");
+    var t = document.createTextNode(input);
     para.appendChild(t);
     gotoBottom("messages");
 }
@@ -46,23 +58,24 @@ socket.onmessage = function (ev) {
     if (type === 'l'){
         console.log('recieved list');
         displayOldMessages(messageReceived);
-    } else if (userID === -1 && userName.valueOf() === 'NULL'){
-        var firstMessage = JSON.parse(messageReceived);
-        if (firstMessage.content.valueOf() === 'n'){
-            userName =  firstMessage.userName.valueOf();
-            chatID = firstMessage.chatId;
-            userID = firstMessage.userId;
-            console.log(firstMessage.userName);
-            console.log(firstMessage.content);
-            console.log(chatID);
-            console.log(userID);
-        } else {
-            console.log("Error somewhere");
-        }
+    } else if (type === 'u'){
+        var userInfo = JSON.parse(messageReceived);
+        userName =  userInfo.username.valueOf();
+        chatID = userInfo.chatId;
+        userID = userInfo.id;
+        console.log(chatID);
+        console.log(userID);
+    } else if (type === 'c'){
+        var chatInfo = JSON.parse(messageReceived);
+        chatDescript = chatInfo.description;
+        chatName = chatInfo.name;
+        updateChatInfo();
     } else if (type === 'm'){
         console.log('received message');
         var message = JSON.parse(messageReceived);
         displayMessage(message);
+    } else if (type === 'b'){
+        displayText("BOT: "+messageReceived);
     }
 };
 

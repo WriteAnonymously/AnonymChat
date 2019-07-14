@@ -57,9 +57,9 @@ public class PrepareDB {
         if (connection == null)
             Class.forName(DB.DBInfo.DRIVER);
         connection = DriverManager.getConnection("jdbc:mysql://"+ DB.DBInfo.MYSQL_DATABASE_SERVER, DB.DBInfo.MYSQL_USERNAME, DB.DBInfo.MYSQL_PASSWORD);
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("use anonym_chat_schema;");
-     //   prepareStructure();
+//        Statement statement = connection.createStatement();
+//        statement.executeUpdate("use anonym_chat_schema;");
+//        prepareStructure();
 //        BasicDataSource pool = new BasicDataSource();
         return connection;
     }
@@ -115,10 +115,10 @@ public class PrepareDB {
         UserInfoDAO user = new UserInfoDAO(con);
         MessageInfoDAO messageInfoDAO = new MessageInfoDAO(con);
         ChatInfoDAO chat = new ChatInfoDAO(con);
-        chat.addChat("chat", ChatInfoDAO.PUBLIC, "kai chat", 10);
-        chat.addChat("chat", ChatInfoDAO.PUBLIC, "kai chat", 10);
-        chat.addChat("chat", ChatInfoDAO.PUBLIC, "kai chat", 10);
-        chat.addChat("chat", ChatInfoDAO.PUBLIC, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
+        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
         user.addUser(1, "natela");
         user.addUser(1, "natela");
         user.addUser(1, "natela");

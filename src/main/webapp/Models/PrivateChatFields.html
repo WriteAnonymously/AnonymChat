@@ -4,36 +4,43 @@
     <meta charset="UTF-8">
     <title>New Private Chat</title>
     <link rel="stylesheet" href="../Style/FieldPageStyle.css">
-    <script type="text/javascript">
-        function addMembers(){
-            var numMembers = document.getElementById("numMembers").value;
-            var list = document.getElementById("memberList");
-            while(list.hasChildNodes()) {
-                list.removeChild(list.lastChild);
-            }
-            for (k=0; k<numMembers; k++) {
-                var h6 = document.createElement("h6");
-                h6.append(document.createTextNode("Member " + (k+1)));
-                var newMember = document.createElement("input");
-                newMember.type = "text";
-                newMember.class = "fieldArea";
-                newMember.name ="Member" + k;
-                newMember.classList.add("fieldArea");
-                h6.append(newMember);
-                list.appendChild(h6);
-            }
-        }
-    </script>
+    <script src="../js/FieldPage.js"></script>
 </head>
 <body>
-    <h1> Create New Private Chat </h1>
-    <form action=/PrivateChatServlet method="post">
-        <h6>Chat Name* <input type="text" name="name" class="fieldArea"></h6>
-        <h6>Chat Description <input type="text" name="description" class="fieldArea"></h6>
-        <h6>Number of Chat Members* <input type="text" name="numMembers" id="numMembers" class="fieldArea"></h6>
-        <a href="#" onclick="addMembers()">  Add Members </a>
-        <div id="memberList"> </div>
-        <input type="submit" name="enterButton" value="Create" class="button">
-    </form>
+<div class="background">
+<div class="fieldContainer">
+    <div class="containerWrapper">
+        <form action=/PrivateChatServlet method="post" class="formClass">
+					<span class="formTitle">
+						Create New Private Chat
+					</span>
+            <div class="inputField validateInput" data-validate="Name is required">
+                <input class="inputType" type="text" name="name" placeholder="Chat Name">
+                <span class="focusInput"></span>
+            </div>
+            <div class="inputField validateInput" data-validate="Description is required">
+                <input class="inputType" type="text" name="description" placeholder="Chat Description">
+                <span class="focusInput"></span>
+            </div>
+            <div class="inputField validateInput" data-validate="Number of Member is required">
+                <input class="inputType" type="text" name="numMembers" id="numMembers"
+                       placeholder="Number of Chat Members">
+                <span class="focusInput"></span>
+            </div>
+
+            <a href="#" onclick="addMembers()">  Add Members </a>
+
+            <div class="inputField validateInput" data-validate="Members Are required" id="memberList">
+                <span class="focusInput"></span>
+            </div>
+            <div class="containerFormBtn">
+                <button name="enterButton" value="Create" class="formBtn">
+                    Create
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
 </body>
 </html>

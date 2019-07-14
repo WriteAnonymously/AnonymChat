@@ -18,7 +18,7 @@ public class ChatBot {
         this.con = con;
     }
 
-    public String anounceNewUser(String username){
+    public String announceNewUser(String username){
         return "Say Hello to "+username;
     }
 

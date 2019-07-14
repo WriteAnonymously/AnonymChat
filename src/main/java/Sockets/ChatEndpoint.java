@@ -79,7 +79,7 @@ public class ChatEndpoint implements ServletContextListener {
 
         if (firstLogin){
             ChatBot bot = new ChatBot(chatId, con);
-            sendMessage(Constants.SOCKET_INFO_BOT, bot.anounceNewUser(username), chatId);
+            sendMessage(Constants.SOCKET_INFO_BOT, bot.announceNewUser(username), chatId);
         }
     }
 

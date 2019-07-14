@@ -33,7 +33,6 @@ public class SocketInfoMessageEncoder implements Encoder.Text<SocketInfoMessage>
             String message = (String)socketInfoMessage.getObject();
             result = "b" + message;
         }
-        System.out.println(result);
         return result;
     }
 

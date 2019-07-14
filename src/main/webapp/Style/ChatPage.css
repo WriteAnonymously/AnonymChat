@@ -1,6 +1,9 @@
 body {
     box-sizing: border-box;
-    margin: 0;
+    margin-top: 10px;
+    margin-botttom: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
     padding: 13px;
     display: flex;
     flex-direction: column;
@@ -13,7 +16,8 @@ body {
     background-color: #34495e;
     position: fixed;
     top: 0;
-    width: 100%;
+    width: 90%;
+
 }
 .navbar-right {
     float: right;
@@ -70,9 +74,10 @@ body {
 .message-form__input {
     flex-grow: 1;
     border: 1px solid #dfdfdf;
-    padding: 10px 15px;
+    padding: 40px 15px;
     font-size: 16px;
 }
 .message-form__button {
     margin: 10px;
+    padding: 20px 15px;
 }

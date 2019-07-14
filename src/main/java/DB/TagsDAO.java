@@ -1,5 +1,7 @@
 package DB;
 
+import Classes.Chat;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,9 +52,9 @@ public class TagsDAO {
      * @param tags list of tags
      * @throws SQLException throws exception if occur any error
      * */
-    public List<Long> searchChats(Set<String> tags) throws SQLException {
-        int maxNumberOfChats = 20;
-        Map<Long, Integer> results = new HashMap<Long, Integer>();
+    public ArrayList<Chat> searchChats(ArrayList<String> tags) throws SQLException {
+        int maxNumberOfChats = 10;
+        Map<Long, Integer> ids = new HashMap<Long, Integer>();
         for(String tag : tags) {
             PreparedStatement statement = con.prepareStatement("select chatid from " + DBInfo.TAG_TABLE
                     + " t where t.name = ?;");
@@ -60,29 +62,37 @@ public class TagsDAO {
             ResultSet set = statement.executeQuery();
             while (set.next()){
                 Long id = set.getLong(1);
-                if(results.containsKey(id)){
-                    int freq = results.get(id);
-                    results.put(id, freq + 1);
+                if(ids.containsKey(id)){
+                    int freq = ids.get(id);
+                    ids.put(id, freq + 1);
                 } else {
-                    results.put(id, 1);
+                    ids.put(id, 1);
                 }
             }
         }
-        Object[] sorted = results.entrySet().toArray();
+        // sorting by their popularity
+        Object[] sorted = ids.entrySet().toArray();
         Arrays.sort(sorted, new Comparator() {
             public int compare(Object o1, Object o2) {
                 return ((Map.Entry<Long, Integer>) o2).getValue().compareTo(
                         ((Map.Entry<Long, Integer>) o1).getValue());
             }
         });
-        List<Long> chats = new ArrayList<Long>();
+        ArrayList<Long> chats = new ArrayList<Long>();
 
-        int len = results.size() > maxNumberOfChats ? maxNumberOfChats : results.size();
+        int len = ids.size() > maxNumberOfChats ? maxNumberOfChats : ids.size();
         for(int i = 0; i < len; i++){
             long chatID = ((Map.Entry<Long, Integer>)sorted[i]).getKey();
             chats.add(chatID);
         }
-        return chats;
+        // getting chats from table
+        ChatInfoDAO chatdao = new ChatInfoDAO(con);
+        ArrayList<Chat> result = new ArrayList<Chat>();
+        for(int i = 0; i < chats.size(); i++){
+            Chat chat = chatdao.getChatInfo(chats.get(i));
+            result.add(chat);
+        }
+        return result;
     }
 
     /**

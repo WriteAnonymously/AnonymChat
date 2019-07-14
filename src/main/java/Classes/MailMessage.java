@@ -21,4 +21,9 @@ public class MailMessage {
     public String getSubject(){
         return subject;
     }
+
+    @Override
+    public String toString() {
+        return "{\"to\":" + mail + ", \"subject\":" + subject + ", \"content\":" + content + "}";
+    }
 }

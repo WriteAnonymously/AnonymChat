@@ -31,7 +31,7 @@ function writeOnTheWall(roomInfo) {
     var info = roomInfo.substr(1, roomInfo.length - 3);
     var res = info.split(",");
     for (k = 0; k < res.length; k++) {
-        var txt = document.createElement("h5");
+        var txt = document.createElement("strong");
         txt.appendChild(document.createTextNode(res[k]));
         txtDiv.appendChild(txt);
     }
@@ -54,9 +54,34 @@ function makeRoom(name, id) {
     roomDiv.appendChild(chatName);
     roomsSpace.appendChild(roomDiv);
     roomDiv.addEventListener('mouseover', writeInfo);
+    roomDiv.addEventListener('click', goToChat)
 }
 
+function goToChat(e){
+    var roomDiv = e.target;
+    var id = roomDiv.id;
+    sendChatPageRequest("post", "ChatRoom", false, id)
+}
+
+function sendChatPageRequest(method, url, ind, id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            location.href = "http://localhost:8080/ChatRoom?chatId=" + id;
+        }
+    };
+    var toPass = "chatId="+id;
+    xhttp.open(method, url, ind);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send(toPass);
+}
+
+
 function drawRooms(rooms) {
+    var txtDiv = document.getElementById("roomsDiv");
+    while(txtDiv.hasChildNodes()) {
+        txtDiv.removeChild(txtDiv.lastChild);
+    }
     var rooms = rooms.substr(1, rooms.length - 3);
     var roomsInfos = rooms.split(",");
     for (k = 0; k < roomsInfos.length/2; k++) {
@@ -67,5 +92,25 @@ function drawRooms(rooms) {
 }
 
 function makeEnvironment() {
-    sendRequest("get", "topRooms", true, null, drawRooms);
+    sendRequest("get", "topRooms", false, null, drawRooms);
+}
+
+function sendSearchRequest(method, url, ind, line, callback) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            callback(xhttp.responseText);
+        }
+    };
+    if (line) {
+        var toPass = "line="+line;
+        xhttp.open(method, url, ind);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(toPass);
+    }
+}
+
+function searchRooms() {
+    var line = document.getElementById("search-line").value;
+    sendSearchRequest("post", "SearchServlet", false, line, drawRooms);
 }

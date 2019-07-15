@@ -27,7 +27,7 @@ public class ChatBot {
     public String answerMessage(String query, String username, long chatId, Connection con) throws SQLException {
         int type = getType(query);
         if (type == 0) {
-            return "the random user is" +randomUser(chatId, con);
+            return "the random user is " +randomUser(chatId, con);
         } else if (type == 1){
             return randomNumber(10);
         } else if (type == 2){

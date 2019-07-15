@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+
 @WebListener
 @ServerEndpoint(value = "/The_Chat", configurator = ChatroomServerConfigurator.class, encoders = {SocketInfoMessageEncoder.class})
 public class ChatEndpoint implements ServletContextListener {

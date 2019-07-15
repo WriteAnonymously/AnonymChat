@@ -6,14 +6,26 @@
   <meta http-equiv="Expires" content="0">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-          crossorigin="anonymous">
-  </script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
   <link rel="stylesheet" href="../Style/ChatPage.css">
   <link rel="shortcut icon" href="/images/favicon.png" type="image/png">
   <title>Chat Page</title>
+
+  <script>
+    $( function() {
+      var availableCommands = [
+              "BOT:RANDOM USER",
+              "BOT:RANDOM NUMBER",
+              "BOT:GUESS",
+              "BOT:ANSWER"
+      ];
+      $( "#textInput" ).autocomplete({
+        source: availableCommands
+      });
+    } );
+  </script>
 
 </head>
 <body>

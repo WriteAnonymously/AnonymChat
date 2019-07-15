@@ -75,6 +75,7 @@ public class PrivateChatServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        request.getSession().setAttribute(Constants.CHAT_ID, null);
         response.sendRedirect(chatPath);
 
     }

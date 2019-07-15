@@ -32,14 +32,10 @@ public class Listener implements ServletContextListener,
         Connection con = null;
         try {
             con = connectionPool.getConnection();
-          //  System.out.println("daemata");
-            PrepareDB.addInfo(con);
-            System.out.println("ukve Shig aris");
             con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-     //   System.out.println("done initializing connection;");
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
@@ -54,7 +50,6 @@ public class Listener implements ServletContextListener,
     // -------------------------------------------------------
     public void sessionCreated(HttpSessionEvent se) {
         /* Session is created. */
-        System.out.println("Session created");
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {

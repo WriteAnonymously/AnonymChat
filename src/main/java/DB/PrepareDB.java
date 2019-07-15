@@ -20,19 +20,9 @@ public class PrepareDB {
     public static void main(String[] args){
         try {
             Connection con = PrepareDB.getInstance();
-            MessageInfoDAO messageInfoDAO = new MessageInfoDAO(con);
-            UserInfoDAO userInfoDAO = new UserInfoDAO(con);
-            ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
             Statement statement = connection.createStatement();
             statement.executeUpdate("use anonym_chat_schema;");
-
-            long charID = chatInfoDAO.addChat("chat", "public", "kai chat",  1);
-            long userID = userInfoDAO.addUser(1, "wvera");
-
             addUserNames(con);
-            addInfo(con);
-            List<Chat> lst = chatInfoDAO.getTopNChats(1);
-            Chat ch = lst.get(0);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -46,7 +36,6 @@ public class PrepareDB {
         for (int i = 0; i < names.size(); i++){
             usernameDAO.addUsername(names.get(i));
         }
-
     }
 
 
@@ -65,36 +54,7 @@ public class PrepareDB {
 //        BasicDataSource pool = new BasicDataSource();
         return connection;
     }
-    /*
-    /**
-     * prepare database for use including drop old tables and create new ones
-     * */
-    private static void prepareStructure() {
-        BufferedReader reader;
-        try {
-            System.out.println(System.getProperty("user.dir"));
-            reader = new BufferedReader(new FileReader(DBInfo.DB_PATH));
-            String q = "";
-            while (true){
-                String line = reader.readLine();
-                q += " " + (line != null ?line:"");
-                if (line != null && !line.equals("") && line.indexOf(";") != -1){
-                    Statement statement = connection.createStatement();
-                    statement.executeUpdate(q);
-                    q = "";
-                }
-                if (line == null){
-                    break;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     /**
      * gets instance of Connection
@@ -111,23 +71,5 @@ public class PrepareDB {
             }
         }
         return connection;
-    }
-
-    public static void addInfo(Connection con) throws SQLException {
-        UserInfoDAO user = new UserInfoDAO(con);
-        MessageInfoDAO messageInfoDAO = new MessageInfoDAO(con);
-        ChatInfoDAO chat = new ChatInfoDAO(con);
-        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
-        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
-        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
-        chat.addChat("chat", ChatInfoDAO.PRIVATE, "kai chat", 10);
-        user.addUser(1, "natela");
-        user.addUser(1, "natela");
-        user.addUser(1, "natela");
-        user.addUser(1, "natela");
-        messageInfoDAO.addMessage(1, 1, "salami gagartyi kalami");
-        messageInfoDAO.addMessage(1, 1, "salami gagartyi kalami");
-        messageInfoDAO.addMessage(1, 1, "salami");
-        messageInfoDAO.addMessage(1, 1, "salami");
     }
 }

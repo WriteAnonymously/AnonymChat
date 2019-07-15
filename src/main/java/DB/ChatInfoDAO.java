@@ -63,7 +63,6 @@ public class ChatInfoDAO {
                                 + " t where t.status = \"public\" order by -1 * (select count(*) from " + DBInfo.USERS_TABLE
                                 + " cus where cus.chatid = t.id) limit ?;");
         statement.setInt(1, n);
-        System.out.println(statement.toString());
         ResultSet set = statement.executeQuery();
         while (set.next()){
             String name = set.getString("name");
@@ -91,8 +90,6 @@ public class ChatInfoDAO {
                                 + " where chatid = ?;");
         statement.setLong(1, chatID);
 
-        System.out.println(statement);
-        System.out.println(chatID + "CHATID");
         ResultSet set = statement.executeQuery();
         while (set.next()){
             userNames.add(set.getString(1));
@@ -111,7 +108,6 @@ public class ChatInfoDAO {
         PreparedStatement statement = connection.prepareStatement("select * from " + DBInfo.CHAT_TABLE + " where id = ? ");
         statement.setLong(1, chatId);
         Chat chat = null;
-        System.out.println(statement);
         ResultSet set = statement.executeQuery();
         set.last();
         String status = set.getString("status");

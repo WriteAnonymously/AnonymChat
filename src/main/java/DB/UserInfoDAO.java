@@ -49,6 +49,11 @@ public class UserInfoDAO {
         return user;
     }
 
+    /**
+     * gets user by it's id
+     * @param userId id of user
+     * @return user
+     * */
     public User getUser(long userId) throws SQLException {
         User user = null;
         PreparedStatement statement = con.prepareStatement("select id, chatid, username from " + DBInfo.USERS_TABLE + " where id = ?;");

@@ -32,6 +32,7 @@ public class UsernameDAO {
      * gets last username from table
      *
      * @throws SQLException throws exception if occur any error
+     * @return last username
      * */
     public String getLastUsername() throws SQLException {
         String result = "";
@@ -49,6 +50,7 @@ public class UsernameDAO {
      * gets n random usernames
      *
      * @param n number of usernames
+     * @return Set of usernames
      * */
     public Set<String> getNUsernames(int n) throws SQLException {
         Set<String> usernames = new HashSet<String>();

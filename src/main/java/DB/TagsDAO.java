@@ -17,16 +17,6 @@ public class TagsDAO {
         this.con = con;
     }
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        TagsDAO dao = new TagsDAO(PrepareDB.getInstance());
-        List<String> tags = new ArrayList<String>(Arrays.asList("saba", "vaxo", "nata", "dachvi", "churgula"));
-        List<String> othertags = new ArrayList<String>(Arrays.asList("wvera", "gurama"));
-        dao.addTags(tags, 10);
-        dao.addTags(othertags, 20);
-
-
-    }
-
     /**
      * adds new tag in database
      *

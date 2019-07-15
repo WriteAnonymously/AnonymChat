@@ -22,11 +22,7 @@ public class ChatroomServerConfigurator extends ServerEndpointConfig.Configurato
                     sec.getUserProperties().put(Constants.CHAT_ID, session.getAttribute(Constants.CHAT_ID));
                     sec.getUserProperties().put(chatId, session.getAttribute(chatId));
                     Chat chat = (Chat) session.getAttribute(Constants.CHAT_INFO);
-                    if (chat == null){
-                        System.out.println("nulliaaaaaaaaaaaaaaaaaaaaa");
-                    }
                     sec.getUserProperties().put(Constants.CHAT_INFO, session.getAttribute(Constants.CHAT_INFO));
-                    System.out.println("Davsete" + chatId + ((User)session.getAttribute(chatId)).getUsername());
                 }
             }
         } catch (Exception e){

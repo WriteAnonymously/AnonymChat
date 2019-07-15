@@ -42,7 +42,6 @@ public class chatInfo extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
-		System.out.println("es aris id" + id + "aq aris");
 		ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
 		String name = "Chat Name : ";
 		String desc = "Chat Description : ";

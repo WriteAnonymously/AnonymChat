@@ -39,7 +39,6 @@ public class MessageInfoDAO {
             statement.setLong(1, chatID);
             statement.setLong(2, userID);
             statement.setString(3, content);
-            System.out.println(userID + "  " + chatID + "  " + statement);
             statement.executeUpdate();
             statement.close();
     }
@@ -57,13 +56,11 @@ public class MessageInfoDAO {
         String s = "select m.userid as userid, m.content as content, m.creation_date as creation_date, u.username as username " +
                 "from " + DBInfo.MESSAGE_TABLE + " m " + "left join " + DBInfo.USERS_TABLE + " u " + "on u.id = m.userid " +
                 "where m.chatid = " + chatID + " order by m.creation_date desc limit " + n + ";";
-        System.out.println(s);
         ResultSet rs = st.executeQuery(s);
         while (rs.next()) {
             long userID = rs.getLong("userid");
             String userName = rs.getString("username");
             String content = rs.getString("content");
-          //  System.out.println(rs.getString("creation_date"));
             String date = rs.getString("creation_date");
             date = clearDate(date);
             Message curr = new Message(chatID, userID, userName, content, date);

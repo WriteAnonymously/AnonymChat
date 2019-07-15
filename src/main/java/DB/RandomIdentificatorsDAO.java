@@ -40,7 +40,6 @@ public class RandomIdentificatorsDAO {
         statement.setString(1, randomString);
         ResultSet set = statement.executeQuery();
         if (!set.next()) {
-            System.out.println("no data");
             return -1;
         }
         long chatId = set.getLong("chatid");
@@ -59,7 +58,6 @@ public class RandomIdentificatorsDAO {
         statement.setString(1, randomString);
         ResultSet set = statement.executeQuery();
         if (!set.next()) {
-            System.out.println("no data");
             return null;
         }
         IdsInfo ans = null;

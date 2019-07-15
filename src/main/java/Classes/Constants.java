@@ -19,19 +19,4 @@ public class Constants {
     public static final String NUM_MESSAGE = "numMessage";
     public static final String RANDOM_PARAMETER = "param";
     public static final String WEBPAGE = "localhost:8080";
-
-    public static void main(String[] args){
-        List<MailMessage> list = new ArrayList<MailMessage>();
-        list.add(new MailMessage("vkoto17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
-        list.add(new MailMessage("sstur17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
-        list.add(new MailMessage("dkurt17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
-        list.add(new MailMessage("nchur17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
-        list.add(new MailMessage("nkhur17@freeuni.edu.ge", "გამარჯობა სალამი", "try try try it"));
-        MessageSender sender = new MessageSender(list);
-        try {
-            sender.send();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
 }

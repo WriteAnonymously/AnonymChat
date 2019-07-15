@@ -35,7 +35,6 @@ public class MessageSender {
      * sends a mail to the account provided
      * */
     private void sendMail(MailMessage to) throws MessagingException {
-        System.out.println("Started sending to -- " + to);
         Properties properties = new Properties();
         properties.put("mail.stmp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
@@ -52,7 +51,6 @@ public class MessageSender {
         Message message = prepareMessage(session, to);
 
         Transport.send(message, DBInfo.myAccountEmail, DBInfo.myAccountPassword);
-        System.out.println("message sent to " + to);
     }
 
     /**

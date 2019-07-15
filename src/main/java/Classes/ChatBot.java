@@ -26,13 +26,10 @@ public class ChatBot {
             return randomNumber(10);
         } else if (type == 2){
             addNewWord(chatId, randomUser(chatId, con));
-            System.out.println(wordsMap.get(chatId));
             return "guess who is he/she " + username + " explains";
         } else if (type == 3){
-            System.out.println(chatId + "ch");
             if (wordsMap.containsKey(chatId)){
                 String word = wordsMap.get(chatId);
-                System.out.println(word);
                 if (query.contains(word)){
                     wordsMap.remove(chatId);
                     return username+ " gets it!";
@@ -85,7 +82,6 @@ public class ChatBot {
     }
 
     public void addNewWord(long chatId, String word){
-        System.out.println("Adding to"+chatId);
         wordsMap.put(chatId, word);
     }
 }

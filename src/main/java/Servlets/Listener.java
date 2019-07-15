@@ -26,7 +26,6 @@ public class Listener implements ServletContextListener,
          initialized(when the Web application is deployed).
          You can initialize servlet context related data here.
       */
-      //  System.out.println("Starting initializing connection;");
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         sce.getServletContext().setAttribute(ConnectionPool.ATTRIBUTE, connectionPool);
         Connection con = null;

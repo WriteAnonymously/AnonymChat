@@ -26,7 +26,6 @@ public class UserInfoDAO {
                 + "(?, ?, now(4));");
         statement.setLong(1, chatID);
         statement.setString(2, name);
-        System.out.println(statement.toString());
         statement.executeUpdate();
         Statement st = con.createStatement();
         String q = "select LAST_INSERT_ID();";

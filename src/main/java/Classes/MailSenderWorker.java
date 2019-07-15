@@ -18,8 +18,6 @@ public class MailSenderWorker extends Thread {
 
     @Override
     public void run() {
-        System.out.println("daiwyo gagzavna");
-        System.out.println("Set size is --- " + mails.size());
         List<MailMessage> messages = new ArrayList<MailMessage>();
         int pos = 0;
         for (String s:mails){
@@ -32,6 +30,5 @@ public class MailSenderWorker extends Thread {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-        System.out.println("daamtavra gagzavna");
     }
 }

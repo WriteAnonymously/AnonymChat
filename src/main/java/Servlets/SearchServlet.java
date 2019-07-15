@@ -29,7 +29,6 @@ public class SearchServlet extends HttpServlet {
 
         response.setHeader("Content-Type: \"text/plain\"", "Success");
         String line = request.getParameter("line");
-        System.out.println("line = " + line);
         TagsDAO dao = null;
         try {
             con = connectionPool.getConnection();
@@ -51,7 +50,6 @@ public class SearchServlet extends HttpServlet {
             res.add(k, curChat.getName());
             res.add(curChat.getID() + "");
         }
-        System.out.println("aq var");
         PrintWriter out = response.getWriter();
         out.print(res);
         try {

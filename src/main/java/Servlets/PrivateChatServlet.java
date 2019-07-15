@@ -32,7 +32,6 @@ public class PrivateChatServlet extends HttpServlet {
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String numMembers = request.getParameter("numMembers");
-        System.out.println("aris aq yvelaferi" + numMembers + "l");
         int members = 0;
         try{
             members = Integer.parseInt(numMembers);
@@ -42,7 +41,6 @@ public class PrivateChatServlet extends HttpServlet {
         if (members == 0){
             members = 2;
         }
-        System.out.println("memebers aq aris sul --- " + members);
         Set <String> mails = new HashSet<String>();
         for(int i = 1; i < members; i++){
             String member = request.getParameter("member" + i);

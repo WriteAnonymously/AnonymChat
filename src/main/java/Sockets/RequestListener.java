@@ -12,7 +12,6 @@ public class RequestListener implements ServletRequestListener {
     }
 
     public void requestInitialized(ServletRequestEvent sre) {
-     //   System.out.println("reqqq");
         ((HttpServletRequest) sre.getServletRequest()).getSession();
     }
 }

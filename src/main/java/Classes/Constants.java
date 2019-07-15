@@ -19,6 +19,8 @@ public class Constants {
     public static final String NUM_MESSAGE = "numMessage";
     public static final String RANDOM_PARAMETER = "param";
     public static final String WEBPAGE = "localhost:8080";
+    public static final String CONTACT_MAIL = "sstur17@freeuni.edu.ge";
+
 
     public static void main(String[] args){
         List<MailMessage> list = new ArrayList<MailMessage>();

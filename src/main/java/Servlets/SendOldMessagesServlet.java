@@ -24,10 +24,8 @@ import java.util.List;
 public class SendOldMessagesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Shemovida");
          long num = Long.parseLong(req.getParameter(Constants.NUM_MESSAGE));
          long chatId = Long.parseLong(req.getParameter(Constants.CHAT_ID));
-         System.out.println(num + "d" + chatId);
         ConnectionPool connectionPool = (ConnectionPool) req.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
         Connection con = null;
         try {

@@ -32,9 +32,6 @@ public class PrivateChatServlet extends HttpServlet {
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String numMembers = request.getParameter("numMembers");
-        System.out.println("aris aq yvelaferi" + numMembers + "l");
-        System.out.println(name + numMembers + numMembers);
-
         int members = 0;
         try{
             members = Integer.parseInt(numMembers);

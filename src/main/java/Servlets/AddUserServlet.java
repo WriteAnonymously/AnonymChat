@@ -79,7 +79,6 @@ public class AddUserServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         if (session.getAttribute(ID) != null){
-            System.out.println("You were here "+((User)session.getAttribute(ID)).getUsername());
             session.setAttribute(Constants.CHAT_ID, ID);
             session.setAttribute(Constants.FIRST_LOGIN, false);
             session.setAttribute(Constants.CHAT_ID, ID);
@@ -103,7 +102,6 @@ public class AddUserServlet extends HttpServlet {
             try {
                 username = ng.generateName(chatID);
                 chatInfo = chatInfoDAO.getChatInfo(chatID);
-                System.out.println(chatInfo.getName() + "nqqq");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -112,12 +110,10 @@ public class AddUserServlet extends HttpServlet {
         try {
             long id = userInfoDAO.addUser(chatID, username);
             User user = new User(id, username, chatID);
-            System.out.println("new user id = " + id);
             session.setAttribute(ID, user);
             session.setAttribute(Constants.FIRST_LOGIN, true);
             session.setAttribute(Constants.CHAT_INFO, chatInfo);
             session.setAttribute(Constants.CHAT_ID, ID);
-            System.out.println("Attributes set");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -133,7 +129,6 @@ public class AddUserServlet extends HttpServlet {
     private Pair privateUserCall(HttpServletRequest request, HttpServletResponse response, Connection con) {
         String param = request.getParameter(Constants.RANDOM_PARAMETER);
         Object attr = request.getSession().getAttribute(Constants.CHAT_ID);
-        System.out.println("es aris attr ----- " + attr);
         if (attr == null){
             return firstAttempt(request, response, con);
         } else {
@@ -199,7 +194,6 @@ public class AddUserServlet extends HttpServlet {
         }
         request.getSession().setAttribute(String.valueOf(chatId), user);
         request.getSession().setAttribute(Constants.CHAT_INFO, chat);
-        System.out.println("dasetiliaaaaaaaaaaaaaaa   " + request.getSession().getAttribute(Constants.CHAT_ID));
         return ans;
     }
 

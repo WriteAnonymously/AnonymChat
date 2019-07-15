@@ -31,18 +31,19 @@ import java.util.List;
  */
 @WebServlet(name = "chatInfo", urlPatterns = {"/chatInfo"})
 public class chatInfo extends HttpServlet {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 
+
+	/**
+	 *	Pulls chat information from db
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
-		System.out.println("es aris id" + id + "aq aris");
 		ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
 		String name = "Chat Name : ";
 		String desc = "Chat Description : ";

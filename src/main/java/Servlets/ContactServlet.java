@@ -1,5 +1,6 @@
 package Servlets;
 
+import Classes.Constants;
 import Classes.MailMessage;
 import Classes.Message;
 import Classes.MessageSender;
@@ -17,13 +18,16 @@ import java.util.List;
 
 @WebServlet(name = "ContactServlet", urlPatterns = {"/ContactServlet"})
 public class ContactServlet extends HttpServlet {
+    /**
+     * Sends Message from a user to our mail
+     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
         String mail = request.getParameter("e-mail");
         String content = request.getParameter("content");
         String fullText = content +  "  Mail to respond : " + mail;
         String subject = "Message From " + name;
-        MailMessage message = new MailMessage("sstur17@freeuni.edu.ge",fullText,subject);
+        MailMessage message = new MailMessage(Constants.CONTACT_MAIL,fullText,subject);
 
         List<MailMessage> toSend = new ArrayList<MailMessage>();
         toSend.add(message);

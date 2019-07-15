@@ -48,7 +48,6 @@ public class ChatEndpoint implements ServletContextListener {
        boolean firstLogin = false;
         long chatId = -1;
         if (endpointConfig.getUserProperties().get(Constants.CHAT_ID) == null){
-            System.out.println("Please refresh page");
             return;
         } else {
             String ID = (String) endpointConfig.getUserProperties().get(Constants.CHAT_ID);
@@ -62,7 +61,6 @@ public class ChatEndpoint implements ServletContextListener {
 
         session.getUserProperties().put(Constants.USER_ATR, user);
         session.getUserProperties().put(Constants.CHAT_ID, chatId);
-        System.out.println(chatId + "-" + userId + "-" + username);
 
         if (!endpointMap.containsKey(chatId)){endpointMap.put(chatId, new CopyOnWriteArraySet<ChatEndpoint>());}
         endpointMap.get(chatId).add(this);
@@ -114,7 +112,6 @@ public class ChatEndpoint implements ServletContextListener {
         } catch (Exception e){
             e.printStackTrace();
         }
-        System.out.println("Disconnected Session");
     }
 
     @OnError

@@ -21,6 +21,7 @@ public class GenerateURLServlet extends HttpServlet {
 
     }
 
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long chatID = Long.parseLong((String) request.getSession().getAttribute("chatID"));
         String url = String.valueOf(request.getRequestURL());

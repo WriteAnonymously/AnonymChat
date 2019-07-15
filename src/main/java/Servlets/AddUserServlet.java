@@ -1,9 +1,6 @@
 package Servlets;
 
-import Classes.Chat;
-import Classes.Constants;
-import Classes.NameGenerator;
-import Classes.User;
+import Classes.*;
 import DB.*;
 
 import javax.servlet.RequestDispatcher;
@@ -32,7 +29,8 @@ public class AddUserServlet extends HttpServlet {
         String ID = request.getParameter(Constants.CHAT_ID);
         String param = request.getParameter(Constants.RANDOM_PARAMETER);
 
-        if (ID == null && param == null){ response.sendRedirect("/WelcomeServlet");
+        if (ID == null && param == null){
+            response.sendRedirect("/WelcomeServlet");
             return;
         }
         long chatID = -1;
@@ -45,6 +43,7 @@ public class AddUserServlet extends HttpServlet {
         }
 
         Pair privateChat = null;
+        ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
 
         if (param != null){
             privateChat = privateUserCall(request, response, con);
@@ -60,8 +59,20 @@ public class AddUserServlet extends HttpServlet {
             ID = String.valueOf(privateChat.chatId);
         } else {
             try{
+                Chat chat = chatInfoDAO.getChatInfo(Long.parseLong(ID));
+                if (chat instanceof PrivateChat){
+                    try {
+                        con.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    response.sendRedirect("/WelcomeServlet");
+                    return;
+                }
                 chatID = Long.parseLong(ID);
             } catch (NumberFormatException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -84,7 +95,6 @@ public class AddUserServlet extends HttpServlet {
 
         String username = "Anon";
         UserInfoDAO userInfoDAO = new UserInfoDAO(con);
-        ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
         UsernameDAO usernameDAO = new UsernameDAO(con);
 
         Chat chatInfo = null;

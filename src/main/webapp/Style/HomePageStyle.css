@@ -41,9 +41,8 @@ h4:hover {
 
 
 body {
-	position: absolute;
 	background-image: url("../images/bg.jpg");
 	background-size:     cover;
 	background-repeat:   no-repeat;
-	background-position: calc(0%) calc(35%);
+	background-position: center center;
 }

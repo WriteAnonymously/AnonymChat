@@ -52,7 +52,7 @@ public class topRooms extends HttpServlet {
 		ArrayList<String> res = new ArrayList<String>();
 		ArrayList<Chat> chats = null;
 		try {
-			chats = (ArrayList<Chat>) dao.getTopNChats(10);
+			chats = (ArrayList<Chat>) dao.getTopNChats(15);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

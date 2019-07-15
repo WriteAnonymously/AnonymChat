@@ -22,7 +22,7 @@ public class GuessDAO {
      * @param word itself
      * */
     public void addGuess(long chatId, String word) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("insert into " + DBInfo.GUESS_TABLE + " (chatid, word) value (?, ?, ?);");
+        PreparedStatement statement = connection.prepareStatement("insert into " + DBInfo.GUESS_TABLE + " (chatid, word) value (?, ?);");
         statement.setLong(1, chatId);
         statement.setString(2, word);
         statement.executeUpdate();
@@ -32,8 +32,8 @@ public class GuessDAO {
     public void updateGuess(long chatId, String word) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("update " + DBInfo.GUESS_TABLE + " set word = ? " +
                                 " where chatid = ?;");
-        statement.setLong(1, chatId);
-        statement.setString(2, word);
+        statement.setLong(2, chatId);
+        statement.setString(1, word);
         statement.executeUpdate();
         statement.close();
     }
@@ -42,7 +42,8 @@ public class GuessDAO {
         PreparedStatement statement = connection.prepareStatement("select chatid, word from " + DBInfo.GUESS_TABLE + " where chatid = ?;");
         statement.setLong(1, chatId);
         ResultSet set = statement.executeQuery();
-        if (!set.next()) {
+        System.out.println(statement);
+        if (set.next()) {
             Guess ans = new Guess(set.getString("word"), set.getLong("chatid"));
             statement.close();
             return ans;

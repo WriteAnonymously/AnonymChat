@@ -32,7 +32,8 @@ public class ChatBot {
         } else if (type == 1){
             return randomNumber(10);
         } else if (type == 2){
-            addNewWord(chatId, randomUser(chatId));
+            String theWord = randomUser(chatId);
+            addNewWord(chatId, theWord);
             return "guess who is he/she " + username + " explains";
         } else if (type == 3){
             String ans = answerWord(chatId);
@@ -72,9 +73,8 @@ public class ChatBot {
         GuessDAO guessDAO = new GuessDAO(con);
         Guess ans = guessDAO.getGuessForChat(chatId);
         if (ans != null){
-            ans.getWord();
+            return ans.getWord();
         }
-        System.out.println("Not found");
         return "";
     }
 

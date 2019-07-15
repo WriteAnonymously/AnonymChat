@@ -58,3 +58,10 @@ CREATE TABLE not_used_random_identificators(
     chatid bigint,
     FOREIGN KEY (chatID) REFERENCES chats(id)
 );
+
+CREATE TABLE guesses (
+    id bigint primary key auto_increment,
+    chatid bigint,
+    word varchar(100),
+    FOREIGN KEY (chatID) REFERENCES chats(id)
+);

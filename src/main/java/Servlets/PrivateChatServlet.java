@@ -45,6 +45,7 @@ public class PrivateChatServlet extends HttpServlet {
         for(int i = 1; i < members; i++){
             String member = request.getParameter("member" + i);
             if (member != null && member.indexOf("@") != -1 && member.indexOf(".") != -1) {
+                System.out.println(member);
                 mails.add(member);
             }
         }

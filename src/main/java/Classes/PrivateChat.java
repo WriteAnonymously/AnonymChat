@@ -18,6 +18,7 @@ public class PrivateChat extends Chat {
         return members;
     }
 
+
     public void addMember(String newMember) {
         members.add(newMember);
     }

@@ -21,23 +21,37 @@ public class Chat {
     }
 
 
+    /*
+     * Gets ID from the Chat
+     */
     public long getID() {
         return ID;
     }
 
+    /*
+     * Gets name from the Chat
+     */
     public String getName() {
         return name;
     }
 
-
+    /*
+     * Gets description from the Chat
+     */
     public String getDescription() {
         return description;
     }
 
+    /*
+     * Gets numbembers from the Chat
+     */
     public int getNumMembers() {
         return numMembers;
     }
 
+    /*
+     * Gets creation date from the Chat
+     */
     public String getCreationTime() {
         return creationDate;
     }
@@ -50,6 +64,9 @@ public class Chat {
         return usedUsernames;
     }
 
+    /*
+     * adds new username
+     */
     public void addUsername(String newUsername) {
         usedUsernames.add(newUsername);
     }

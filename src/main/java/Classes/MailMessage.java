@@ -10,14 +10,23 @@ public class MailMessage {
         this.subject = subject;
     }
 
+    /*
+     * Gets mail of particular message
+     */
     public String getMail(){
         return mail;
     }
 
+    /*
+     * Gets content of particular message
+     */
     public String getContent(){
         return content;
     }
 
+    /*
+     * Gets subject of particular message
+     */
     public String getSubject(){
         return subject;
     }

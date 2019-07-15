@@ -18,7 +18,6 @@ public class MailSenderWorker extends Thread {
 
     @Override
     public void run() {
-        System.out.println("daiwyo gagzavna");
         System.out.println("Set size is --- " + mails.size());
         List<MailMessage> messages = new ArrayList<MailMessage>();
         int pos = 0;

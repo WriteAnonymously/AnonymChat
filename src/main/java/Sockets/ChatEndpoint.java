@@ -30,7 +30,6 @@ public class ChatEndpoint implements ServletContextListener {
     private static final Map<Long, Set<ChatEndpoint> > endpointMap = new ConcurrentHashMap<Long, Set<ChatEndpoint>>();
     private static ServletContext servletContext;
     private Session session;
-    private ChatBot bot = new ChatBot();
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         servletContext = servletContextEvent.getServletContext();
@@ -78,6 +77,7 @@ public class ChatEndpoint implements ServletContextListener {
         sendMessageUser(Constants.SOCKET_INFO_CHAT, chatInfo, session);
 
         if (firstLogin){
+            ChatBot bot = new ChatBot(con);
             sendMessage(Constants.SOCKET_INFO_BOT, bot.announceNewUser(username), chatId);
         }
     }
@@ -92,6 +92,7 @@ public class ChatEndpoint implements ServletContextListener {
 
         sendMessage(Constants.SOCKET_INFO_MESSAGE, message, message.getChatId());
         if (message.getContent().startsWith("BOT:")) {
+            ChatBot bot = new ChatBot(con);
             sendMessage(Constants.SOCKET_INFO_BOT, bot.answerMessage(message.getContent(), message.getUserName(), chatId, con), chatId);
             if (bot.getType(message.getContent()) == 2){
                 sendMessageUser(Constants.SOCKET_INFO_BOT, "Shhh, the word is "+bot.answerWord(message.getChatId()), session);

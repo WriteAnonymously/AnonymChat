@@ -1,17 +1,18 @@
 package Classes;
 
 import DB.ChatInfoDAO;
+import DB.GuessDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
 public class ChatBot {
-    Map<Long, String> wordsMap;
+    private Connection con;
     Random rand = new Random(System.currentTimeMillis());
 
-    public ChatBot() {
-        wordsMap = new HashMap<Long, String>();
+    public ChatBot(Connection con) {
+        this.con = con;
     }
 
     /**
@@ -27,24 +28,22 @@ public class ChatBot {
     public String answerMessage(String query, String username, long chatId, Connection con) throws SQLException {
         int type = getType(query);
         if (type == 0) {
-            return "the random user is " +randomUser(chatId, con);
+            return "the random user is " +randomUser(chatId);
         } else if (type == 1){
             return randomNumber(10);
         } else if (type == 2){
-            addNewWord(chatId, randomUser(chatId, con));
+            addNewWord(chatId, randomUser(chatId));
             return "guess who is he/she " + username + " explains";
         } else if (type == 3){
-            if (wordsMap.containsKey(chatId)){
-                String word = wordsMap.get(chatId);
-                if (query.contains(word)){
-                    wordsMap.remove(chatId);
-                    return username+ " gets it!";
+            String ans = answerWord(chatId);
+            if (ans.length() > 0){
+                if (query.contains(ans)){
+                    return username + " gets it!";
                 } else {
                     return "nope";
                 }
-            } else {
-                return "no word to guess";
             }
+            return "no word found";
         }
         return "Beep, Beep. I don't know the command";
     }
@@ -69,18 +68,20 @@ public class ChatBot {
     /**
      * Checks what is the word to guess
      */
-    public String answerWord(Long chatId){
-        if (wordsMap.containsKey(chatId)) {
-            return wordsMap.get(chatId);
-        } else {
-            return "NO WORD TO GUESS!! sorry ;)";
+    public String answerWord(Long chatId) throws SQLException {
+        GuessDAO guessDAO = new GuessDAO(con);
+        Guess ans = guessDAO.getGuessForChat(chatId);
+        if (ans != null){
+            ans.getWord();
         }
+        System.out.println("Not found");
+        return "";
     }
 
     /**
      * Returns random user from the chat
      */
-    public String randomUser(long chatId, Connection con) throws SQLException {
+    public String randomUser(long chatId) throws SQLException {
         String result = "";
         ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
         Set<String> usernames = chatInfoDAO.getUserNames(chatId);
@@ -98,7 +99,13 @@ public class ChatBot {
         return Integer.toString(rand.nextInt(max));
     }
 
-    public void addNewWord(long chatId, String word){
-        wordsMap.put(chatId, word);
+    public void addNewWord(long chatId, String word) throws SQLException {
+        GuessDAO guessDAO = new GuessDAO(con);
+        Guess have = guessDAO.getGuessForChat(chatId);
+        if (have == null){
+            guessDAO.addGuess(chatId, word);
+        } else {
+            guessDAO.updateGuess(chatId, word);
+        }
     }
 }

@@ -62,7 +62,8 @@ public class MessageSender {
         message.setFrom(new InternetAddress(DBInfo.myAccountEmail));
         message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to.getMail()));
         message.setSubject(to.getSubject());
-        ((MimeMessage) message).setText(to.getContent(), "UTF-8");
+        message.setContent("<h1>" + to.getContent() + "</h1>", "text/html");
+        System.out.println("content ---- " + to.getContent());
         return message;
     }
 }

@@ -21,7 +21,11 @@ public class MailSenderWorker extends Thread {
         List<MailMessage> messages = new ArrayList<MailMessage>();
         int pos = 0;
         for (String s:mails){
-            MailMessage curMessage = new MailMessage(s, link + randomStrings.get(pos), "Invite in group");
+            String curLink = link;
+            int ind = curLink.indexOf("$");
+            curLink = curLink.substring(0, ind) + randomStrings.get(pos) + curLink.substring(ind + 1);
+            System.out.println(curLink);
+            MailMessage curMessage = new MailMessage(s, curLink, "Invite in group");
             messages.add(curMessage);
         }
         MessageSender sender = new MessageSender(messages);

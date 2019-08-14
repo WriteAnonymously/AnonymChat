@@ -62,7 +62,7 @@ public class PrivateChatServlet extends HttpServlet {
         String s = randomStrings.get(randomStrings.size() - 1);
         randomStrings.remove(randomStrings.size() - 1);
 
-        MailSenderWorker worker = new MailSenderWorker(mails, randomStrings, Constants.WEBPAGE + "/ChatRoom?" + Constants.RANDOM_PARAMETER + "=");
+        MailSenderWorker worker = new MailSenderWorker(mails, randomStrings, "Click <a href=\"" + Constants.WEBPAGE + "/ChatRoom?" + Constants.RANDOM_PARAMETER + "=$\">here</a> to join a group.");
         worker.start();
 
 //        request.getSession().setAttribute(Constants.RANDOM_PARAMETER, s);

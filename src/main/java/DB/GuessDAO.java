@@ -42,7 +42,6 @@ public class GuessDAO {
         PreparedStatement statement = connection.prepareStatement("select chatid, word from " + DBInfo.GUESS_TABLE + " where chatid = ?;");
         statement.setLong(1, chatId);
         ResultSet set = statement.executeQuery();
-        System.out.println(statement);
         if (set.next()) {
             Guess ans = new Guess(set.getString("word"), set.getLong("chatid"));
             statement.close();

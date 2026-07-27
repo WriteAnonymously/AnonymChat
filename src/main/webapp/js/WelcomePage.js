@@ -20,7 +20,7 @@
   }
 
   function fetchRooms(url) {
-    roomsElement.innerHTML = '<div class="loading-state">Listening for open rooms…</div>';
+    roomsElement.innerHTML = '<div class="loading-state">Loading open chats…</div>';
     return fetch(url, {headers: {"Accept": "application/json"}})
       .then(function (response) {
         if (!response.ok) {
@@ -31,7 +31,7 @@
       .then(renderRooms)
       .catch(function () {
         roomsElement.innerHTML =
-          '<div class="empty-state">The lobby cannot reach the room service right now. Try again shortly.</div>';
+          '<div class="empty-state">Chats are unavailable right now. Please try again shortly.</div>';
       });
   }
 
@@ -39,7 +39,7 @@
     roomsElement.innerHTML = "";
     if (!Array.isArray(rooms) || rooms.length === 0) {
       roomsElement.innerHTML =
-        '<div class="empty-state">No rooms match that phrase. Open one and set the tone.</div>';
+        '<div class="empty-state">No chats match that search.</div>';
       return;
     }
     rooms.forEach(function (room) {
@@ -62,7 +62,7 @@
     var heading = document.createElement("h3");
     heading.textContent = room.name || "Untitled room";
     var description = document.createElement("p");
-    description.textContent = room.description || "No description. Walk in curious.";
+    description.textContent = room.description || "No description.";
 
     var tags = document.createElement("div");
     tags.className = "tag-list";
@@ -95,7 +95,7 @@
     event.preventDefault();
     var query = searchInput.value.trim();
     if (!query) {
-      resultLabel.textContent = "Recently active public conversations.";
+      resultLabel.textContent = "Live presence only—no invented popularity numbers.";
       fetchRooms("/topRooms");
       return;
     }

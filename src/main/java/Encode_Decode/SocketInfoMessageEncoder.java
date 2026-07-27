@@ -14,6 +14,7 @@ import java.util.List;
 public class SocketInfoMessageEncoder implements Encoder.Text<SocketInfoMessage>{
     private static Gson gson = new Gson();
 
+    @SuppressWarnings("unchecked")
     public String encode(SocketInfoMessage socketInfoMessage) throws EncodeException {
         String result = "";
         String type = socketInfoMessage.getType();

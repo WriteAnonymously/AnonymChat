@@ -32,15 +32,14 @@ public class MessageInfoDAO {
      * @param content content of message
      * */
     public void addMessage(long userID, long chatID, String content) throws SQLException{
-        PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.MESSAGE_TABLE
+        try (PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.MESSAGE_TABLE
                 + " (chatid, userid, content, creation_date) value "
-                + "(?, ?, ? , now(4));");
-
+                + "(?, ?, ? , now(4))")) {
             statement.setLong(1, chatID);
             statement.setLong(2, userID);
             statement.setString(3, content);
             statement.executeUpdate();
-            statement.close();
+        }
     }
 
     /**
@@ -52,22 +51,23 @@ public class MessageInfoDAO {
      * */
     public List<Message> getLastNMessages(int n, long chatID) throws SQLException {
         List<Message> messages = new ArrayList<Message>();
-        Statement st = con.createStatement();
-        String s = "select m.userid as userid, m.content as content, m.creation_date as creation_date, u.username as username " +
+        String query = "select m.userid as userid, m.content as content, m.creation_date as creation_date, u.username as username " +
                 "from " + DBInfo.MESSAGE_TABLE + " m " + "left join " + DBInfo.USERS_TABLE + " u " + "on u.id = m.userid " +
-                "where m.chatid = " + chatID + " order by m.creation_date desc limit " + n + ";";
-        ResultSet rs = st.executeQuery(s);
-        while (rs.next()) {
-            long userID = rs.getLong("userid");
-            String userName = rs.getString("username");
-            String content = rs.getString("content");
-            String date = rs.getString("creation_date");
-            date = clearDate(date);
-            Message curr = new Message(chatID, userID, userName, content, date);
-            messages.add(curr);
+                "where m.chatid = ? order by m.creation_date desc limit ?;";
+        try (PreparedStatement statement = con.prepareStatement(query)) {
+            statement.setLong(1, chatID);
+            statement.setInt(2, Math.max(1, Math.min(n, 1000)));
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    long userID = rs.getLong("userid");
+                    String userName = rs.getString("username");
+                    String content = rs.getString("content");
+                    String date = clearDate(rs.getString("creation_date"));
+                    messages.add(new Message(chatID, userID, userName, content, date));
+                }
+            }
         }
         Collections.reverse(messages);
-        st.close();
         return messages;
     }
 
@@ -78,11 +78,8 @@ public class MessageInfoDAO {
      * @return cleared date
      * */
     private String clearDate(String date) {
-        int pos = date.length() - 1;
-        while (date.charAt(pos) != '.'){
-            pos--;
-        }
-        return date.substring(0, pos);
+        int pos = date.indexOf('.');
+        return pos < 0 ? date : date.substring(0, pos);
     }
 
 }

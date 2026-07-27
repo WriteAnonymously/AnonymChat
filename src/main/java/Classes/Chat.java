@@ -1,22 +1,17 @@
 package Classes;
-import java.sql.Time;
-import java.util.Date;
-import java.util.HashSet;
 
 public class Chat {
     private long ID;
     private String name;
     private String description;
     private int limit;
-    private int numMembers;
     private String creationDate;
-    private HashSet<String> usedUsernames;
-    private static final int DEFAULT_LIMIT = 1000;
 
     public Chat(long ID, String name, String description, int limit, String creationDate) {
         this.ID = ID;
         this.name = name;
         this.description = description;
+        this.limit = limit;
         this.creationDate = creationDate;
     }
 
@@ -42,11 +37,8 @@ public class Chat {
         return description;
     }
 
-    /*
-     * Gets numbembers from the Chat
-     */
-    public int getNumMembers() {
-        return numMembers;
+    public int getLimit() {
+        return limit;
     }
 
     /*
@@ -54,21 +46,6 @@ public class Chat {
      */
     public String getCreationTime() {
         return creationDate;
-    }
-
-    /**
-     * This method takes care of returning used usernames.
-     * It should be called after addUsername()
-     */
-    public HashSet<String> getUsedUsernames() {
-        return usedUsernames;
-    }
-
-    /*
-     * adds new username
-     */
-    public void addUsername(String newUsername) {
-        usedUsernames.add(newUsername);
     }
 
     @Override

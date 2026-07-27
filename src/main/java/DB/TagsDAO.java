@@ -25,15 +25,15 @@ public class TagsDAO {
      * @throws SQLException throws exception if occur any error
      * */
     public void addTags(List<String> tags, long chatID) throws SQLException {
-        for(int i = 0; i < tags.size(); i++) {
-            PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.TAG_TABLE
-                    + " (name, chatid) value "
-                    + "(?, ?);");
-            statement.setString(1, tags.get(i));
-            statement.setLong(2, chatID);
-            statement.executeUpdate();
+        try (PreparedStatement statement = con.prepareStatement(
+                "insert into " + DBInfo.TAG_TABLE + " (name, chatid) value (?, ?)")) {
+            for (String tag : tags) {
+                statement.setString(1, tag);
+                statement.setLong(2, chatID);
+                statement.addBatch();
+            }
+            statement.executeBatch();
         }
-
     }
 
     /**
@@ -45,42 +45,32 @@ public class TagsDAO {
     public ArrayList<Chat> searchChats(ArrayList<String> tags) throws SQLException {
         int maxNumberOfChats = 10;
         Map<Long, Integer> ids = new HashMap<Long, Integer>();
-        for(String tag : tags) {
-            PreparedStatement statement = con.prepareStatement("select chatid from " + DBInfo.TAG_TABLE
-                    + " t where t.name = ?;");
-            statement.setString(1, tag);
-            ResultSet set = statement.executeQuery();
-            while (set.next()){
-                Long id = set.getLong(1);
-                if(ids.containsKey(id)){
-                    int freq = ids.get(id);
-                    ids.put(id, freq + 1);
-                } else {
-                    ids.put(id, 1);
+        for (String tag : tags) {
+            try (PreparedStatement statement = con.prepareStatement(
+                    "select t.chatid from " + DBInfo.TAG_TABLE + " t "
+                            + "join " + DBInfo.CHAT_TABLE + " c on c.id = t.chatid "
+                            + "where locate(lower(?), lower(t.name)) > 0 "
+                            + "and lower(c.status) = 'public'")) {
+                statement.setString(1, tag);
+                try (ResultSet set = statement.executeQuery()) {
+                    while (set.next()) {
+                        long id = set.getLong(1);
+                        ids.merge(id, 1, Integer::sum);
+                    }
                 }
             }
         }
-        // sorting by their popularity
-        Object[] sorted = ids.entrySet().toArray();
-        Arrays.sort(sorted, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                return ((Map.Entry<Long, Integer>) o2).getValue().compareTo(
-                        ((Map.Entry<Long, Integer>) o1).getValue());
-            }
-        });
-        ArrayList<Long> chats = new ArrayList<Long>();
+        List<Map.Entry<Long, Integer>> sorted = new ArrayList<>(ids.entrySet());
+        sorted.sort(Map.Entry.<Long, Integer>comparingByValue().reversed());
 
-        int len = ids.size() > maxNumberOfChats ? maxNumberOfChats : ids.size();
-        for(int i = 0; i < len; i++){
-            long chatID = ((Map.Entry<Long, Integer>)sorted[i]).getKey();
-            chats.add(chatID);
-        }
-        // getting chats from table
         ChatInfoDAO chatdao = new ChatInfoDAO(con);
-        ArrayList<Chat> result = new ArrayList<Chat>();
-        for(int i = 0; i < chats.size(); i++){
-            Chat chat = chatdao.getChatInfo(chats.get(i));
-            result.add(chat);
+        ArrayList<Chat> result = new ArrayList<>();
+        for (Map.Entry<Long, Integer> entry :
+                sorted.subList(0, Math.min(sorted.size(), maxNumberOfChats))) {
+            Chat chat = chatdao.getChatInfo(entry.getKey());
+            if (chat != null) {
+                result.add(chat);
+            }
         }
         return result;
     }
@@ -93,15 +83,15 @@ public class TagsDAO {
      * */
     public ArrayList<String> getTags(Long chatId) throws SQLException {
         ArrayList<String> result = new ArrayList<String>();
-        PreparedStatement statement = con.prepareStatement("select name from " + DBInfo.TAG_TABLE
-                + " t where t.chatid = ?;");
-        statement.setLong(1, chatId);
-        ResultSet set = statement.executeQuery();
-        while(set.next()){
-            String tag = set.getString("name");
-            result.add(tag);
+        try (PreparedStatement statement = con.prepareStatement(
+                "select name from " + DBInfo.TAG_TABLE + " t where t.chatid = ?")) {
+            statement.setLong(1, chatId);
+            try (ResultSet set = statement.executeQuery()) {
+                while (set.next()) {
+                    result.add(set.getString("name"));
+                }
+            }
         }
-        statement.close();
         return result;
     }
 

@@ -1,55 +1,63 @@
-<!DOCTYPE html>
-
-
-<html>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Home Page</title>
-    <script src="../js/WelcomePage.js"></script>
-    <link rel="stylesheet" href="../Style/WelcomePageStyle.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="shortcut icon" href="/images/favicon.png" type="image/png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browse live public rooms or create one of your own.">
+  <link rel="stylesheet" href="/Style/App.css">
+  <link rel="icon" href="/images/favicon.png">
+  <script src="/js/WelcomePage.js" defer></script>
+  <title>Open rooms — AnonymChat</title>
 </head>
-
 <body>
-
-<div class="navbar">
-    <a href="/WelcomeServlet">Home</a>
-    <div class="navbar-right">
-        <a href="/Models/AboutUs.html">About Us</a>
-        <a href="/Models/Conctact.html">Contact</a>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span class="brand-text">Anonym / Chat</span>
+    </a>
+    <div class="nav-links">
+      <a href="/WelcomeServlet" aria-current="page">Rooms</a>
+      <a href="/Models/AboutUs.html">About</a>
+      <a href="/Models/Conctact.html">Contact</a>
     </div>
+  </nav>
 
-</div>
+  <main class="page-shell" id="main">
+    <header class="lobby-header">
+      <div>
+        <p class="eyebrow">The lobby</p>
+        <h1 class="display-title">Choose a room.<br><em>Leave the profile.</em></h1>
+        <p class="lede">The count on each card is live. Zero means quiet—not unpopular.</p>
+      </div>
+      <div class="lobby-actions">
+        <a class="button button-signal" href="/Models/PublicChatFields.html">
+          Open a public room <span aria-hidden="true">↗</span>
+        </a>
+        <a class="button button-blue" href="/Models/PrivateChatFields.html">
+          Invite a private circle <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </header>
 
-<div id="container">
-    <img src="/images/logo.jpg" alt="AnonymChat Logo">
-</div>
+    <div class="notice" id="lobbyNotice" role="status"></div>
 
-<div style = "position:relative; left:80px; top:50px;">
-    <form class="search" onsubmit="searchRooms(); return false;" style="margin-left:30px;max-width:500px">
-        <input type="text" id="search-line" placeholder="Type keywords..">
-        <button type="submit"><i class="fa fa-search"></i></button>
-    </form>
-</div>
-
-<div id="buttons" style = "margin-right:50px">
-    <form action="../Models/PublicChatFields.html">
-        <button class="button public">New Public Chat</button>
-    </form>
-    <form action="../Models/PrivateChatFields.html">
-        <button class="button private">New Private Chat</button>
-    </form>
-</div>
-
-<div id="roomsDiv" class="rooms">
-    <h1 style="font-size:150%;">Most Popular Chats</h1>
-</div>
-
-<body onload=makeEnvironment()>
-<div id="chatInfo" class="infoBox">
-</div>
+    <section aria-labelledby="roomsTitle">
+      <div class="room-toolbar">
+        <div>
+          <h2 class="section-title" id="roomsTitle">Open rooms</h2>
+          <p class="section-kicker" id="roomResultLabel">Recently active public conversations.</p>
+        </div>
+        <form class="search-form" id="roomSearch" role="search">
+          <label class="skip-link" for="searchLine">Search rooms</label>
+          <input id="searchLine" name="line" type="search" maxlength="100" placeholder="Search a word or tag">
+          <button type="submit" aria-label="Search">→</button>
+        </form>
+      </div>
+      <div class="room-grid" id="roomsDiv" aria-live="polite">
+        <div class="loading-state">Listening for open rooms…</div>
+      </div>
+    </section>
+  </main>
 </body>
+</html>

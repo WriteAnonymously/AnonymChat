@@ -4,8 +4,6 @@ import DB.ChatInfoDAO;
 import DB.UsernameDAO;
 
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Random;
 import java.util.Set;
 
 public class NameGenerator {
@@ -27,30 +25,23 @@ public class NameGenerator {
         Set<String> userNames = chatdao.getUserNames(chatID);
         int size = userNames.size();
         Set<String> randomNames = userdao.getNUsernames(size + 1);
-        String randomName = "";
-
-        randomName = generateRandomName(randomNames, userNames, true);
-        return randomName;
+        String randomName = generateRandomName(randomNames, userNames);
+        if (!randomName.isEmpty()) {
+            return randomName;
+        }
+        int suffix = size + 1;
+        while (userNames.contains("Guest-" + suffix)) {
+            suffix++;
+        }
+        return "Guest-" + suffix;
     }
 
-    private String generateRandomName(Set<String> randomNames, Set<String> names,  boolean canRepeat) {
-        String result = "";
-        if (canRepeat){
-            Random rand = new Random();
-            int index = rand.nextInt(randomNames.size());
-            Iterator<String> iter = randomNames.iterator();
-            for (int i = 0; i < index; i++) {
-                iter.next();
-            }
-            result = iter.next();
-        } else {
-            for(String name : randomNames){
-                if(!names.contains(name)){
-                    result = name;
-                    break;
-                }
+    private String generateRandomName(Set<String> randomNames, Set<String> names) {
+        for (String name : randomNames) {
+            if (!names.contains(name)) {
+                return name;
             }
         }
-        return result;
+        return "";
     }
 }

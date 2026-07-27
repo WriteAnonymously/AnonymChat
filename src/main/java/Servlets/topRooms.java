@@ -1,77 +1,54 @@
 package Servlets;
 
-import Classes.Constants;
-import DB.ChatInfoDAO;
 import Classes.Chat;
-import Classes.PublicChat;
+import Classes.RoomSummary;
+import DB.ChatInfoDAO;
 import DB.ConnectionPool;
+import DB.TagsDAO;
+import Sockets.ChatEndpoint;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.servlet.ServletContext;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Servlet implementation class roomInfo
- */
 @WebServlet(name = "topRooms", urlPatterns = {"/topRooms"})
 public class topRooms extends HttpServlet {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final Gson GSON = new Gson();
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
-		Connection con = null;
-		ChatInfoDAO dao = null;
-		response.setHeader("Content-Type: \"text/plain\"", "Success");
-		try {
-			con = connectionPool.getConnection();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		dao = new ChatInfoDAO(con);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Cache-Control", "no-store");
 
+        try (Connection connection = ConnectionPool.getInstance().getConnection()) {
+            ChatInfoDAO chats = new ChatInfoDAO(connection);
+            TagsDAO tags = new TagsDAO(connection);
+            List<RoomSummary> result = new ArrayList<>();
+            for (Chat chat : chats.getTopNChats(24)) {
+                result.add(new RoomSummary(
+                        chat,
+                        ChatEndpoint.getActiveUserCount(chat.getID()),
+                        tags.getTags(chat.getID())));
+            }
+            response.getWriter().print(GSON.toJson(result));
+        } catch (SQLException exception) {
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Rooms are unavailable.");
+        }
+    }
 
-		ArrayList<String> res = new ArrayList<String>();
-		ArrayList<Chat> chats = null;
-		try {
-			chats = (ArrayList<Chat>) dao.getTopNChats(15);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		for (int k = 0; k < chats.size(); k++) {
-			Chat curChat = chats.get(k);
-			res.add(k, curChat.getName());
-			res.add(curChat.getID() + "");
-		}
-		PrintWriter out = response.getWriter();
-		out.print(res);
-		try {
-			con.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
-
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
 }

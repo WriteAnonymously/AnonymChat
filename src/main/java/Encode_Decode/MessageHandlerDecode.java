@@ -1,26 +1,22 @@
 package Encode_Decode;
 
 import Classes.Message;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import javax.websocket.DecodeException;
-import java.io.IOException;
-
 public class MessageHandlerDecode {
+    private static final Gson GSON = new Gson();
     /**
      * Translates JSon Representation of Message to the
      * message object
      */
     public static Message decodeMessage(String s) throws DecodeException {
-        ObjectMapper mapper = new ObjectMapper();
-        Message message = new Message(1, 1, "-", "Not received", "Infinity");
-
         try {
-            message = mapper.readValue(s, Message.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+            return GSON.fromJson(s, Message.class);
+        } catch (JsonParseException e) {
+            throw new DecodeException(s, "Invalid message payload", e);
         }
-        return message;
     }
 
     /**

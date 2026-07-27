@@ -1,0 +1,45 @@
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: anonym_chat_schema
+      MYSQL_USER: anonymchat
+      MYSQL_PASSWORD: ${DB_PASSWORD:-anonymchat}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-local-root-only}
+    volumes:
+      - anonymchat-db:/var/lib/mysql
+      - ./src/main/java/DB/db.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  mail:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "8025:8025"
+
+  app:
+    build: .
+    environment:
+      DB_URL: jdbc:mysql://db:3306/anonym_chat_schema?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USER: anonymchat
+      DB_PASSWORD: ${DB_PASSWORD:-anonymchat}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-http://localhost:8080}
+      SMTP_HOST: mail
+      SMTP_PORT: 1025
+      SMTP_FROM: hello@anonymchat.local
+      SMTP_STARTTLS: "false"
+      CONTACT_EMAIL: hello@anonymchat.local
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      mail:
+        condition: service_started
+
+volumes:
+  anonymchat-db:

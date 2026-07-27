@@ -35,16 +35,14 @@ public class RandomIdentificatorsDAO {
      * @param randomString string
      * */
     public long containsNotUsedRandomIdentificator(String randomString) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("select chatid from " + DBInfo.NOT_USED_RANDOM_IDENTIFICATORS +
-                                " where id = ?;");
-        statement.setString(1, randomString);
-        ResultSet set = statement.executeQuery();
-        if (!set.next()) {
-            return -1;
+        try (PreparedStatement statement = connection.prepareStatement(
+                "select chatid from " + DBInfo.NOT_USED_RANDOM_IDENTIFICATORS
+                        + " where id = ?")) {
+            statement.setString(1, randomString);
+            try (ResultSet set = statement.executeQuery()) {
+                return set.next() ? set.getLong("chatid") : -1;
+            }
         }
-        long chatId = set.getLong("chatid");
-        statement.close();
-        return chatId;
     }
 
     /**
@@ -53,19 +51,16 @@ public class RandomIdentificatorsDAO {
      * @param randomString string
      * */
     public IdsInfo containsUsedRandomIdentificator(String randomString) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("select chatid, userid from " + DBInfo.USED_RANDOM_IDENTIFICATORS +
-                " where id = ?;");
-        statement.setString(1, randomString);
-        ResultSet set = statement.executeQuery();
-        if (!set.next()) {
-            return null;
+        try (PreparedStatement statement = connection.prepareStatement(
+                "select chatid, userid from " + DBInfo.USED_RANDOM_IDENTIFICATORS
+                        + " where id = ?")) {
+            statement.setString(1, randomString);
+            try (ResultSet set = statement.executeQuery()) {
+                return set.next()
+                        ? new IdsInfo(set.getLong("chatid"), set.getLong("userid"))
+                        : null;
+            }
         }
-        IdsInfo ans = null;
-        long chatId = set.getLong("chatid");
-        long userId = set.getLong("userid");
-        statement.close();
-        ans = new IdsInfo(chatId, userId);
-        return ans;
     }
 
     /**
@@ -103,14 +98,7 @@ public class RandomIdentificatorsDAO {
      * @return id of chat where the random string is
      * */
     public long getChatIdForNotUsedIdentificator(String randomString) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("select chatid from " + DBInfo.NOT_USED_RANDOM_IDENTIFICATORS + " where id = ?;");
-        statement.setString(1, randomString);
-        ResultSet set = statement.executeQuery();
-        statement.close();
-        set.last();
-        long chatId = set.getLong("chatid");
-        statement.close();
-        return chatId;
+        return containsNotUsedRandomIdentificator(randomString);
     }
 
     /**
@@ -120,15 +108,7 @@ public class RandomIdentificatorsDAO {
      * @return id of chat where the random string is
      * */
     public IdsInfo getIdsForUsedIdentificator(String randomString) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("select chatid, userid from " + DBInfo.USED_RANDOM_IDENTIFICATORS + " where id = ?;");
-        statement.setString(1, randomString);
-        ResultSet set = statement.executeQuery();
-        statement.close();
-        set.last();
-        long chatId = set.getLong("chatid");
-        long userId = set.getLong("userid");
-        statement.close();
-        return new IdsInfo(chatId, userId);
+        return containsUsedRandomIdentificator(randomString);
     }
 
     /**

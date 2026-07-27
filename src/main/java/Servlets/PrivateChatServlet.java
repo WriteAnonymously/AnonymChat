@@ -2,112 +2,113 @@ package Servlets;
 
 import Classes.Constants;
 import Classes.MailSenderWorker;
-import DB.*;
+import DB.ChatInfoDAO;
+import DB.ConnectionPool;
+import DB.DBInfo;
+import DB.RandomIdentificatorsDAO;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @WebServlet(name = "PrivateChatServlet", urlPatterns = {"/PrivateChatServlet"})
 public class PrivateChatServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // don't cache browser you ass
-        response.setHeader("Cache-Control", "private,no-store,no-cache");
-        response.setHeader("Pragma", "no-cache");
+    private static final Pattern EMAIL =
+            Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
 
-        // preparing parameters
-        String name = request.getParameter("name");
-        String description = request.getParameter("description");
-        String numMembers = request.getParameter("numMembers");
-        int members = 0;
-        try{
-            members = Integer.parseInt(numMembers);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setHeader("Cache-Control", "private, no-store, no-cache");
+        String name = clean(request.getParameter("name"));
+        String description = clean(request.getParameter("description"));
+        Integer members = parseMembers(request.getParameter("numMembers"));
+
+        if (name.isEmpty() || name.length() > Constants.MAX_ROOM_NAME_LENGTH
+                || description.isEmpty()
+                || description.length() > Constants.MAX_ROOM_DESCRIPTION_LENGTH
+                || members == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Check the room details.");
+            return;
         }
-        if (members == 0){
-            members = 2;
-        }
-        Set <String> mails = new HashSet<String>();
-        for(int i = 1; i < members; i++){
-            String member = request.getParameter("member" + i);
-            if (member != null && member.indexOf("@") != -1 && member.indexOf(".") != -1) {
-                System.out.println(member);
-                mails.add(member);
+
+        Set<String> emails = new LinkedHashSet<>();
+        for (int index = 1; index < members; index++) {
+            String email = clean(request.getParameter("member" + index)).toLowerCase();
+            if (email.length() > 254 || !EMAIL.matcher(email).matches()) {
+                response.sendError(
+                        HttpServletResponse.SC_BAD_REQUEST,
+                        "Every guest needs a valid email address.");
+                return;
             }
+            emails.add(email);
         }
-        ConnectionPool connectionPool = (ConnectionPool) request.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
-        Connection con = null;
-        try {
-            con = connectionPool.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (emails.size() != members - 1) {
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Each invitation needs a different email address.");
+            return;
         }
-        long chatId = addChat(con, name, description, members, request);
-        ArrayList <String> randomStrings = generateRandomStrings(chatId, members, con);
 
-        String s = randomStrings.get(randomStrings.size() - 1);
-        randomStrings.remove(randomStrings.size() - 1);
-
-        MailSenderWorker worker = new MailSenderWorker(mails, randomStrings, "Click <a href=\"" + Constants.WEBPAGE + "/ChatRoom?" + Constants.RANDOM_PARAMETER + "=$\">here</a> to join a group.");
-        worker.start();
-
-//        request.getSession().setAttribute(Constants.RANDOM_PARAMETER, s);
-
-        String chatPath = "/ChatRoom?" + Constants.RANDOM_PARAMETER + "=" + s;
-
-        try {
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        request.getSession().setAttribute(Constants.CHAT_ID, null);
-        response.sendRedirect(chatPath);
-
-    }
-
-    private ArrayList<String> generateRandomStrings(long chatId, int members, Connection con) {
-        ArrayList <String> randomSet = new ArrayList<String>();
-        RandomIdentificatorsDAO dao = new RandomIdentificatorsDAO(con);
-        while (randomSet.size() != members){
-            String s = UUID.randomUUID().toString();
+        try (Connection connection = ConnectionPool.getInstance().getConnection()) {
+            connection.setAutoCommit(false);
             try {
-                dao.addNotUsedRandomIdentificator(s, chatId);
-                randomSet.add(s);
-            } catch (SQLException e) {
-                e.printStackTrace();
+                long chatId = new ChatInfoDAO(connection)
+                        .addChat(name, ChatInfoDAO.PRIVATE, description, members);
+                ArrayList<String> tokens = createTokens(chatId, members, connection);
+                String creatorToken = tokens.remove(tokens.size() - 1);
+                connection.commit();
+
+                String linkTemplate = DBInfo.APP_BASE_URL + request.getContextPath()
+                        + "/ChatRoom?" + Constants.RANDOM_PARAMETER + "=$";
+                new MailSenderWorker(emails, tokens, linkTemplate).start();
+                response.sendRedirect(
+                        request.getContextPath() + "/ChatRoom?"
+                                + Constants.RANDOM_PARAMETER + "=" + creatorToken);
+            } catch (SQLException exception) {
+                connection.rollback();
+                throw exception;
+            } finally {
+                connection.setAutoCommit(true);
             }
+        } catch (SQLException exception) {
+            getServletContext().log("Could not create private room", exception);
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
-        return randomSet;
     }
 
-    private long addChat(Connection con, String name, String description, int members, HttpServletRequest request) {
-        ChatInfoDAO dao = null;
-        dao = new ChatInfoDAO(con);
+    private ArrayList<String> createTokens(long chatId, int members, Connection connection)
+            throws SQLException {
+        ArrayList<String> tokens = new ArrayList<>();
+        RandomIdentificatorsDAO invitations = new RandomIdentificatorsDAO(connection);
+        while (tokens.size() < members) {
+            String token = UUID.randomUUID().toString();
+            invitations.addNotUsedRandomIdentificator(token, chatId);
+            tokens.add(token);
+        }
+        return tokens;
+    }
+
+    private Integer parseMembers(String value) {
         try {
-            long id = dao.addChat(name, ChatInfoDAO.PRIVATE, description, members);
-//            request.setAttribute("id", id);
-            return id;
-        } catch (SQLException e) {
-            e.printStackTrace();
+            int parsed = Integer.parseInt(value);
+            return parsed >= 2 && parsed <= 12 ? parsed : null;
+        } catch (NumberFormatException exception) {
+            return null;
         }
-        return -1;
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    private String clean(String value) {
+        return value == null ? "" : value.strip();
     }
 }

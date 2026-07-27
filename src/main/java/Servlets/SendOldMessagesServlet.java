@@ -2,61 +2,64 @@ package Servlets;
 
 import Classes.Constants;
 import Classes.Message;
+import Classes.User;
 import DB.ConnectionPool;
 import DB.MessageInfoDAO;
-import Encode_Decode.SocketInfoMessage;
-import Encode_Decode.SocketInfoMessageEncoder;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.EncodeException;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-
 @WebServlet(name = "OldMessages", urlPatterns = {"/OldMessages"})
 public class SendOldMessagesServlet extends HttpServlet {
+    private static final Gson GSON = new Gson();
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-         long num = Long.parseLong(req.getParameter(Constants.NUM_MESSAGE));
-         long chatId = Long.parseLong(req.getParameter(Constants.CHAT_ID));
-        ConnectionPool connectionPool = (ConnectionPool) req.getServletContext().getAttribute(ConnectionPool.ATTRIBUTE);
-        Connection con = null;
-        try {
-            con = connectionPool.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setHeader("Cache-Control", "private, no-store");
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute(Constants.CHAT_ID) == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
-        MessageInfoDAO messageInfoDAO = new MessageInfoDAO(con);
-        List<Message> list = null;
+
         try {
-             list = messageInfoDAO.getLastNMessages((int)num, chatId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        resp.setHeader("Content-Type: \"text/plain\"", "Success");
-        PrintWriter writer = resp.getWriter();
-        SocketInfoMessageEncoder encoder = new SocketInfoMessageEncoder();
-        try {
-            writer.println(encoder.encode(new SocketInfoMessage(Constants.SOCKET_INFO_OLD_MESSAGES, list)));
-        } catch (EncodeException e) {
-            e.printStackTrace();
+            long chatId = Long.parseLong(session.getAttribute(Constants.CHAT_ID).toString());
+            User user = (User) session.getAttribute(Long.toString(chatId));
+            if (user == null || user.getChatId() != chatId) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+            int requested = Math.max(
+                    1,
+                    Math.min(1000, Integer.parseInt(request.getParameter(Constants.NUM_MESSAGE))));
+
+            try (Connection connection = ConnectionPool.getInstance().getConnection()) {
+                List<Message> messages =
+                        new MessageInfoDAO(connection).getLastNMessages(requested, chatId);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().print(GSON.toJson(messages));
+            }
+        } catch (NumberFormatException exception) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (SQLException exception) {
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
     }
 }

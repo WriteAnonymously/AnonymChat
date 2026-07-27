@@ -1,31 +1,62 @@
 <!doctype html>
-<title>About Us</title>
-<link rel="stylesheet" href="../Style/AboutUs.css">
-
-
-<div class="navbar">
-    <a href="/WelcomeServlet">Home</a>
-    <div class="navbar-right">
-        <a href="/Models/AboutUs.html">About Us</a>
-        <a href="/Models/Conctact.html">Contact</a>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Why AnonymChat puts the room before the profile.">
+  <link rel="stylesheet" href="/Style/App.css">
+  <link rel="icon" href="/images/favicon.png">
+  <title>About — AnonymChat</title>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">A</span><span class="brand-text">Anonym / Chat</span></a>
+    <div class="nav-links">
+      <a href="/WelcomeServlet">Rooms</a>
+      <a href="/Models/AboutUs.html" aria-current="page">About</a>
+      <a href="/Models/Conctact.html">Contact</a>
     </div>
-</div>
+  </nav>
 
-<div class="header">
-    <h1>TEAM</h1>
-</div>
+  <main class="page-shell">
+    <section class="about-hero">
+      <div>
+        <p class="eyebrow">Why this exists</p>
+        <h1 class="display-title">The room before<br><em>the résumé.</em></h1>
+      </div>
+      <div class="about-copy">
+        <p>
+          Most social software asks you to perform an identity before you can
+          say anything. AnonymChat reverses that order.
+        </p>
+        <p>
+          You enter a conversation under a temporary room name. Public rooms
+          show only current live presence. Private rooms use personal,
+          one-time invitations.
+        </p>
+        <p>
+          Anonymous does not mean invisible: messages are stored in room
+          history, and the server still operates like a normal web service.
+          It means the interface does not turn your profile into the point.
+        </p>
+      </div>
+    </section>
 
-<main class="grid">
-    <img src="/images/3.jpg" alt="dachvi">
-    <img src="/images/2.jpg" alt="churgula">
-    <img src="/images/1.jpg" alt="vasilia">
-    <img src="/images/4.jpg" alt="vaxtangi">
-    <img src="/images/5.jpg" alt="saba">
-</main>
-
-<div class="about-us">
-    <h1>About Us</h1>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-
-    </p>
-</div>
+    <section aria-labelledby="teamTitle">
+      <div class="room-toolbar">
+        <div>
+          <h2 class="section-title" id="teamTitle">The original team</h2>
+          <p class="section-kicker">Five builders, one 2019 university project, now rebuilt with fewer illusions.</p>
+        </div>
+      </div>
+      <div class="team-grid">
+        <article class="team-card"><img src="/images/3.jpg" alt="Dachvi"><p>Dachvi</p></article>
+        <article class="team-card"><img src="/images/2.jpg" alt="Churgula"><p>Churgula</p></article>
+        <article class="team-card"><img src="/images/1.jpg" alt="Vasilia"><p>Vasilia</p></article>
+        <article class="team-card"><img src="/images/4.jpg" alt="Vakhtangi"><p>Vakhtangi</p></article>
+        <article class="team-card"><img src="/images/5.jpg" alt="Saba"><p>Saba</p></article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

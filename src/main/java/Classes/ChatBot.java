@@ -1,7 +1,7 @@
 package Classes;
 
-import DB.ChatInfoDAO;
 import DB.GuessDAO;
+import Sockets.ChatEndpoint;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -82,16 +82,16 @@ public class ChatBot {
      * Returns random user from the chat
      */
     public String randomUser(long chatId) throws SQLException {
-        String result = "";
-        ChatInfoDAO chatInfoDAO = new ChatInfoDAO(con);
-        Set<String> usernames = chatInfoDAO.getUserNames(chatId);
+        Set<String> usernames = ChatEndpoint.getActiveUserNames(chatId);
+        if (usernames.isEmpty()) {
+            return "nobody yet";
+        }
         int index = rand.nextInt(usernames.size());
         Iterator<String> iter = usernames.iterator();
         for (int i = 0; i < index; i++) {
             iter.next();
         }
-        result = iter.next();
-        return  result;
+        return iter.next();
     }
 
     /* Returns random number*/

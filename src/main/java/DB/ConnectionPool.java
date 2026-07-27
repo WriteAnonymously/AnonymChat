@@ -1,52 +1,32 @@
 package DB;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.time.Duration;
 
 /**
- * the class is for storing an Connections to Database and getting and putting it
- * */
-
-public class ConnectionPool extends MysqlDataSource {
+ * Shared, bounded JDBC connection pool.
+ */
+public class ConnectionPool extends BasicDataSource {
     public static final String ATTRIBUTE = "connectionPool";
     private static final int CONNECTION_NUMBER = 20;
-    private ArrayList <Connection> freeConnections, busyConnections;
-    private Semaphore connectionLock, lock;
-
-    private static ConnectionPool connectionPool = new ConnectionPool();
-
-
-    public static void main(String[] args){
-        try {
-            Connection con = connectionPool.getConnection();
-            Statement statement = con.createStatement();
-            ResultSet set = statement.executeQuery("select * from " + DBInfo.CHAT_TABLE);
-            while (set.next()){
-            }
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    private static final ConnectionPool INSTANCE = new ConnectionPool();
 
     public static ConnectionPool getInstance(){
-        return connectionPool;
+        return INSTANCE;
     }
 
-    private ConnectionPool(){
-        setUser(DBInfo.MYSQL_USERNAME);
+    protected ConnectionPool(){
+        setDriverClassName(DBInfo.DRIVER);
+        setUsername(DBInfo.MYSQL_USERNAME);
         setPassword(DBInfo.MYSQL_PASSWORD);
-        setURL(DBInfo.MYSQL_DATABASE_URL);
+        setUrl(DBInfo.MYSQL_DATABASE_URL);
+        setInitialSize(0);
+        setMinIdle(1);
+        setMaxIdle(8);
+        setMaxTotal(CONNECTION_NUMBER);
+        setMaxWait(Duration.ofSeconds(5));
+        setValidationQuery("SELECT 1");
+        setTestOnBorrow(true);
     }
 }

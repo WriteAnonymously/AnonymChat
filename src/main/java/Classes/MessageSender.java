@@ -36,21 +36,27 @@ public class MessageSender {
      * */
     private void sendMail(MailMessage to) throws MessagingException {
         Properties properties = new Properties();
-        properties.put("mail.stmp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
+        boolean useAuthentication = !DBInfo.SMTP_USERNAME.isBlank();
+        properties.put("mail.smtp.auth", Boolean.toString(useAuthentication));
+        properties.put("mail.smtp.starttls.enable", Boolean.toString(DBInfo.SMTP_STARTTLS));
+        properties.put("mail.smtp.host", DBInfo.SMTP_HOST);
+        properties.put("mail.smtp.port", Integer.toString(DBInfo.SMTP_PORT));
 
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(DBInfo.myAccountEmail, DBInfo.myAccountPassword);
+                return useAuthentication
+                        ? new PasswordAuthentication(DBInfo.SMTP_USERNAME, DBInfo.SMTP_PASSWORD)
+                        : null;
             }
         });
 
         Message message = prepareMessage(session, to);
-
-        Transport.send(message, DBInfo.myAccountEmail, DBInfo.myAccountPassword);
+        if (useAuthentication) {
+            Transport.send(message, DBInfo.SMTP_USERNAME, DBInfo.SMTP_PASSWORD);
+        } else {
+            Transport.send(message);
+        }
     }
 
     /**
@@ -59,11 +65,14 @@ public class MessageSender {
 
     private javax.mail.Message prepareMessage(Session session, MailMessage to) throws MessagingException {
         javax.mail.Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(DBInfo.myAccountEmail));
+        message.setFrom(new InternetAddress(DBInfo.SMTP_FROM));
         message.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to.getMail()));
         message.setSubject(to.getSubject());
-        message.setContent("<h1>" + to.getContent() + "</h1>", "text/html");
-        System.out.println("content ---- " + to.getContent());
+        if (to.isHtml()) {
+            message.setContent(to.getContent(), "text/html; charset=UTF-8");
+        } else {
+            message.setText(to.getContent());
+        }
         return message;
     }
 }

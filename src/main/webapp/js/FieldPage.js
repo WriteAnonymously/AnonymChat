@@ -1,23 +1,38 @@
-function addMembers() {
-	var numMembers = document.getElementById("numMembers").value;
-	var list = document.getElementById("memberList");
-	while(list.hasChildNodes()) {
-		list.removeChild(list.lastChild);
+(function () {
+  "use strict";
+
+  var countInput = document.getElementById("numMembers");
+  var memberList = document.getElementById("memberList");
+
+  function renderInvitationFields() {
+    var count = Math.max(2, Math.min(12, Number(countInput.value) || 2));
+    countInput.value = count;
+    memberList.innerHTML = "";
+
+    for (var index = 1; index < count; index += 1) {
+      var field = document.createElement("div");
+      field.className = "field";
+
+      var label = document.createElement("label");
+      label.htmlFor = "member" + index;
+      label.textContent = "Invitation " + index;
+
+      var input = document.createElement("input");
+      input.id = "member" + index;
+      input.name = "member" + index;
+      input.type = "email";
+      input.maxLength = 254;
+      input.required = true;
+      input.autocomplete = "off";
+      input.placeholder = "person@example.com";
+
+      field.appendChild(label);
+      field.appendChild(input);
+      memberList.appendChild(field);
     }
-	
-	list.appendChild(document.createElement("br"));
-	for (k=0; k<numMembers - 1; k++) {
-		var memberDiv = document.createElement("div");
-		memberDiv.classList.add("inputField");
-		var newMember = document.createElement("input");
-		newMember.classList.add("inputType");
-		newMember.classList.add("validateInput");
-		newMember.type = "text";
-		var tmp = k + 1;
-		newMember.id = "member"+tmp;
-		newMember.name = "member" + tmp;
-		newMember.placeholder = "member" + tmp + "@anonymchat.kma";
-		memberDiv.appendChild(newMember);
-		list.appendChild(memberDiv);
-     }
-}
+  }
+
+  countInput.addEventListener("change", renderInvitationFields);
+  countInput.addEventListener("input", renderInvitationFields);
+  renderInvitationFields();
+}());

@@ -28,28 +28,21 @@ public class ChatInfoDAO {
      * @param maxUsersAllowed maximum number of user -1 should be here if no restrictions
      * */
     public long addChat(String chatName, String status, String description, int maxUsersAllowed) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("insert into " + DBInfo.CHAT_TABLE
+        try (PreparedStatement statement = connection.prepareStatement("insert into " + DBInfo.CHAT_TABLE
                 + " (name, status, description, max_users_number, creation_date) value "
-                + "(?, ?, ?, ?, now(4));");
-        statement.setString(1, chatName);
-        statement.setString(2, status);
-        statement.setString(3, description);
-        statement.setInt(4, maxUsersAllowed);
-        statement.executeUpdate();
-        statement.close();
-        return getLastInsertedID();
-    }
-
-
-    /**
-     * finds the last inserted id
-     * */
-    private long getLastInsertedID() throws SQLException {
-        Statement st = connection.createStatement();
-        String q = "select LAST_INSERT_ID();";
-        ResultSet set = st.executeQuery(q);
-        set.last();
-        return Long.parseLong(set.getString(1));
+                + "(?, ?, ?, ?, now(4))", Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, chatName);
+            statement.setString(2, status);
+            statement.setString(3, description);
+            statement.setInt(4, maxUsersAllowed);
+            statement.executeUpdate();
+            try (ResultSet keys = statement.getGeneratedKeys()) {
+                if (!keys.next()) {
+                    throw new SQLException("Creating the room did not return an id");
+                }
+                return keys.getLong(1);
+            }
+        }
     }
 
     /**
@@ -60,8 +53,10 @@ public class ChatInfoDAO {
     public List<Chat> getTopNChats(int n) throws SQLException {
         List<Chat> topChatsSet = new ArrayList<Chat>();
         PreparedStatement statement = connection.prepareStatement("select * from " + DBInfo.CHAT_TABLE
-                                + " t where t.status = \"public\" order by -1 * (select count(*) from " + DBInfo.USERS_TABLE
-                                + " cus where cus.chatid = t.id) limit ?;");
+                                + " t where lower(t.status) = \"public\" "
+                                + "order by coalesce((select max(m.creation_date) from "
+                                + DBInfo.MESSAGE_TABLE + " m where m.chatid = t.id), "
+                                + "t.creation_date) desc limit ?;");
         statement.setInt(1, n);
         ResultSet set = statement.executeQuery();
         while (set.next()){
@@ -109,49 +104,20 @@ public class ChatInfoDAO {
         statement.setLong(1, chatId);
         Chat chat = null;
         ResultSet set = statement.executeQuery();
-        set.last();
+        if (!set.next()) {
+            statement.close();
+            return null;
+        }
         String status = set.getString("status");
-        if (status.equals(ChatInfoDAO.PRIVATE)){
+        if (status.equalsIgnoreCase(ChatInfoDAO.PRIVATE)){
             chat = new PrivateChat(chatId, set.getString("name"), set.getString("description"),
                         set.getInt("max_users_number"), set.getString("creation_date"));
         } else {
             chat = new PublicChat(chatId, set.getString("name"), set.getString("description"),
                     set.getInt("max_users_number"), set.getString("creation_date"));
         }
+        statement.close();
         return chat;
     }
 
-    /**
-     * finds the number of users in chat and maximal number of users allowed
-     *
-     * @return Pair of the values where
-     * */
-    public Pair getCurrAndMax(long chatID) throws  SQLException{
-        Statement getAllowed = connection.createStatement();
-        String allowed = "Select max_users_number from " + DBInfo.CHAT_TABLE + " where id = " + chatID;
-        ResultSet st = getAllowed.executeQuery(allowed);
-        int maxNumber = st.getInt("max_users_number");
-        Statement cntUsers = connection.createStatement();
-        String countUsers = "Select COUNT(id) as cnt from " + DBInfo.USERS_TABLE + " where chatid = " + chatID;
-        ResultSet stcnt = cntUsers.executeQuery(countUsers);
-        int currNumber = stcnt.getInt("cnt");
-        Pair pair = new Pair(currNumber, maxNumber);
-        return pair;
-    }
-
-
-    /* the class for storing maximal and current number of chats */
-    public class Pair {
-        private int current, maximal;
-        public Pair(int current, int maximal){
-            this.current = current;
-            this.maximal = maximal;
-        }
-        public int  getCurrent(){
-            return current;
-        }
-        public int getMaximal(){
-            return maximal;
-        }
-    }
 }

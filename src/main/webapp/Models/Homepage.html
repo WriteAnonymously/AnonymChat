@@ -1,22 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
 <head>
-    <meta charset="UTF-8">
-    <title>AnonymChat</title>
-    <link rel="stylesheet" href="../Style/HomePageStyle.css">
-    <link rel="shortcut icon" href="/images/favicon.png" type="image/png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Drop the profile. Join a room under a temporary name.">
+  <link rel="stylesheet" href="/Style/App.css">
+  <link rel="icon" href="/images/favicon.png">
+  <title>AnonymChat — Rooms without profiles</title>
 </head>
-
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span class="brand-text">Anonym / Chat</span>
+    </a>
+    <div class="nav-links">
+      <a href="/Models/AboutUs.html">About</a>
+      <a href="/Models/Conctact.html">Contact</a>
+    </div>
+  </nav>
 
-<h4>WE ARE ALL ANONYMOUS HERE</h4>
-<form action="/WelcomeServlet" method="get">
-    <input class="button" type="submit" value="Join">
-</form>
+  <main class="page-shell landing" id="main">
+    <section>
+      <p class="eyebrow">No account required</p>
+      <h1 class="display-title">Drop the profile.<br><em>Keep the conversation.</em></h1>
+      <p class="lede">
+        Walk into a room, receive a temporary name, and talk. No followers,
+        biographies, or popularity theatre.
+      </p>
+      <div class="landing-actions">
+        <a class="button button-primary" href="/WelcomeServlet">See open rooms <span aria-hidden="true">→</span></a>
+        <a class="button" href="/Models/PrivateChatFields.html">Start a private room</a>
+      </div>
+      <div class="truth-strip" aria-label="How AnonymChat works">
+        <div><strong>Identity</strong><span>A room-specific temporary name</span></div>
+        <div><strong>Presence</strong><span>Only real connected people are counted</span></div>
+        <div><strong>History</strong><span>Messages remain in the room archive</span></div>
+      </div>
+    </section>
+
+    <aside class="manifesto-card" aria-label="Our promise">
+      <h2>No made-up momentum.</h2>
+      <p>
+        We show who is online now—not inflated totals, fake activity, or
+        arbitrary room scores.
+      </p>
+    </aside>
+  </main>
 </body>
 </html>
-

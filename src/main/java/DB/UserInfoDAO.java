@@ -21,17 +21,19 @@ public class UserInfoDAO {
      * @throws SQLException throws exception if occur any error
      * */
     public long addUser(long chatID, String name) throws SQLException {
-        PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.USERS_TABLE
+        try (PreparedStatement statement = con.prepareStatement("insert into " + DBInfo.USERS_TABLE
                 + " (chatid, username, creation_date) value "
-                + "(?, ?, now(4));");
-        statement.setLong(1, chatID);
-        statement.setString(2, name);
-        statement.executeUpdate();
-        Statement st = con.createStatement();
-        String q = "select LAST_INSERT_ID();";
-        ResultSet set = st.executeQuery(q);
-        set.last();
-        return Long.parseLong(set.getString(1));
+                + "(?, ?, now(4))", Statement.RETURN_GENERATED_KEYS)) {
+            statement.setLong(1, chatID);
+            statement.setString(2, name);
+            statement.executeUpdate();
+            try (ResultSet keys = statement.getGeneratedKeys()) {
+                if (!keys.next()) {
+                    throw new SQLException("Creating the guest did not return an id");
+                }
+                return keys.getLong(1);
+            }
+        }
     }
 
     /**
@@ -40,12 +42,18 @@ public class UserInfoDAO {
      * @return last inserted user
      * */
     public User getLastUser() throws SQLException {
-        User user = null;
-        PreparedStatement statement = con.prepareStatement("select * from " + DBInfo.USERS_TABLE + " order by creation_date desc limit 1;");
-        ResultSet ansSet = statement.executeQuery();
-        ansSet.next();
-        user = new User(Long.parseLong(ansSet.getString("id")), ansSet.getString("username"), Long.parseLong(ansSet.getString("chatid")));
-        return user;
+        try (PreparedStatement statement = con.prepareStatement(
+                "select id, chatid, username from " + DBInfo.USERS_TABLE
+                        + " order by creation_date desc limit 1");
+             ResultSet result = statement.executeQuery()) {
+            if (!result.next()) {
+                return null;
+            }
+            return new User(
+                    result.getLong("id"),
+                    result.getString("username"),
+                    result.getLong("chatid"));
+        }
     }
 
     /**
@@ -54,12 +62,18 @@ public class UserInfoDAO {
      * @return user
      * */
     public User getUser(long userId) throws SQLException {
-        User user = null;
-        PreparedStatement statement = con.prepareStatement("select id, chatid, username from " + DBInfo.USERS_TABLE + " where id = ?;");
-        statement.setLong(1, userId);
-        ResultSet ansSet = statement.executeQuery();
-        ansSet.next();
-        user = new User(Long.parseLong(ansSet.getString("id")), ansSet.getString("username"), Long.parseLong(ansSet.getString("chatid")));
-        return user;
+        try (PreparedStatement statement = con.prepareStatement(
+                "select id, chatid, username from " + DBInfo.USERS_TABLE + " where id = ?")) {
+            statement.setLong(1, userId);
+            try (ResultSet result = statement.executeQuery()) {
+                if (!result.next()) {
+                    return null;
+                }
+                return new User(
+                        result.getLong("id"),
+                        result.getString("username"),
+                        result.getLong("chatid"));
+            }
+        }
     }
 }

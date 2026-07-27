@@ -4,8 +4,12 @@ import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MailSenderWorker extends Thread {
+    private static final Logger LOGGER =
+            Logger.getLogger(MailSenderWorker.class.getName());
     private Set<String> mails;
     private List<String> randomStrings;
     private String link;
@@ -24,15 +28,21 @@ public class MailSenderWorker extends Thread {
             String curLink = link;
             int ind = curLink.indexOf("$");
             curLink = curLink.substring(0, ind) + randomStrings.get(pos) + curLink.substring(ind + 1);
-            System.out.println(curLink);
-            MailMessage curMessage = new MailMessage(s, curLink, "Invite in group");
+            MailMessage curMessage = new MailMessage(
+                    s,
+                    "<p>You were invited to a private room on AnonymChat.</p>"
+                            + "<p><a href=\"" + curLink + "\">Enter the room</a></p>"
+                            + "<p>This link is personal and can only be claimed once.</p>",
+                    "Your private AnonymChat invitation",
+                    true);
             messages.add(curMessage);
+            pos++;
         }
         MessageSender sender = new MessageSender(messages);
         try {
             sender.send();
-        } catch (MessagingException e) {
-            e.printStackTrace();
+        } catch (MessagingException exception) {
+            LOGGER.log(Level.SEVERE, "Could not send private-room invitations", exception);
         }
     }
 }
